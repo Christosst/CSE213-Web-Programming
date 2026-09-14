@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "CSE213 Web Programming Demos",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

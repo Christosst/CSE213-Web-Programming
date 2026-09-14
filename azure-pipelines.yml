@@ -43,6 +43,8 @@ steps:
         mirror --reverse --verbose --only-newer --no-perms --no-umask --parallel=4 \
           --exclude-glob .git/ \
           --exclude-glob .git/** \
+          --exclude-glob='- Bruno Collection/' \
+          --exclude-glob='- Bruno Collection/**' \
           --exclude-glob azure-pipelines.yml \
           --exclude-glob README.md \
           --exclude-glob '*/README.md' \
