@@ -1,0 +1,164 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch23 — Functions, Loops & Modules                      ║
+  ║  demo-arrays-modules/index.html                                  ║
+  ║  CONCEPT: ES Modules (<script type="module">), Separation of     ║
+  ║           Concerns (Data vs Logic vs UI), Modern Array Pipeline  ║
+  ║  DEVTOOLS: Sources panel (Inspect imported module tree)          ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WHY ES MODULES MATTER:
+  ──────────────────────
+  Before ES6 (2015), all JavaScript files dumped variables into the global `window` scope,
+  causing name collisions and spaghetti code.
+
+  With ES Modules (`<script type="module">`):
+  1. SCOPE IS ISOLATED: Variables in `data.js` cannot accidentally overwrite variables in `main.js`.
+  2. STRICT MODE BY DEFAULT: `"use strict"` is automatically enabled.
+  3. DEFERRED EXECUTION: Modules automatically download asynchronously and execute after HTML parses!
+  4. EXPLICIT CONTRACTS: Use `export` to share code, and `import` to consume code.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arrays &amp; ES Modules Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 740px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+
+    /* Category filter pill buttons */
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1.25rem 0;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background-color: #e2e8f0;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      background-color: #cbd5e1;
+    }
+
+    .filter-btn.active {
+      background-color: #1e40af;
+      color: #ffffff;
+      border-color: #1e40af;
+      box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    }
+
+    /* Card grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .service-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.05rem;
+      color: #1e40af;
+    }
+
+    .service-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background-color: #eff6ff;
+      color: #2563eb;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-rating {
+      margin: 0.5rem 0 0;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .architecture-box {
+      margin-top: 2rem;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Campus Services Directory</h1>
+    <p>Filtered and sorted using modular JavaScript and functional array methods (<code>filter</code>, <code>sort</code>, <code>map</code>).</p>
+  </header>
+
+  <main>
+    <!-- Filter Buttons Container: click events are handled via delegation in main.js -->
+    <div class="filter-group" id="filter-controls">
+      <button type="button" data-category="All" class="filter-btn active">All</button>
+      <button type="button" data-category="Academic" class="filter-btn">Academic</button>
+      <button type="button" data-category="Sports" class="filter-btn">Sports</button>
+      <button type="button" data-category="Wellbeing" class="filter-btn">Wellbeing</button>
+    </div>
+
+    <!-- Cards rendered dynamically by main.js -->
+    <div class="card-grid" id="service-cards-container"></div>
+
+    <div class="architecture-box">
+      <strong>📁 Application Architecture:</strong>
+      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+        <li><code>data.js</code>: Pure mock dataset &mdash; completely decoupled from HTML/DOM.</li>
+        <li><code>utils.js</code>: Pure helper functions (easy to write unit tests for).</li>
+        <li><code>main.js</code>: Orchestrator &mdash; imports data and utils, handles DOM events.</li>
+      </ul>
+    </div>
+  </main>
+
+  <!--
+    CRITICAL: `type="module"` is required to enable ES6 `import` and `export` statements!
+    Must be served over HTTP/HTTPS (or localhost via Live Server / Vite).
+  -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>

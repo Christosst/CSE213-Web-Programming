@@ -1,0 +1,221 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch20 — Transitions & Animation · demo-animation.html   ║
+  ║  CONCEPT: Transitions vs Keyframe Animations, Hardware           ║
+  ║           Acceleration (transform/opacity), 3D Transforms,       ║
+  ║           prefers-reduced-motion (A11y requirement)              ║
+  ║  DEVTOOLS: Animations drawer & Rendering panel (Emulate Motion)  ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  PERFORMANCE & ACCESSIBILITY RULES FOR ANIMATION:
+  ────────────────────────────────────────────────
+  1. ANIMATE ONLY HIGH-PERFORMANCE PROPERTIES:
+     - The ONLY two CSS properties that run on the GPU compositor thread
+       (zero reflow/relayout) are `transform` and `opacity`.
+     - Animating `width`, `height`, `margin`, or `top` triggers costly
+       CPU Layout recalculations on every single frame, causing stutter (jank)!
+
+  2. RESPECT USER MOTION SENSITIVITY (WCAG 2.3.3):
+     - Vestibular motion disorders can cause dizziness and nausea from
+       excessive spinning or zooming.
+     - Always provide `@media (prefers-reduced-motion: reduce)` to disable or
+       dampen animations when users request it in their OS settings.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Transitions &amp; Animation Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+    h2 {
+      margin-top: 2.5rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    /*
+      ==============================================================
+      1. @KEYFRAMES INFINITE SPINNER
+      ==============================================================
+      Keyframes define multi-step animation sequences over time.
+    */
+    @keyframes spinAnimation {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e2e8f0;
+      border-top-color: #6366f1; /* Accent arc */
+      border-radius: 50%;
+      /* animation: name duration timing-function iteration-count */
+      animation: spinAnimation 1s linear infinite;
+      margin: 1.5rem auto;
+    }
+
+    /*
+      ==============================================================
+      2. MICRO-INTERACTION BUTTON TRANSITIONS
+      ==============================================================
+      Transitions smoothly interpolate values between two states (e.g., normal to :hover).
+    */
+    .btn-interactive {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      background-color: #1e40af;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      /*
+        GPU-friendly transitions:
+        Notice we specify EXACT property names instead of `transition: all`!
+      */
+      transition: background-color 200ms ease,
+                  transform 150ms ease,
+                  box-shadow 200ms ease;
+    }
+
+    .btn-interactive:hover {
+      background-color: #1e3a8a;
+      transform: translateY(-2px); /* Lifts button up slightly */
+      box-shadow: 0 6px 16px rgba(30, 64, 175, 0.35);
+    }
+
+    .btn-interactive:active {
+      transform: translateY(0);    /* Presses back down on click */
+      box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+    }
+
+    /*
+      ==============================================================
+      3. 3D CARD FLIP (PERSPECTIVE & PRESERVE-3D)
+      ==============================================================
+    */
+    /* The scene provides 3D viewing perspective depth */
+    .flip-scene {
+      perspective: 800px;
+      width: 240px;
+      height: 150px;
+      cursor: pointer;
+      margin: 1.5rem auto;
+    }
+
+    /* The card container rotates in 3D space */
+    .flip-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d; /* Allows child faces to inhabit true 3D space */
+      transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Trigger flip on hover OR keyboard focus */
+    .flip-scene:hover .flip-card,
+    .flip-scene:focus-within .flip-card {
+      transform: rotateY(180deg);
+    }
+
+    /* Front and back card faces */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.15rem;
+      backface-visibility: hidden; /* Hides reverse side when flipped */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .face-front {
+      background: linear-gradient(135deg, #6366f1, #1e40af);
+      color: #ffffff;
+    }
+
+    .face-back {
+      background: linear-gradient(135deg, #10b981, #065f46);
+      color: #ffffff;
+      transform: rotateY(180deg); /* Pre-rotated to face backwards */
+    }
+
+    /*
+      ==============================================================
+      4. ACCESSIBILITY: PREFERS-REDUCED-MOTION
+      ==============================================================
+    */
+    @media (prefers-reduced-motion: reduce) {
+      .spinner {
+        animation: none;
+        border-top-color: #6366f1;
+        opacity: 0.6;
+      }
+      .btn-interactive,
+      .flip-card {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hardware-Accelerated CSS Transitions &amp; Animation</h1>
+  </header>
+
+  <main>
+    <h2>1. Infinite Loading Spinner (@keyframes)</h2>
+    <!-- role="status" informs screen readers this is a background loading indicator -->
+    <div class="spinner" role="status" aria-label="Loading content..."></div>
+    <p style="text-align: center; color: #64748b; font-size: 0.85rem;">
+      <strong>DevTools Test:</strong> Open <em>More Tools &rarr; Rendering</em>, enable <code>prefers-reduced-motion: reduce</code> to observe how the spinning safely halts.
+    </p>
+
+    <h2>2. Smooth Interactive Micro-Transitions</h2>
+    <div style="text-align: center; margin: 1.5rem 0;">
+      <button class="btn-interactive" type="button">Hover &amp; Click Me</button>
+    </div>
+
+    <h2>3. 3D Card Flip (Hover or Press Tab)</h2>
+    <div class="flip-scene" tabindex="0" aria-label="Interactive 3D Flashcard. Press enter or hover to flip.">
+      <div class="flip-card">
+        <div class="card-face face-front">
+          Front Face
+          <span style="font-size: 0.8rem; font-weight: normal; margin-top: 0.25rem;">(Hover or Tab here)</span>
+        </div>
+        <div class="card-face face-back">
+          Back Face
+          <span style="font-size: 0.8rem; font-weight: normal; margin-top: 0.25rem;">(rotateY: 180deg)</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

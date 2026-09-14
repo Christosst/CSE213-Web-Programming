@@ -1,0 +1,164 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch06 — Links · demo-links.html                       ║
+  ║  CONCEPT: Skip links, meaningful link text, external links,     ║
+  ║           relative vs absolute paths.                           ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WHY LINK TEXT MATTERS
+  ──────────────────────
+  Screen reader users often press Tab to jump from link to link,
+  or ask the screen reader to "list all links on the page."
+  If every link says "Click here" or "Read more", the user has
+  no idea where each link goes!
+
+  BAD:  <a href="syllabus.pdf">Click here</a>
+  GOOD: <a href="syllabus.pdf">Download the CSE213 syllabus (PDF)</a>
+
+  WCAG 2.1 Success Criterion 2.4.4: Link Purpose (Level A)
+  — link text must make sense out of context.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Links Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 680px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /*
+      THE SKIP LINK
+      ─────────────
+      This is a critical accessibility pattern.
+      The link is HIDDEN off-screen by default (top: -100%).
+      When a keyboard user presses Tab, it receives focus,
+      and we move it back on-screen (top: 0).
+
+      This lets keyboard users skip past the navigation
+      directly to the main content — saving many Tab presses.
+    */
+    .skip-link {
+      position: absolute;
+      top: -100%;       /* hide above the visible area */
+      left: 1rem;
+      background: #1e40af;
+      color: white;
+      padding: .5rem 1rem;
+      border-radius: 0 0 4px 4px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    /* When focused (Tab key), slide it into view */
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* Colour-coded examples */
+    .bad  { color: #dc2626; } /* red  = anti-pattern */
+    .good { color: #15803d; } /* green = good pattern */
+  </style>
+</head>
+<body>
+
+  <!--
+    The skip link MUST be the FIRST focusable element on the page.
+    href="#main-content" points to the id="main-content" on <main>.
+    When clicked/activated, the browser moves keyboard focus there.
+  -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header>
+    <h1>Links Demo</h1>
+
+    <!--
+      <nav> = navigation landmark.
+      aria-label="Main navigation" distinguishes this nav from
+      any other navs on the page (e.g. a footer nav).
+    -->
+    <nav aria-label="Main navigation">
+      <!--
+        Navigation links should be in a <ul> list.
+        Why? Because a list communicates "there are N items here",
+        which screen readers announce (e.g. "list, 3 items").
+      -->
+      <ul style="list-style:none;padding:0;display:flex;gap:1rem">
+        <!--
+          / = site root (absolute path)
+          These paths work on a server. On local files, use
+          relative paths like ../index.html instead.
+        -->
+        <li><a href="/">Home</a></li>
+        <li><a href="/modules">Modules</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!--
+    id="main-content" is the TARGET of the skip link above.
+    Giving <main> this id means activating the skip link
+    will move the user directly here.
+  -->
+  <main id="main-content">
+
+    <h2>Link Text Quality</h2>
+
+    <!--
+      BAD EXAMPLE — "Click here" tells us nothing about the destination.
+      Test: cover the sentence, read only the link. Does it make sense?
+    -->
+    <p class="bad">
+      ❌ Bad: <a href="#">Click here</a> to download the syllabus.
+    </p>
+
+    <!--
+      GOOD EXAMPLE — the link text describes exactly what you get.
+      Also: download attribute suggests the browser should save the file.
+    -->
+    <p class="good">
+      ✅ Good: <a href="syllabus.pdf" download>Download the CSE213 syllabus (PDF)</a>.
+    </p>
+
+    <h2>External Link (opens in new tab)</h2>
+    <p>
+      <!--
+        target="_blank" opens the link in a new browser tab.
+        IMPORTANT: always pair it with rel="noopener noreferrer":
+          noopener  — prevents the new tab from accessing this page via window.opener
+          noreferrer — does not send the current URL as a "Referer" header (privacy)
+        The ↗ symbol + aria-label warns users the link opens a new tab.
+      -->
+      <a href="https://validator.w3.org/"
+         target="_blank"
+         rel="noopener noreferrer">
+        W3C HTML Validator
+        <span aria-label="(opens in new tab)">↗</span>
+      </a>
+    </p>
+
+    <h2>Email Link</h2>
+    <p>
+      <!--
+        mailto: tells the browser to open the user's email app.
+        The email address is the href value.
+      -->
+      <a href="mailto:lecturer@university.edu">Email the lecturer</a>
+    </p>
+
+    <h2>Path Types</h2>
+    <ul>
+      <li><strong>Absolute:</strong> <code>https://example.com/page.html</code> — full URL</li>
+      <li><strong>Root-relative:</strong> <code>/images/logo.png</code> — from site root</li>
+      <li><strong>Relative:</strong> <code>../about/team.html</code> — from current file location</li>
+      <li><strong>Fragment:</strong> <code>#main-content</code> — scrolls to element on THIS page</li>
+    </ul>
+  </main>
+
+</body>
+</html>

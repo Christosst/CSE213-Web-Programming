@@ -1,0 +1,228 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch26 — Web Image Basics · demo-image-formats.html      ║
+  ║  CONCEPT: Raster vs Vector, JPEG, PNG, WebP, AVIF, SVG,          ║
+  ║           Lossy vs Lossless, Transparency, Browser Support       ║
+  ║  DEVTOOLS: Network tab (Size column, Img filter, Headers)        ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  RASTER VS VECTOR GRAPHICS:
+  ──────────────────────────
+  1. RASTER GRAPHICS (JPEG, PNG, WebP, AVIF):
+     - Composed of a fixed grid of colored pixels.
+     - Zooming in causes pixelation and blurriness.
+     - Best for photographic imagery with millions of continuous colors.
+
+  2. VECTOR GRAPHICS (SVG):
+     - Composed of mathematical coordinate geometry (points, lines, curves, polygons).
+     - Infinitely scalable! Renders crisp at 16px or 16,000px without losing quality.
+     - Best for logos, icons, illustrations, and UI interface graphics.
+
+  MODERN FORMAT COMPRESSION COMPARISON:
+  ────────────────────────────────────
+  - JPEG: Universal baseline (lossy, no alpha transparency).
+  - PNG: Lossless with full 8-bit alpha transparency (larger file size).
+  - WebP: ~30% smaller than JPEG, supports transparency and animation.
+  - AVIF: ~50% smaller than JPEG, next-gen HDR color depth, high efficiency.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Image Formats Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+    h2 {
+      margin-top: 2rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    /* Grid of format comparison cards */
+    .formats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .format-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .format-card img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-content {
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #475569;
+      flex-grow: 1;
+    }
+
+    .card-content strong {
+      display: block;
+      color: #0f172a;
+      font-size: 1.05rem;
+      margin-bottom: 0.35rem;
+    }
+
+    /* Badges */
+    .format-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+
+    .badge-raster { background-color: #dbeafe; color: #1d4ed8; }
+    .badge-vector { background-color: #dcfce7; color: #15803d; }
+    .badge-modern { background-color: #f3e8ff; color: #7e22ce; }
+
+    /* Comparison table */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 1rem;
+      background: #ffffff;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: #1e40af;
+      color: #ffffff;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Web Image Formats &amp; Selection Strategy</h1>
+    <p>Choosing the correct image format directly impacts web page load speed, SEO ranking, and user experience.</p>
+  </header>
+
+  <main>
+    <div class="formats-grid">
+      <!-- 1. JPEG -->
+      <div class="format-card">
+        <img src="https://picsum.photos/seed/fmt1/300/200" alt="JPEG sample photo" loading="lazy">
+        <div class="card-content">
+          <strong>JPEG / JPG</strong>
+          Lossy compression designed for photography. Excellent compatibility, but does not support transparency.
+          <br><span class="format-badge badge-raster">Raster &middot; Lossy</span>
+        </div>
+      </div>
+
+      <!-- 2. WebP -->
+      <div class="format-card">
+        <img src="https://picsum.photos/seed/fmt2/300/200" alt="WebP sample photo" loading="lazy">
+        <div class="card-content">
+          <strong>WebP (Google)</strong>
+          25–35% smaller than JPEG with identical visual fidelity. Supports full alpha transparency and animation!
+          <br><span class="format-badge badge-modern">Modern Standard</span>
+        </div>
+      </div>
+
+      <!-- 3. AVIF -->
+      <div class="format-card">
+        <img src="https://picsum.photos/seed/fmt3/300/200" alt="AVIF sample photo" loading="lazy">
+        <div class="card-content">
+          <strong>AVIF (AOMedia)</strong>
+          Cutting-edge compression based on AV1 video. Up to 50% smaller than JPEG with superior gradient preservation.
+          <br><span class="format-badge badge-modern">Next-Gen Raster</span>
+        </div>
+      </div>
+
+      <!-- 4. SVG -->
+      <div class="format-card">
+        <div style="height: 130px; background: #eff6ff; display: flex; align-items: center; justify-content: center;">
+          <!-- Inline vector graphic -->
+          <svg viewBox="0 0 100 100" width="70" height="70" role="img" aria-label="Vector star graphic">
+            <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35"
+                     fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="card-content">
+          <strong>SVG (Vector)</strong>
+          XML markup code describing shapes mathematically. Infinitely sharp at any resolution with tiny file weight.
+          <br><span class="format-badge badge-vector">Vector Graphics</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Decision Matrix: Which Format Should I Use?</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Use Case</th>
+          <th>Recommended Format</th>
+          <th>Why?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Logos, Icons, UI Glyphs</strong></td>
+          <td>SVG</td>
+          <td>Scales cleanly on 4K/Retina displays; animatable and styleable with CSS.</td>
+        </tr>
+        <tr>
+          <td><strong>High-Res Photos &amp; Hero Banners</strong></td>
+          <td>AVIF or WebP</td>
+          <td>Smallest byte payload, fastest LCP (Largest Contentful Paint).</td>
+        </tr>
+        <tr>
+          <td><strong>Legacy Fallback Imagery</strong></td>
+          <td>JPEG</td>
+          <td>Universal compatibility across 100% of all legacy web clients.</td>
+        </tr>
+        <tr>
+          <td><strong>Screenshots / Diagrams (Crisp Lines)</strong></td>
+          <td>PNG or WebP Lossless</td>
+          <td>Prevents the blurry compression artifacts that JPEG produces around text.</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

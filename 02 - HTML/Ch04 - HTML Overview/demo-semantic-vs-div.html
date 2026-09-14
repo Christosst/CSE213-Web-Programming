@@ -1,0 +1,179 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch04 — HTML Overview · demo-semantic-vs-div.html     ║
+  ║  CONCEPT: Semantic HTML vs "Div Soup"                           ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  THE KEY QUESTION: Why does the choice of HTML element matter?
+  ──────────────────────────────────────────────────────────────
+  Both columns below LOOK identical in the browser.
+  But open DevTools → Accessibility → Full-page scan.
+
+  LEFT column  (div soup)  → NO landmarks found.
+    A screen-reader user hears: "div, div, div, div..."
+    They cannot skip to the navigation or the main content.
+
+  RIGHT column (semantic)  → header, nav, main, article, footer
+    A screen-reader user can jump directly to "Main" or "Navigation"
+    without listening to everything first.
+
+  RULE: Choose elements based on their MEANING, not their appearance.
+        CSS controls appearance. HTML communicates structure.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantic HTML vs Div Soup</title>
+  <style>
+    /* Reset box model globally — prevents unexpected size calculations */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+
+    h1 { text-align: center; color: #1e293b; }
+
+    /* CSS Grid: two equal columns side by side */
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 1fr = "one fraction of available space" */
+      gap: 1.5rem;
+    }
+
+    /* Shared card style for both panels */
+    .panel {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    /* Override border colour to show GOOD vs BAD visually */
+    .panel.bad  { border-color: #fca5a5; } /* red  = bad pattern  */
+    .panel.good { border-color: #86efac; } /* green = good pattern */
+
+    /* Small badge labels: "❌ Div Soup" and "✅ Semantic HTML" */
+    .label {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: .25rem .5rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: .5rem;
+    }
+    .label.bad  { background: #fee2e2; color: #b91c1c; }
+    .label.good { background: #dcfce7; color: #15803d; }
+
+    /* Style inline code snippets */
+    code {
+      background: #f1f5f9;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: .85em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Semantic HTML vs Div Soup</h1>
+
+  <div class="columns">
+
+    <!-- ══════════════════════════════════════════════════════
+         LEFT PANEL — "Div Soup" (the BAD approach)
+         Every element is a <div>. Visually fine, but:
+           • Screen readers cannot identify landmarks
+           • Search engines get no structural information
+           • Other developers have to READ the content to
+             understand what each section is for
+         ══════════════════════════════════════════════════════ -->
+    <div class="panel bad">
+      <span class="label bad">❌ Div Soup — everything is a &lt;div&gt;</span>
+
+      <!-- No semantic meaning — just anonymous boxes -->
+      <div>
+        <div><strong>University News</strong></div><!-- this is acting as a header -->
+        <div>
+          <!-- this is acting as navigation -->
+          <div><a href="#">Home</a> | <a href="#">News</a> | <a href="#">Contact</a></div>
+        </div>
+        <div>
+          <!-- this is acting as an article -->
+          <div><strong>New Campus Library Opens</strong></div>
+          <div>The new library building opens its doors on Monday...</div>
+        </div>
+        <div>Related: <a href="#">Student Services</a></div><!-- acting as aside -->
+        <div>© 2026 University</div><!-- acting as footer -->
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         RIGHT PANEL — Semantic HTML (the GOOD approach)
+         Each element describes its PURPOSE in the page.
+         The content is IDENTICAL to the left panel —
+         only the element choices are different.
+         ══════════════════════════════════════════════════════ -->
+    <div class="panel good">
+      <span class="label good">✅ Semantic HTML — elements have meaning</span>
+
+      <!--
+        <header> = introductory content for the page or a section.
+        Screen readers announce this as a "banner" landmark.
+      -->
+      <header>
+        <h2>University News</h2>
+
+        <!--
+          <nav> = a block of navigation links.
+          aria-label distinguishes it from other <nav> elements
+          on the same page (e.g. "Main" vs "Footer" navigation).
+        -->
+        <nav aria-label="Main">
+          <ul style="list-style:none;padding:0;display:flex;gap:.5rem">
+            <!-- Links inside a list is the correct pattern for navigation -->
+            <li><a href="#">Home</a></li>
+            <li><a href="#">News</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <!--
+        <main> = the primary, unique content of the page.
+        There should only be ONE <main> per page.
+      -->
+      <main>
+        <!--
+          <article> = self-contained content that could stand alone
+          (blog post, news story, product card, comment).
+        -->
+        <article>
+          <h3>New Campus Library Opens</h3>
+          <p>The new library building opens its doors on Monday...</p>
+        </article>
+      </main>
+
+      <!--
+        <aside> = content that is related but not essential to the main content.
+        Examples: sidebar, "related articles", pull quotes.
+      -->
+      <aside><p>Related: <a href="#">Student Services</a></p></aside>
+
+      <!--
+        <footer> = closing information (copyright, credits, contact links).
+        Screen readers announce this as a "contentinfo" landmark.
+      -->
+      <footer><p>© 2026 University</p></footer>
+    </div>
+
+  </div><!-- end .columns -->
+</body>
+</html>

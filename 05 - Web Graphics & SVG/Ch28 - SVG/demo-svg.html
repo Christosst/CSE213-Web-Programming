@@ -1,0 +1,225 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch28 — Scalable Vector Graphics · demo-svg.html        ║
+  ║  CONCEPT: Inline SVG vs <img>, CSS Styling (fill, stroke),       ║
+  ║           Accessible SVG, Stroke Draw-on Animations,             ║
+  ║           Circular SVG Progress Indicators                       ║
+  ║  DEVTOOLS: Elements tab (Inspect SVG elements and CSS rules)     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WHY INLINE SVG IS POWERFUL:
+  ───────────────────────────
+  When you insert an SVG using `<img src="star.svg">`, the browser treats it
+  as a sealed black-box image file. You CANNOT style individual shapes with CSS.
+
+  When you paste the SVG markup INLINE directly into the HTML:
+  1. Shapes become accessible DOM elements!
+  2. You can change colors on hover: `.star:hover { fill: #dc2626; }`.
+  3. You can animate stroke paths using CSS keyframes!
+  4. Saves an extra HTTP round-trip request.
+
+  SVG ACCESSIBILITY (A11y):
+  ────────────────────────
+  Always add `role="img"` to the `<svg>` tag, accompanied by either:
+  - `aria-label="Description"`
+  - `<title id="titleId">` paired with `aria-labelledby="titleId"`
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scalable Vector Graphics (SVG) Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 740px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+    h2 {
+      margin-top: 2.5rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    .demo-row {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+      background: #ffffff;
+      padding: 1.25rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-top: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /*
+      ==============================================================
+      1. CSS HOVER STYLING ON INLINE SVG
+      ==============================================================
+      We can use CSS properties:
+      - `fill`: interior color
+      - `stroke`: border/outline color
+      - `transition`: smooth animation
+    */
+    .interactive-star {
+      width: 64px;
+      height: 64px;
+      fill: #1e40af; /* Default blue */
+      cursor: pointer;
+      transition: fill 0.3s ease, transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .interactive-star:hover {
+      fill: #ef4444; /* Turns red on hover! */
+      transform: scale(1.15);
+    }
+
+    /*
+      ==============================================================
+      2. SVG STROKE DRAW-ON ANIMATION
+      ==============================================================
+      Technique:
+      - Circle circumference = 2 * PI * r = 2 * 3.14159 * 50 ≈ 314px
+      - stroke-dasharray: 314 (makes dash line equal to circumference)
+      - stroke-dashoffset: 314 (shifts the dash completely out of sight)
+      - Animating offset to 0 pulls the visible stroke into view!
+    */
+    @keyframes drawOutlineAnimation {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .animated-circle {
+      stroke-dasharray: 314;
+      stroke-dashoffset: 314;
+      animation: drawOutlineAnimation 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: 0.3s;
+    }
+
+    /*
+      ==============================================================
+      3. CIRCULAR PROGRESS RING (75% COMPLETION)
+      ==============================================================
+      - Radius r = 42 -> Circumference = 2 * PI * 42 ≈ 264px
+      - 75% complete = offset of 25% remaining = 264 * 0.25 = 66
+    */
+    .progress-wrapper {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      flex-shrink: 0;
+    }
+
+    .progress-percentage {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #1e40af;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animated-circle {
+        animation: none;
+        stroke-dashoffset: 0;
+      }
+      .interactive-star {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Scalable Vector Graphics (SVG) in Modern Web Apps</h1>
+  </header>
+
+  <main>
+    <!-- DEMO 1: CSS HOVER STYLING -->
+    <h2>1. Inline SVG with Direct CSS Hover Manipulation</h2>
+    <div class="demo-row">
+      <!--
+        Accessible Inline SVG:
+        - `viewBox="0 0 24 24"`: Coordinate space (origin X, origin Y, width, height)
+        - `aria-labelledby="star-caption"`: Associates SVG with internal <title>
+      -->
+      <svg class="interactive-star" viewBox="0 0 24 24" role="img" aria-labelledby="star-caption">
+        <title id="star-caption">Interactive Bookmark Star (Hover to test CSS transition)</title>
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+      </svg>
+      <div>
+        <h3 style="margin: 0 0 0.35rem;">Hover over the Star</h3>
+        <p style="margin: 0; color: #64748b;">
+          CSS <code>:hover { fill: #ef4444; }</code> modifies the SVG vector coordinates directly.
+          If this were an external <code>&lt;img src="star.svg"&gt;</code>, CSS could never recolor it!
+        </p>
+      </div>
+    </div>
+
+    <!-- DEMO 2: STROKE DRAW-ON ANIMATION -->
+    <h2>2. Stroke Draw-on Path Animation</h2>
+    <div class="demo-row">
+      <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Animated circular outline">
+        <!-- Background track circle -->
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+        <!-- Animated stroke circle (rotated -90deg so animation starts at 12 o'clock) -->
+        <circle class="animated-circle" cx="60" cy="60" r="50"
+                fill="none" stroke="#6366f1" stroke-width="8"
+                stroke-linecap="round"
+                transform="rotate(-90 60 60)"/>
+      </svg>
+      <div>
+        <h3 style="margin: 0 0 0.35rem;">Dynamic SVG Path Drawing</h3>
+        <p style="margin: 0; color: #64748b;">
+          Uses <code>stroke-dasharray</code> and <code>stroke-dashoffset</code> calculated using basic circle geometry:
+          <code>Circumference = 2 &times; &pi; &times; radius</code>.
+        </p>
+      </div>
+    </div>
+
+    <!-- DEMO 3: CIRCULAR PROGRESS RING -->
+    <h2>3. 75% Progress Ring Metric</h2>
+    <div class="demo-row">
+      <div class="progress-wrapper">
+        <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-label="Completion progress: 75 percent">
+          <!-- Background track -->
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+          <!-- Active 75% progress stroke (264 * 0.25 = offset 66) -->
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#1e40af" stroke-width="10"
+                  stroke-linecap="round"
+                  stroke-dasharray="264"
+                  stroke-dashoffset="66"
+                  transform="rotate(-90 50 50)"/>
+        </svg>
+        <span class="progress-percentage">75%</span>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 0.35rem;">Data Visualization Dashboard Widget</h3>
+        <p style="margin: 0; color: #64748b;">
+          Easily driven by JavaScript in production by updating <code>strokeDashoffset</code> dynamically
+          based on live user progress!
+        </p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

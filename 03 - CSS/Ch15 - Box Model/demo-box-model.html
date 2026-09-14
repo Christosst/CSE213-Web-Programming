@@ -1,0 +1,177 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch15 — Box Model · demo-box-model.html                 ║
+  ║  CONCEPT: Content, Padding, Border, Margin,                      ║
+  ║           content-box vs border-box, Margin Collapse             ║
+  ║  DEVTOOLS: Elements tab & Computed Box Model Diagram             ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  THE CSS BOX MODEL EXPLAINED:
+  ────────────────────────────
+  Every visible element on a web page is a rectangular box made of 4 layers:
+  1. CONTENT: The actual text, image, or child element.
+  2. PADDING: Transparent breathing room BETWEEN content and border.
+  3. BORDER: The stroke surrounding padding and content.
+  4. MARGIN: Transparent buffer OUTSIDE the border separating other elements.
+
+  THE CRITICAL BOX-SIZING COMPARISON:
+  ───────────────────────────────────
+  - `box-sizing: content-box` (Browser Default):
+    Total Rendered Width = width + padding-left + padding-right + border-left + border-right
+    If width=200px, padding=20px, border=4px &rarr; Total Width = 248px! (Math headache!)
+
+  - `box-sizing: border-box` (Modern Standard):
+    Total Rendered Width = width (padding and border are absorbed inside the declared width!).
+    If width=200px &rarr; Total Width = 200px! Much easier for responsive layout!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Box Model Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 740px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    /* Base box properties applied to both test boxes */
+    .box-sample {
+      width: 200px;
+      padding: 20px;
+      border: 6px solid #1e40af;
+      background-color: #dbeafe;
+      border-radius: 4px;
+    }
+
+    /* Box 1: Traditional default content-box */
+    .box-content-box {
+      box-sizing: content-box;
+    }
+
+    /* Box 2: Modern developer-friendly border-box */
+    .box-border-box {
+      box-sizing: border-box;
+    }
+
+    .box-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 0.5rem;
+    }
+
+    /*
+      ==============================================================
+      MARGIN COLLAPSE DEMONSTRATION
+      ==============================================================
+      In CSS, when two vertical margins touch, they DO NOT add together.
+      Instead, they "collapse" into a single margin equal to the LARGEST value!
+    */
+    .collapse-container {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+    }
+
+    .margin-block-a {
+      background-color: #fef3c7;
+      border: 1px dashed #d97706;
+      padding: 0.75rem;
+      margin-top: 0;
+      margin-bottom: 30px; /* 30px bottom margin */
+    }
+
+    .margin-block-b {
+      background-color: #dcfce7;
+      border: 1px dashed #16a34a;
+      padding: 0.75rem;
+      margin-top: 30px;    /* 30px top margin */
+      margin-bottom: 0;
+    }
+
+    .devtools-callout {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Understanding the CSS Box Model</h1>
+  </header>
+
+  <main>
+    <h2>1. The Sizing Difference: content-box vs border-box</h2>
+    <p>Both boxes below have <code>width: 200px; padding: 20px; border: 6px solid;</code>.</p>
+
+    <div class="comparison-grid">
+      <!-- CONTENT-BOX DEMO -->
+      <div>
+        <p class="box-title">box-sizing: content-box (Default)</p>
+        <div class="box-sample box-content-box">
+          <strong>Content = 200px</strong><br>
+          + 40px padding<br>
+          + 12px border<br>
+          = <strong>252px Total!</strong>
+        </div>
+      </div>
+
+      <!-- BORDER-BOX DEMO -->
+      <div>
+        <p class="box-title">box-sizing: border-box (Modern Standard)</p>
+        <div class="box-sample box-border-box">
+          <strong>Total = 200px</strong><br>
+          Padding &amp; border are accommodated inside the 200px!
+        </div>
+      </div>
+    </div>
+
+    <h2>2. Vertical Margin Collapse</h2>
+    <p>
+      Notice the distance between Block A and Block B.
+      Block A has <code>margin-bottom: 30px</code> and Block B has <code>margin-top: 30px</code>.
+      Rather than producing a 60px gap, the margins collapse to exactly <strong>30px</strong>!
+    </p>
+
+    <div class="collapse-container">
+      <div class="margin-block-a">Block A (margin-bottom: 30px)</div>
+      <div class="margin-block-b">Block B (margin-top: 30px)</div>
+    </div>
+
+    <div class="devtools-callout">
+      <strong>🔍 DevTools Inspection Tip:</strong>
+      <p style="margin: 0.5rem 0 0;">
+        Open DevTools (<kbd>F12</kbd>), click the element selector arrow, and hover over either box.
+        Look at the bottom of the <strong>Styles</strong> panel: Chrome displays the interactive Box Model diagram
+        with color-coded layers (Blue = Content, Green = Padding, Orange = Border, Peach = Margin)!
+      </p>
+    </div>
+  </main>
+</body>
+</html>

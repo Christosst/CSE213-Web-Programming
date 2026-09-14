@@ -1,0 +1,142 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch25 — Next-Level JS · demo-service-worker/index.html  ║
+  ║  CONCEPT: Service Worker Registration, Progressive Web App (PWA),║
+  ║           Offline App Shell, navigator.onLine & online/offline   ║
+  ║  DEVTOOLS: Application tab -> Service Workers & Cache Storage    ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  HOW SERVICE WORKERS FUNCTION:
+  ─────────────────────────────
+  A Service Worker is a client-side programmable network proxy between
+  your web app and the internet:
+  1. It intercepts every network request made by the page (`fetch` event).
+  2. It can serve responses directly from the local Cache Storage API.
+  3. This allows web applications to load INSTANTLY and work completely OFFLINE!
+
+  SECURITY REQUIREMENT:
+  Service Workers have immense power, so browsers require them to run on:
+  - `https://` in production
+  - `http://localhost` or `127.0.0.1` for local development
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Worker Offline Shell — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 620px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-online {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-offline {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .instruction-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    ol {
+      margin-left: 1.25rem;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 0.75rem;
+    }
+
+    code {
+      background: #f1f5f9;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Progressive Web App: Offline Service Worker Shell</h1>
+    <p>Network Connectivity: <span id="network-status" class="status-badge status-online">Checking...</span></p>
+  </header>
+
+  <main>
+    <div class="instruction-card">
+      <h2 style="margin-top: 0; color: #1e40af;">How to Test Offline Mode in DevTools</h2>
+      <ol>
+        <li>Open Chrome DevTools (<kbd>F12</kbd> or <kbd>Ctrl+Shift+I</kbd>).</li>
+        <li>Go to the <strong>Application</strong> tab &rarr; expand <strong>Service Workers</strong> on the left to see <code>sw.js</code> active and running.</li>
+        <li>Go to the <strong>Network</strong> tab &rarr; change Throttling from <em>No throttling</em> to <strong>Offline</strong>.</li>
+        <li>Press <kbd>Ctrl+Shift+R</kbd> (Hard Reload).</li>
+        <li><strong>Notice:</strong> The page still loads flawlessly, even without any internet connection, because the Service Worker served it from local Cache Storage!</li>
+      </ol>
+    </div>
+  </main>
+
+  <script>
+    // 1. REGISTER THE SERVICE WORKER
+    // Check if the browser supports service workers
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(registration => {
+            console.log('✅ Service Worker registered with scope:', registration.scope);
+          })
+          .catch(err => {
+            console.error('❌ Service Worker registration failed:', err);
+          });
+      });
+    }
+
+    // 2. MONITOR NETWORK CONNECTIVITY STATUS
+    const statusBadge = document.getElementById('network-status');
+
+    function updateNetworkStatus() {
+      if (navigator.onLine) {
+        statusBadge.textContent = 'Online';
+        statusBadge.className = 'status-badge status-online';
+      } else {
+        statusBadge.textContent = 'Offline';
+        statusBadge.className = 'status-badge status-offline';
+      }
+    }
+
+    // Listen for browser online / offline network events
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    // Initial check
+    updateNetworkStatus();
+  </script>
+</body>
+</html>

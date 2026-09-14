@@ -1,0 +1,198 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch16 — Floating & Positioning · demo-float-position    ║
+  ║  CONCEPT: Modern uses of float (text-wrap + clearfix),           ║
+  ║           CSS Positioning (static, relative, absolute, sticky)   ║
+  ║  DEVTOOLS: Elements tab (Scroll and observe computed offsets)    ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  POSITIONING SCHEMES IN CSS:
+  ───────────────────────────
+  1. `position: static` (Default):
+     - Normal document flow. `top`, `right`, `bottom`, `left`, `z-index` have NO effect.
+
+  2. `position: relative`:
+     - Remains in normal flow, but can be offset slightly.
+     - Crucial role: Acts as the "positioning context" anchor for child absolute elements!
+
+  3. `position: absolute`:
+     - REMOVED from normal document flow. Occupies zero space in the flow.
+     - Positions itself relative to its nearest ANCESTOR with `position: relative` (or <html>).
+
+  4. `position: sticky`:
+     - Hybrid between relative and fixed.
+     - Behaves as normal flow until scrolling reaches the specified threshold (e.g., `top: 0`),
+       then "sticks" within its parent container!
+
+  MODERN FLOAT RULE:
+  ──────────────────
+  - NEVER use `float` to build 2-column or 3-column page layouts. Use Flexbox or Grid!
+  - Float's sole legitimate purpose today is wrapping text around an editorial image or quote.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Float &amp; Positioning Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 740px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h2 {
+      margin-top: 2.5rem;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    /*
+      ==============================================================
+      1. FLOAT WITH MODERN CLEARFIX
+      ==============================================================
+    */
+    .float-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    /* Floats the image to the left, allowing paragraph text to flow around it */
+    .float-card img {
+      float: left;
+      margin: 0 1.25rem 1rem 0;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    /*
+      THE MICRO CLEARFIX:
+      Because floated elements are partially removed from flow, the parent container
+      would collapse to zero height without this clear!
+    */
+    .clearfix::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    /*
+      ==============================================================
+      2. RELATIVE PARENT + ABSOLUTE CHILD (BADGE PATTERN)
+      ==============================================================
+    */
+    .card-relative {
+      position: relative; /* ANCHOR: child elements with absolute align to THIS box */
+      background: #ffffff;
+      border: 2px solid #6366f1;
+      padding: 2.5rem 1.5rem 1.5rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Absolute badge: pinned to top-right corner of the parent */
+    .badge-absolute {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: #4f46e5;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /*
+      ==============================================================
+      3. POSITION: STICKY
+      ==============================================================
+    */
+    .scroll-window {
+      height: 280px;
+      overflow-y: auto; /* Creates an isolated scrolling context */
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 0 1rem;
+      background: #ffffff;
+      margin-top: 1rem;
+    }
+
+    /* Sticky header stays locked at top: 0 while scrolling inside .scroll-window */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: #1e40af;
+      color: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: 0 0 6px 6px;
+      font-weight: 600;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .long-scroll-content {
+      height: 700px;
+      background: linear-gradient(#eff6ff, #f8fafc);
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 6px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Floats and CSS Positioning Techniques</h1>
+  </header>
+
+  <main>
+    <!-- DEMO 1: FLOAT -->
+    <h2>1. Float: Editorial Text Wrap Only</h2>
+    <div class="float-card clearfix">
+      <img src="https://picsum.photos/seed/float/150/110" alt="Landscape illustration" width="150" height="110">
+      <p>
+        Float was originally designed in the early days of HTML for newspaper-style editorial text wrapping.
+        Notice how this sentence and paragraph wrap neatly around the bottom and right edges of the floated thumbnail.
+        <strong>Instructor takeaway:</strong> Remind students never to use floats for general grid or flex layouts!
+      </p>
+    </div>
+
+    <!-- DEMO 2: RELATIVE + ABSOLUTE -->
+    <h2>2. Relative Container + Absolute Positioned Badge</h2>
+    <div class="card-relative">
+      <span class="badge-absolute">New Release</span>
+      <h3 style="margin-top: 0; color: #1e293b;">Course Enrollment Notification</h3>
+      <p>
+        The container has <code>position: relative</code>.
+        The badge has <code>position: absolute; top: 0.75rem; right: 0.75rem;</code>.
+        Because the parent is positioned, the badge calculates its distance relative to the card's boundaries, not the whole window!
+      </p>
+    </div>
+
+    <!-- DEMO 3: STICKY -->
+    <h2>3. Position: Sticky (Scroll Area)</h2>
+    <p>Scroll up and down inside the container below to watch the header lock to the top:</p>
+
+    <div class="scroll-window">
+      <div class="sticky-header">📌 Pinned Sticky Header (top: 0)</div>
+      <div class="long-scroll-content">
+        <p>Keep scrolling down...</p>
+        <p style="margin-top: 200px;">The header stays pinned as long as you are inside its parent container!</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

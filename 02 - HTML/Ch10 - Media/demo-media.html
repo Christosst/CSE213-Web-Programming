@@ -1,0 +1,162 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch10 — Media · demo-media.html                         ║
+  ║  CONCEPT: <video>, <audio>, <source>, <track> WebVTT captions,   ║
+  ║           Media Accessibility & Preload Attributes               ║
+  ║  DEVTOOLS: Elements tab, Network tab (Media filter)             ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WEB MEDIA ESSENTIALS:
+  ─────────────────────
+  1. THE `controls` ATTRIBUTE IS MANDATORY:
+     - Never remove controls unless you build an accessible custom player.
+     - Users MUST have the ability to pause, seek, and adjust volume.
+
+  2. NEVER AUTOPLAY AUDIO OR UNMUTED VIDEO:
+     - Autoplaying sound is jarring and disorienting (especially for screen reader users).
+     - Browsers actively block autoplay with audio unless muted: `autoplay muted playsinline`.
+
+  3. CAPTIONS VIA <track> (WCAG 1.2.2 - Level A):
+     - For video with speech, synchronized text captions are required.
+     - Uses standard `.vtt` (Web Video Text Tracks) format.
+
+  4. MULTIPLE <source> FORMATS FOR CROSS-BROWSER COMPATIBILITY:
+     - MP4 (H.264) has widest universal support.
+     - WebM (VP9/AV1) often offers superior compression.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio &amp; Video Media Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f8fafc;
+    }
+
+    /*
+      Responsive media styling:
+      `width: 100%` scales the player to the container.
+      `height: auto` maintains original video aspect ratio.
+    */
+    video, audio {
+      width: 100%;
+      border-radius: 8px;
+      margin: 0.75rem 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .media-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #e0f2fe;
+      color: #0369a1;
+      margin-bottom: 0.5rem;
+    }
+
+    .tip-callout {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HTML5 Audio and Video Implementation</h1>
+    <p>Modern HTML5 replaces Flash and external plugins with native browser media engines.</p>
+  </header>
+
+  <main>
+    <!-- ============================================================ -->
+    <!-- DEMO 1: HTML5 VIDEO WITH CAPTIONS                            -->
+    <!-- ============================================================ -->
+    <section class="media-card">
+      <span class="badge">Video Player</span>
+      <h2>1. Accessible Video Player</h2>
+
+      <!--
+        <video> ATTRIBUTES EXPLAINED:
+        - `controls`: Provides standard browser playback UI (play/pause, timeline, volume, fullscreen).
+        - `preload="metadata"`: Downloads ONLY video length/dimensions on page load; saves bandwidth!
+          (Alternative: `preload="none"` for heavy media; `preload="auto"` to buffer immediately).
+        - `poster`: An image displayed while the video downloads or before the user clicks play.
+      -->
+      <video controls preload="metadata" poster="https://picsum.photos/seed/vid/640/360">
+        <!--
+          SOURCE FALLBACKS:
+          Browser checks top-to-bottom and plays the FIRST supported format.
+        -->
+        <source src="sample.mp4" type="video/mp4">
+        <source src="sample.webm" type="video/webm">
+
+        <!--
+          ACCESSIBILITY: <track> FOR CAPTIONS:
+          - kind="captions": Transcription of dialogue plus sound effects.
+          - kind="subtitles": Translation of dialogue only.
+          - srclang="en": Language code.
+          - default: Automatically enabled when player starts.
+        -->
+        <track kind="captions" src="captions-en.vtt" srclang="en" label="English Captions" default>
+
+        <!-- Fallback text for legacy browsers (IE8 or older) -->
+        <p>
+          Your browser does not support native HTML5 video.
+          <a href="sample.mp4">Download the video file instead</a>.
+        </p>
+      </video>
+
+      <div class="tip-callout">
+        <strong>💡 Pro-tip:</strong> Always specify the <code>type</code> attribute on <code>&lt;source&gt;</code>!
+        Without it, the browser must send an HTTP request to inspect headers before knowing if it can play the file.
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- DEMO 2: HTML5 AUDIO                                          -->
+    <!-- ============================================================ -->
+    <section class="media-card">
+      <span class="badge">Audio Player</span>
+      <h2>2. Native Audio Player</h2>
+
+      <!--
+        <audio> works identically to <video>, but without a visual display area.
+      -->
+      <audio controls preload="metadata">
+        <source src="sample.mp3" type="audio/mpeg">
+        <source src="sample.ogg" type="audio/ogg">
+        <p>
+          Your browser does not support the audio element.
+          <a href="sample.mp3">Download the audio file</a>.
+        </p>
+      </audio>
+
+      <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.75rem;">
+        <strong>Accessibility requirement:</strong> Audio-only content (like podcasts) must be accompanied by a complete, written text transcript on the page.
+      </p>
+    </section>
+  </main>
+</body>
+</html>

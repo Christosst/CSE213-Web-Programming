@@ -1,0 +1,152 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch11 — Intro to CSS · demo-intro-css.html              ║
+  ║  CONCEPT: CSS Anatomy, Inline vs Embedded vs External,           ║
+  ║           CSS Variables (Custom Properties), Basic Selectors     ║
+  ║  DEVTOOLS: Elements tab (Styles panel & Computed panel)          ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  THE THREE WAYS TO APPLY CSS:
+  ────────────────────────────
+  1. INLINE STYLES: `<p style="color: red;">`
+     - Pitfall: Hard to maintain, cannot reuse, highest specificity difficulty.
+     - Rule of thumb: Avoid in production!
+
+  2. EMBEDDED STYLES: `<style>` tag inside `<head>`
+     - Great for single-page standalone demos and critical initial CSS.
+
+  3. EXTERNAL STYLESHEET: `<link rel="stylesheet" href="style.css">`
+     - Industry Standard! Cached by browser across multiple pages, separates
+       content (HTML) from presentation (CSS).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intro to CSS Demo — CSE213</title>
+  <style>
+    /*
+      ================================================================
+      CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+      ================================================================
+      `:root` matches the highest element in the DOM tree (the <html> tag).
+      Variables declared here are globally available across your entire CSS.
+      Always prefix custom properties with two dashes (`--`).
+    */
+    :root {
+      --brand-primary: #1e40af;    /* University Blue */
+      --brand-accent: #f59e0b;     /* Amber Highlight */
+      --bg-surface: #f8fafc;       /* Light Gray background */
+      --text-main: #0f172a;        /* Dark slate text */
+      --spacing-md: 1rem;          /* Standard 16px padding */
+      --radius-sm: 6px;            /* Standard rounded corners */
+    }
+
+    /*
+      ================================================================
+      GLOBAL PAGE STYLING
+      ================================================================
+      `body` selector applies base typography and layout constraints.
+    */
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 680px;
+      margin: 2rem auto;           /* Centers content horizontally */
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: var(--text-main);
+      background-color: var(--bg-surface);
+    }
+
+    /*
+      ANATOMY OF A CSS RULE:
+      h1              { color: var(--brand-primary); margin-top: 0; }
+      └─── Selector ───┘ └─────────── Declaration Block ────────────┘
+                         └── Property ──┘ └── Value ─┘
+    */
+    h1 {
+      color: var(--brand-primary);
+      margin-top: 0;
+    }
+
+    h2 {
+      color: #334155;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+      margin-top: 2rem;
+    }
+
+    /* CLASS SELECTOR: starts with a dot (`.`) */
+    .highlight {
+      background-color: #fef3c7;
+      color: #92400e;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    /* REUSABLE CARD COMPONENT: leverages custom properties */
+    .card {
+      border: 2px solid var(--brand-primary);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-sm);
+      margin-top: 1rem;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* CODE SNIPPET STYLING */
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background-color: #e2e8f0;
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+
+    .selector-list li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CSS Rule Anatomy &amp; Core Principles</h1>
+  </header>
+
+  <main>
+    <!--
+      INLINE STYLE DEMONSTRATION:
+      Notice how `style="..."` overrides everything else.
+      Instructor tip: In DevTools, untick the inline style checkbox to show students
+      how rules cascade!
+    -->
+    <p style="color: #dc2626; font-weight: 600;">
+      ⚠️ This paragraph uses an inline style: <code>style="color: #dc2626;"</code>.
+      Avoid this pattern in real projects because it violates separation of concerns!
+    </p>
+
+    <p>
+      This paragraph is styled by the <span class="highlight">embedded stylesheet</span> located in the <code>&lt;head&gt;</code> above.
+    </p>
+
+    <!-- Card showing custom property usage -->
+    <div class="card">
+      <h3 style="margin-top: 0; color: var(--brand-primary);">Design Tokens (CSS Variables)</h3>
+      <p>
+        This card gets its border color from <code>var(--brand-primary)</code> and padding from <code>var(--spacing-md)</code>.
+        Change <code>--brand-primary</code> in <code>:root</code> to instantly re-theme the entire page!
+      </p>
+    </div>
+
+    <h2>Core CSS Selector Types</h2>
+    <ul class="selector-list">
+      <li><strong>Element Selector:</strong> <code>p { color: #333; }</code> &mdash; targets all <code>&lt;p&gt;</code> tags.</li>
+      <li><strong>Class Selector:</strong> <code>.highlight { ... }</code> &mdash; targets elements with <code>class="highlight"</code> (reusable!).</li>
+      <li><strong>ID Selector:</strong> <code>#header { ... }</code> &mdash; targets the unique element with <code>id="header"</code> (use sparingly).</li>
+      <li><strong>Descendant Selector:</strong> <code>nav a { ... }</code> &mdash; targets any <code>&lt;a&gt;</code> inside a <code>&lt;nav&gt;</code>.</li>
+    </ul>
+  </main>
+</body>
+</html>

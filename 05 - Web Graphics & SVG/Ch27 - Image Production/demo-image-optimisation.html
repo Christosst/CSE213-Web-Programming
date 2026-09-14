@@ -1,0 +1,163 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch27 — Image Production · demo-image-optimisation.html ║
+  ║  CONCEPT: Core Web Vitals, Cumulative Layout Shift (CLS),        ║
+  ║           Explicit width/height, loading="lazy", Responsive srcset
+  ║  DEVTOOLS: Performance panel (Experience / Layout Shift track)   ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  THE 3 STEPS TO HIGH-PERFORMANCE WEB IMAGES:
+  ──────────────────────────────────────────
+  STEP 1: NEVER OMIT DIMENSIONS:
+  - When you write `<img src="...">` without `width` and `height`, the browser
+    has no idea what shape the image is until the full file finishes downloading.
+  - While downloading, height is treated as 0px.
+  - When downloaded, the image suddenly pops in and shoves reading content downward.
+    This creates Cumulative Layout Shift (CLS), which penalizes Google SEO rankings!
+
+  STEP 2: PRESERVE ASPECT RATIO:
+  - Supplying `width="640" height="360"` gives the browser the 16:9 ratio.
+  - The browser allocates an invisible placeholder box before a single byte arrives!
+
+  STEP 3: DEFER OFF-SCREEN IMAGES:
+  - Add `loading="lazy"` to all images below the initial viewport fold.
+  - Images only begin downloading when the user scrolls within ~800px of them.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Production &amp; Performance — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+
+    .step-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .step-title {
+      margin: 0 0 0.75rem;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-bad { color: #dc2626; }
+    .status-good { color: #16a34a; }
+
+    /* Fluid responsive image styling */
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      margin: 0.75rem 0;
+    }
+
+    code {
+      background: #f1f5f9;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .tip-box {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Web Image Production: Defeating Layout Shifts (CLS)</h1>
+  </header>
+
+  <main>
+    <!-- STEP 1: BAD IMPLEMENTATION -->
+    <section class="step-card">
+      <h2 class="step-title status-bad">❌ Anti-Pattern: Missing Dimensions</h2>
+      <!-- Missing width and height attributes -->
+      <img src="https://picsum.photos/seed/opt1/640/360" alt="Campus library interior">
+      <p>
+        <strong>What's wrong:</strong> This image has NO <code>width</code> or <code>height</code> attributes.
+        Before downloading, the browser reserves 0 pixels of vertical space. When pixels arrive, text leaps downward!
+      </p>
+    </section>
+
+    <!-- STEP 2: GOOD IMPLEMENTATION -->
+    <section class="step-card">
+      <h2 class="step-title status-good">✅ Best Practice: Explicit Dimensions + Lazy Loading</h2>
+      <!--
+        - width="640" height="360": Sets intrinsic aspect ratio (16:9).
+        - loading="lazy": Browser holds download until user scrolls near.
+      -->
+      <img
+        src="https://picsum.photos/seed/opt2/640/360"
+        alt="Campus gymnasium and running track"
+        width="640"
+        height="360"
+        loading="lazy">
+      <p>
+        <strong>What's fixed:</strong> The browser calculates aspect ratio (640 / 360) immediately,
+        reserving space and eliminating Cumulative Layout Shift (CLS)!
+      </p>
+    </section>
+
+    <!-- STEP 3: ADVANCED RESPONSIVE IMPLEMENTATION -->
+    <section class="step-card">
+      <h2 class="step-title status-good">✅ Pro Practice: Responsive Resolution Switching</h2>
+      <!--
+        srcset: Candidate image files at different pixel widths.
+        sizes: Target layout width depending on viewport media condition.
+      -->
+      <img
+        srcset="https://picsum.photos/seed/opt3/400/225 400w,
+                https://picsum.photos/seed/opt3/640/360 640w"
+        sizes="(max-width: 640px) 100vw, 640px"
+        src="https://picsum.photos/seed/opt3/640/360"
+        alt="Campus student dining cafeteria"
+        width="640"
+        height="360"
+        loading="lazy">
+      <p>
+        <strong>Optimized bandwidth:</strong> Small mobile phones download the lightweight <code>400w</code> file,
+        saving cellular data and battery life!
+      </p>
+    </section>
+
+    <div class="tip-box">
+      <strong>⚡ Performance Checklist for Students:</strong>
+      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+        <li>Always include <code>width</code> and <code>height</code> attributes on <code>&lt;img&gt;</code>.</li>
+        <li>Always include <code>loading="lazy"</code> on below-the-fold images.</li>
+        <li>Never lazy-load your LCP Hero image (above the fold) &mdash; use <code>fetchpriority="high"</code> instead!</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

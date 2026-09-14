@@ -1,0 +1,209 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch25 — Next-Level JS · demo-local-storage.html         ║
+  ║  CONCEPT: LocalStorage API, Serialization (JSON.stringify),      ║
+  ║           Deserialization (JSON.parse), Persistent Client State  ║
+  ║  DEVTOOLS: Application tab -> Storage -> Local Storage           ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  UNDERSTANDING LOCALSTORAGE:
+  ───────────────────────────
+  1. PERSISTENCE: Data remains saved in the user's browser indefinitely
+     (even after the tab or computer restarts), scoped to the protocol + domain.
+  2. STRINGS ONLY:
+     - `localStorage` can ONLY store strings!
+     - To store an Array or Object, serialize it: `JSON.stringify(data)`
+     - To retrieve it back, deserialize it: `JSON.parse(storedString)`
+  3. SYNCHRONOUS: Calls are synchronous (blocking), so store small lightweight
+     user preferences (themes, bookmarks, form drafts).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalStorage Persistence Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 680px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .service-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .service-card:hover {
+      border-color: #94a3b8;
+      transform: translateY(-2px);
+    }
+
+    /* Styling for favorited cards */
+    .service-card.is-favorite {
+      background: #fffbeb;
+      border-color: #f59e0b;
+    }
+
+    .service-name {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .star-icon {
+      font-size: 1.25rem;
+      color: #cbd5e1;
+    }
+
+    .service-card.is-favorite .star-icon {
+      color: #f59e0b;
+    }
+
+    .clear-btn {
+      margin-top: 1.5rem;
+      padding: 0.5rem 1rem;
+      background-color: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .devtools-note {
+      margin-top: 2rem;
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Client-Side Persistence with <code>localStorage</code></h1>
+    <p>Click items below to toggle favorite status. Refresh the browser page &mdash; your choices survive!</p>
+  </header>
+
+  <main>
+    <div class="service-grid" id="services-grid"></div>
+
+    <button class="clear-btn" type="button" id="clear-storage-btn">Clear Saved Favorites</button>
+
+    <div class="devtools-note">
+      <strong>🔍 DevTools In-Class Inspection:</strong>
+      Open DevTools (<kbd>F12</kbd>) &rarr; <strong>Application</strong> tab &rarr; <strong>Storage</strong> &rarr; <strong>Local Storage</strong>.
+      Watch the key <code>cse213_favorites</code> update in real-time as you click cards!
+    </div>
+  </main>
+
+  <script>
+    // Mock dataset of available services
+    const SERVICES = [
+      { id: 101, name: 'Main Library' },
+      { id: 102, name: 'Fitness Gym' },
+      { id: 103, name: 'Campus Bistro' },
+      { id: 104, name: 'IT Help Desk' },
+      { id: 105, name: 'Health Clinic' },
+      { id: 106, name: 'Career Center' }
+    ];
+
+    // LocalStorage storage key name
+    const STORAGE_KEY = 'cse213_favorites';
+
+    /**
+     * Reads and parses favorite IDs from localStorage
+     * @returns {number[]} Array of favorite service IDs
+     */
+    function loadFavorites() {
+      const storedData = localStorage.getItem(STORAGE_KEY);
+      // If nothing is stored yet, fall back to empty array '[]'
+      return storedData ? JSON.parse(storedData) : [];
+    }
+
+    /**
+     * Serializes and writes favorite IDs array to localStorage
+     * @param {number[]} favoritesArray - Array of service IDs
+     */
+    function saveFavorites(favoritesArray) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(favoritesArray));
+    }
+
+    /**
+     * Renders service cards to the DOM
+     */
+    function renderGrid() {
+      const favorites = loadFavorites();
+      const grid = document.getElementById('services-grid');
+
+      grid.innerHTML = SERVICES.map(service => {
+        const isFav = favorites.includes(service.id);
+        return `
+          <div class="service-card ${isFav ? 'is-favorite' : ''}" data-service-id="${service.id}">
+            <span class="service-name">${service.name}</span>
+            <span class="star-icon" aria-hidden="true">${isFav ? '★' : '☆'}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Toggle favorite on card click (Event Delegation)
+    document.getElementById('services-grid').addEventListener('click', event => {
+      const card = event.target.closest('[data-service-id]');
+      if (!card) return;
+
+      const serviceId = Number(card.dataset.serviceId);
+      const currentFavs = loadFavorites();
+
+      const existingIndex = currentFavs.indexOf(serviceId);
+      if (existingIndex === -1) {
+        // Not favorited yet -> add to array
+        currentFavs.push(serviceId);
+      } else {
+        // Already favorited -> remove from array
+        currentFavs.splice(existingIndex, 1);
+      }
+
+      // Persist changes to localStorage and re-render
+      saveFavorites(currentFavs);
+      renderGrid();
+    });
+
+    // Clear button
+    document.getElementById('clear-storage-btn').addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      renderGrid();
+    });
+
+    // Initial render on page load
+    renderGrid();
+  </script>
+</body>
+</html>

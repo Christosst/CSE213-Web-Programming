@@ -1,0 +1,134 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch05 — Text · demo-headings-and-text.html            ║
+  ║  CONCEPT: Headings, paragraphs, lists, emphasis, blockquote.    ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  HEADINGS ARE STRUCTURE, NOT SIZE
+  ──────────────────────────────────
+  Many beginners choose h2 or h3 because they want smaller text.
+  WRONG! Headings create an OUTLINE of your page — like a table of contents.
+
+  Screen readers can list all headings so users can jump between sections.
+  Skipping levels (e.g. h1 → h3) confuses this outline.
+
+  EXERCISE
+  ─────────
+  DevTools → Accessibility → check the "Heading outline" section.
+  Try changing <h3> to <h5> — the outline now has a gap.
+  Run https://validator.w3.org/ — it will warn you about the skip.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Elements Demo — CSE213</title>
+  <style>
+    /* Comfortable reading layout */
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 680px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.7; /* generous line-height improves readability */
+    }
+
+    /*
+      <blockquote> styling:
+      The left border + italic text is a common "pull quote" design.
+      Note: blockquote is a SEMANTIC element (quoted text from another source),
+      not just a visual indent.
+    */
+    blockquote {
+      border-left: 4px solid #6366f1;
+      margin: 1rem 0;
+      padding-left: 1rem;
+      color: #475569;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!--
+    ══ h1: The MAIN heading ══
+    There is ONE h1 per page — it describes the whole document.
+    Think of it as the book title.
+  -->
+  <header>
+    <h1>Module Handbook — CSE213</h1>
+  </header>
+
+  <main>
+
+    <section>
+      <!--
+        ══ h2: Major section heading ══
+        Like a chapter title. This creates a second level in the outline.
+        Compare to h1 above — the hierarchy is: h1 > h2 > h3
+      -->
+      <h2>Course Overview</h2>
+
+      <!--
+        <p> — paragraph. The browser adds top/bottom margin automatically.
+        <strong> = important text (browsers bold it, screen readers may emphasise it).
+        <em>     = emphasis (browsers italicise it).
+        Do NOT use <strong> just to make text bold! Use CSS for visual styling.
+      -->
+      <p>This module introduces <strong>client-side web development</strong> with HTML, CSS, and JavaScript.
+         Students will build <em>accessible, responsive</em> applications from day one.</p>
+
+      <!--
+        ══ h3: Sub-section heading ══
+        One level below h2. The outline now reads:
+        1. Module Handbook (h1)
+           1.1 Course Overview (h2)
+               1.1.1 Prerequisites (h3)
+      -->
+      <h3>Prerequisites</h3>
+
+      <!--
+        <ul> = UNORDERED list (bullet points).
+        Use when the ORDER of items does NOT matter.
+        Each <li> is one list item.
+        &amp; is an HTML entity for the "&" character.
+        (Writing "&" directly can confuse HTML parsers.)
+      -->
+      <ul>
+        <li>CSE120 — Introduction to Programming</li>
+        <li>CSE125 — Networking &amp; Web Technologies</li>
+      </ul>
+
+      <h3>Learning Outcomes</h3>
+
+      <!--
+        <ol> = ORDERED list (numbered).
+        Use when ORDER matters — steps, rankings, sequences.
+      -->
+      <ol>
+        <li>Write valid, semantic HTML documents</li>
+        <li>Apply CSS layout techniques including Flexbox and Grid</li>
+        <li>Build interactive pages with vanilla JavaScript</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>A Word on Learning</h2>
+
+      <!--
+        <blockquote> = text quoted from an external source.
+        Use cite="" to credit the source (it is not visually shown but
+        is machine-readable — good for search engines and screen readers).
+        Inside, <footer> holds the attribution.
+      -->
+      <blockquote cite="https://en.wikiquote.org/wiki/Brian_Kernighan">
+        <p>The only way to learn a new programming language is by writing programs in it.</p>
+        <!-- <footer> inside blockquote = the citation / attribution -->
+        <footer>— Brian Kernighan</footer>
+      </blockquote>
+    </section>
+
+  </main>
+</body>
+</html>

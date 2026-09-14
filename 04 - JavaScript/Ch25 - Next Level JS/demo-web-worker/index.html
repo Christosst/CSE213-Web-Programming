@@ -1,0 +1,215 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch25 — Next-Level JS · demo-web-worker/index.html      ║
+  ║  CONCEPT: Multi-threading with Web Workers, UI Thread Blocking,  ║
+  ║           Inter-Process Communication (postMessage / onmessage)  ║
+  ║  DEVTOOLS: Performance panel (Observe Main Thread vs Worker)     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  JAVASCRIPT SINGLE-THREADED CONCURRENCY:
+  ───────────────────────────────────────
+  JavaScript in the browser executes on a SINGLE MAIN THREAD.
+  This single thread is responsible for:
+  - Running your JS code
+  - Handling user input (typing, clicks, scrolling)
+  - Calculating CSS layout
+  - Repainting the screen at 60 frames per second (every 16.6ms!)
+
+  THE PROBLEM: If you run an intense computation (like calculating 1,000,000 prime numbers)
+  on the main thread, the entire browser tab completely freezes!
+  Animations stop, buttons can''t be clicked, and the page becomes unresponsive.
+
+  THE SOLUTION: WEB WORKERS
+  Web Workers allow you to run scripts in true background OS threads,
+  leaving the main UI thread completely silky smooth and responsive!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Workers Concurrency Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 640px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+
+    /*
+      CONTINUOUS UI CANARY ANIMATION:
+      This spinner runs 100% via CSS animation.
+      If the main JS thread freezes, this spinner will instantly stutter or stop dead!
+    */
+    @keyframes spinInfinite {
+      to { transform: rotate(360deg); }
+    }
+
+    .ui-canary-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e2e8f0;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spinInfinite 0.8s linear infinite;
+      margin: 1.5rem auto;
+    }
+
+    .controls-row {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.75rem 1.25rem;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .btn-blocking {
+      background-color: #dc2626; /* Red: warning */
+    }
+
+    .btn-worker {
+      background-color: #16a34a; /* Green: recommended */
+    }
+
+    .output-box {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 1.25rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+      min-height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .student-note {
+      margin-top: 1.5rem;
+      background: #fef9c3;
+      border-left: 4px solid #eab308;
+      padding: 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Web Workers: Non-Blocking Background Processing</h1>
+  </header>
+
+  <main>
+    <p>Watch the blue spinner below while triggering heavy computation (Sieve of Eratosthenes up to 1,000,000):</p>
+
+    <!-- UI Health Indicator -->
+    <div class="ui-canary-spinner" role="status" aria-label="UI activity indicator"></div>
+
+    <div class="controls-row">
+      <button class="btn-blocking" type="button" id="run-blocking-btn">
+        🚫 Run on Main Thread (Freezes Spinner)
+      </button>
+      <button class="btn-worker" type="button" id="run-worker-btn">
+        ⚡ Run in Web Worker (Smooth UI)
+      </button>
+    </div>
+
+    <div class="output-box" id="result-display">
+      Ready for computation test.
+    </div>
+
+    <div class="student-note">
+      <strong>🎯 Live Classroom Demonstration:</strong>
+      <ol style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+        <li>Click the red <strong>Run on Main Thread</strong> button: Notice how the spinner freezes completely for 1-2 seconds! The browser cannot paint frames.</li>
+        <li>Click the green <strong>Run in Web Worker</strong> button: The spinner continues spinning smoothly at 60 FPS while the computation finishes in the background!</li>
+      </ol>
+    </div>
+  </main>
+
+  <script>
+    const resultDisplay = document.getElementById('result-display');
+
+    /**
+     * Heavy prime number sieve calculation (CPU intensive)
+     * @param {number} limit - Maximum number to calculate
+     * @returns {number} Count of primes found
+     */
+    function calculatePrimesSynchronous(limit) {
+      const sieve = new Uint8Array(limit + 1).fill(1);
+      sieve[0] = sieve[1] = 0;
+      for (let i = 2; i * i <= limit; i++) {
+        if (sieve[i]) {
+          for (let j = i * i; j <= limit; j += i) {
+            sieve[j] = 0;
+          }
+        }
+      }
+      return sieve.reduce((sum, val) => sum + val, 0);
+    }
+
+    // 1. BLOCKING MAIN THREAD APPROACH
+    document.getElementById('run-blocking-btn').addEventListener('click', () => {
+      resultDisplay.textContent = 'Calculating on Main Thread... (Notice spinner freeze!)';
+
+      // Use setTimeout so DOM has 1 frame to show initial text before lockup
+      setTimeout(() => {
+        const startTime = performance.now();
+        const primeCount = calculatePrimesSynchronous(1000000);
+        const duration = (performance.now() - startTime).toFixed(1);
+
+        resultDisplay.textContent = `Found ${primeCount.toLocaleString()} primes in ${duration}ms (Main thread was completely blocked!)`;
+      }, 50);
+    });
+
+    // 2. NON-BLOCKING WEB WORKER APPROACH
+    document.getElementById('run-worker-btn').addEventListener('click', () => {
+      resultDisplay.textContent = 'Worker running in background... (Spinner continues spinning!)';
+
+      // Spin up dedicated Web Worker thread
+      const worker = new Worker('worker.js');
+
+      // Send payload message to the worker thread
+      worker.postMessage(1000000);
+
+      // Listen for message response from worker
+      worker.onmessage = function (event) {
+        const { primeCount, duration } = event.data;
+        resultDisplay.textContent = `Worker found ${primeCount.toLocaleString()} primes in ${duration}ms (UI stayed 100% responsive!)`;
+
+        // Terminate worker to free OS thread resources
+        worker.terminate();
+      };
+
+      worker.onerror = function (err) {
+        resultDisplay.textContent = `Worker error: ${err.message}`;
+      };
+    });
+  </script>
+</body>
+</html>

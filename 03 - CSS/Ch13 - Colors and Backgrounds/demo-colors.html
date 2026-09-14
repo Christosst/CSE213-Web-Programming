@@ -1,0 +1,167 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch13 — Colors & Backgrounds · demo-colors.html         ║
+  ║  CONCEPT: Color Models (Hex, RGB, HSL, OKLCH), Alpha Channel,    ║
+  ║           Linear & Radial Gradients, background-size: cover      ║
+  ║  DEVTOOLS: Styles panel (Click color swatch to open Color Picker)║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  UNDERSTANDING WEB COLOR FORMATS:
+  ────────────────────────────────
+  1. HEX (#1e40af): Traditional, compact, but unintuitive to modify mentally.
+  2. RGB (rgb(30, 64, 175)): Additive primary light channels (0-255).
+  3. HSL (hsl(224, 76%, 40%)):
+     - Hue (0-360): The color wheel angle.
+     - Saturation (0%-100%): Intensity/vibrancy.
+     - Lightness (0%-100%): Darkness to brightness.
+     - Very easy for humans to create tints and shades!
+  4. OKLCH (oklch(45% 0.18 260)):
+     - The modern CSS Color Level 4 standard!
+     - Perceptually uniform (equal lightness looks equally bright across all hues).
+     - Access to wider P3 gamuts on modern Retina displays.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colors &amp; Backgrounds Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    /* CSS Grid container to lay out color sample swatches */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+
+    /* Common card styling for color swatches */
+    .swatch {
+      padding: 1.25rem 0.5rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Gradient demonstration bars */
+    .gradient-box {
+      height: 85px;
+      border-radius: 8px;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /*
+      BACKGROUND COVER PATTERN:
+      This is the classic full-banner image pattern.
+      - background-image: The URL of the image.
+      - background-size: cover (scales image to cover entire container without distortion).
+      - background-position: center (keeps focal point centered).
+      - background-repeat: no-repeat (prevents tiling).
+    */
+    .hero-banner {
+      background-color: #334155; /* Fallback background color if image fails to load */
+      background-image: url('https://picsum.photos/seed/bg/680/220');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 160px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    /* Semi-transparent dark overlay for high contrast text readability */
+    .hero-text {
+      background: rgba(15, 23, 42, 0.75);
+      color: #ffffff;
+      padding: 0.6rem 1.25rem;
+      border-radius: 6px;
+      backdrop-filter: blur(4px); /* Glassmorphism blur effect */
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Color Models &amp; CSS Backgrounds</h1>
+    <p>Open <strong>DevTools &rarr; Styles</strong> and click on any color swatch square to toggle between Hex, RGB, HSL, and OKLCH in real-time!</p>
+  </header>
+
+  <main>
+    <h2>1. Color Representations (Same Blue Hue)</h2>
+    <div class="swatch-grid">
+      <!-- 1. Hexadecimal (#RRGGBB) -->
+      <div class="swatch" style="background: #1e40af; color: white;">
+        Hex<br><code>#1e40af</code>
+      </div>
+
+      <!-- 2. RGB (Red, Green, Blue) -->
+      <div class="swatch" style="background: rgb(30, 64, 175); color: white;">
+        RGB<br><code>rgb(30,64,175)</code>
+      </div>
+
+      <!-- 3. HSL (Hue, Saturation, Lightness) -->
+      <div class="swatch" style="background: hsl(226, 71%, 40%); color: white;">
+        HSL<br><code>hsl(226,71%,40%)</code>
+      </div>
+
+      <!-- 4. OKLCH (Perceptual Lightness, Chroma, Hue) -->
+      <div class="swatch" style="background: oklch(40% 0.16 260); color: white;">
+        OKLCH<br><code>oklch(40% .16 260)</code>
+      </div>
+
+      <!-- 5. Alpha Transparency (35% opacity) -->
+      <div class="swatch" style="background: rgba(30, 64, 175, 0.35); color: #0f172a; border: 1px dashed #1e40af;">
+        RGBA (Alpha)<br><code>rgba(..., 0.35)</code>
+      </div>
+    </div>
+
+    <h2>2. CSS Gradients</h2>
+    <!-- Linear Gradient: transitioning at a 135-degree diagonal angle -->
+    <div class="gradient-box" style="background: linear-gradient(135deg, #6366f1, #ec4899);">
+      <code>linear-gradient(135deg, #6366f1, #ec4899)</code>
+    </div>
+
+    <!-- Radial Gradient: circular transition radiating outward from center -->
+    <div class="gradient-box" style="background: radial-gradient(circle, #f59e0b 0%, #1e3a8a 100%);">
+      <code>radial-gradient(circle, amber, dark-blue)</code>
+    </div>
+
+    <h2>3. Background Cover with Translucent Overlay</h2>
+    <div class="hero-banner">
+      <div class="hero-text">
+        background-size: cover + rgba() overlay
+      </div>
+    </div>
+  </main>
+</body>
+</html>

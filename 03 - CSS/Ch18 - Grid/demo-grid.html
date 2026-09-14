@@ -1,0 +1,157 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch18 — CSS Grid · demo-grid.html                       ║
+  ║  CONCEPT: 2D Layout (Rows AND Columns simultaneously),           ║
+  ║           repeat(auto-fill, minmax()), grid-template-areas       ║
+  ║  DEVTOOLS: Elements tab (Click "grid" badge & toggle Grid lines) ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  FLEXBOX VS CSS GRID:
+  ────────────────────
+  - Flexbox is ONE-DIMENSIONAL (deals either with a row OR a column).
+  - CSS Grid is TWO-DIMENSIONAL (coordinates rows AND columns at the same time).
+
+  THE MAGIC RESPONSIVE GRID FORMULA:
+  ──────────────────────────────────
+  `grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));`
+  - `repeat()`: Automatically creates columns.
+  - `auto-fill`: Fits as many columns as will fit in the available width.
+  - `minmax(200px, 1fr)`: Each column must be at least 200px wide, but will
+    expand equally (`1fr` = 1 fraction of free space) to fill remainder!
+  - Result: Complete responsiveness with ZERO media queries!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Grid Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0f172a;
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    /*
+      ==============================================================
+      1. FLUID CARD GRID (auto-fill + minmax)
+      ==============================================================
+    */
+    .card-grid {
+      display: grid;
+      /* As window expands: 1 col -> 2 cols -> 3 cols -> 4 cols automatically! */
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .grid-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .grid-card h3 {
+      margin: 0 0 0.5rem;
+      color: #1e40af;
+      font-size: 1.1rem;
+    }
+
+    .grid-card p {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    /*
+      ==============================================================
+      2. PAGE LAYOUT WITH NAMED GRID AREAS
+      ==============================================================
+      Visual ASCII-like representation of the layout structure!
+    */
+    .page-layout {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      /*
+        Layout mapping:
+        - Row 1: Header spans both columns
+        - Row 2: Sidebar (220px) on left, Main content (1fr) on right
+        - Row 3: Footer spans both columns
+      */
+      grid-template-areas:
+        "site-header  site-header"
+        "site-sidebar site-main"
+        "site-footer  site-footer";
+      grid-template-columns: 220px 1fr;
+      grid-template-rows: auto minmax(120px, 1fr) auto;
+    }
+
+    /* Assign elements to their named areas */
+    .layout-header  { grid-area: site-header;  background: #1e40af; }
+    .layout-sidebar { grid-area: site-sidebar; background: #3b82f6; }
+    .layout-main    { grid-area: site-main;    background: #4f46e5; }
+    .layout-footer  { grid-area: site-footer;  background: #1e40af; }
+
+    .page-layout > * {
+      color: #ffffff;
+      padding: 1.25rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Two-Dimensional CSS Grid Layouts</h1>
+  </header>
+
+  <main>
+    <h2>1. The Responsive Auto-Fill Formula</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">
+      Formula: <code>grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));</code><br>
+      Resize your browser window to watch items reflow seamlessly without media queries!
+    </p>
+
+    <div class="card-grid">
+      <div class="grid-card"><h3>Library Services</h3><p>Access journal subscriptions, borrowing, and research papers.</p></div>
+      <div class="grid-card"><h3>Campus Gym</h3><p>Weight room, indoor running track, and group fitness classes.</p></div>
+      <div class="grid-card"><h3>Cafeteria</h3><p>Hot lunch options, grab-and-go deli bar, and student discounts.</p></div>
+      <div class="grid-card"><h3>IT Service Desk</h3><p>Submit tickets for laptop repair and password resets.</p></div>
+      <div class="grid-card"><h3>Counseling Office</h3><p>Mental health counselors and student stress management.</p></div>
+      <div class="grid-card"><h3>Career Center</h3><p>Resume workshops, internship postings, and mock interviews.</p></div>
+    </div>
+
+    <h2>2. Page Scaffold using <code>grid-template-areas</code></h2>
+    <div class="page-layout">
+      <header class="layout-header">Header (grid-area: site-header)</header>
+      <aside class="layout-sidebar">Sidebar (grid-area: site-sidebar)</aside>
+      <main class="layout-main">Main Content Area (grid-area: site-main)</main>
+      <footer class="layout-footer">Footer (grid-area: site-footer)</aside>
+    </div>
+  </main>
+</body>
+</html>

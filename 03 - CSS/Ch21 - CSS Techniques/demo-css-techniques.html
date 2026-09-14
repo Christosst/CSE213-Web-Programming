@@ -1,0 +1,172 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch21 — CSS Techniques · demo-css-techniques.html       ║
+  ║  CONCEPT: Cascade Layers (@layer), Native CSS Nesting,           ║
+  ║           Feature Queries (@supports), Design Tokens             ║
+  ║  DEVTOOLS: Elements tab (Styles panel shows layer groupings)     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  MODERN CSS TECHNIQUES OVERVIEW:
+  ───────────────────────────────
+  1. CASCADE LAYERS (@layer):
+     - Solves "specificity wars" once and for all!
+     - Layers are prioritized based on declared order:
+       `@layer reset, base, components;`
+     - A simple class selector in `components` beats an ID selector in `reset`!
+
+  2. NATIVE CSS NESTING:
+     - No build step or Sass required!
+     - Nest child selectors and `&:hover` pseudo-classes directly inside parent blocks.
+
+  3. FEATURE QUERIES (@supports):
+     - Progressive enhancement in CSS.
+     - Detects whether the user's browser understands a CSS feature before applying it.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern CSS Techniques Demo — CSE213</title>
+  <style>
+    /*
+      ==============================================================
+      1. CASCADE LAYERS (@layer)
+      ==============================================================
+      Declaration order dictates priority from LOWEST to HIGHEST:
+      reset (lowest) -> base -> components (highest)
+    */
+    @layer reset, base, components;
+
+    @layer reset {
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+      }
+    }
+
+    @layer base {
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        padding: 1.5rem;
+        max-width: 720px;
+        margin: 0 auto;
+        color: #1e293b;
+        background: #f8fafc;
+        line-height: 1.6;
+      }
+      h1, h2 {
+        color: var(--color-primary);
+        margin: 1.5rem 0 0.5rem;
+      }
+    }
+
+    @layer components {
+      .btn {
+        padding: 0.65rem 1.25rem;
+        background: var(--color-primary);
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+      }
+      .btn:hover {
+        background: #1e3a8a;
+      }
+    }
+
+    /*
+      ==============================================================
+      2. DESIGN TOKENS (CSS VARIABLES)
+      ==============================================================
+    */
+    :root {
+      --color-primary: #1e40af;
+      --color-accent: #6366f1;
+      --spacing-md: 1rem;
+      --radius-md: 8px;
+    }
+
+    /*
+      ==============================================================
+      3. NATIVE CSS NESTING
+      ==============================================================
+      Modern browsers support direct nesting without Sass/SCSS!
+    */
+    .card {
+      background: #eff6ff;
+      border: 2px solid var(--color-accent);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-top: 1rem;
+      transition: background-color 0.2s ease;
+
+      /* Direct nested element selectors */
+      & h3 {
+        color: var(--color-primary);
+        margin: 0 0 0.5rem;
+      }
+
+      & p {
+        color: #475569;
+        margin: 0;
+      }
+
+      /* Nested pseudo-class using the '&' parent reference */
+      &:hover {
+        background: #dbeafe;
+      }
+    }
+
+    /*
+      ==============================================================
+      4. FEATURE QUERIES (@supports)
+      ==============================================================
+    */
+    .feature-demo {
+      background: #fef9c3;
+      border: 2px dashed #d97706;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    /* If the browser supports CSS Grid, apply progressive enhancements */
+    @supports (display: grid) {
+      .feature-demo {
+        background: #d1fae5;
+        border-color: #10b981;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Next-Generation Modern CSS Techniques</h1>
+  </header>
+
+  <main>
+    <h2>1. Cascade Layers (@layer)</h2>
+    <p>
+      Styles in <code>@layer components</code> effortlessly override styles in <code>@layer base</code> and <code>@layer reset</code>
+      regardless of selector specificity!
+    </p>
+    <button class="btn" type="button">Component Button</button>
+
+    <h2>2. Native Browser CSS Nesting</h2>
+    <div class="card">
+      <h3>Department Library</h3>
+      <p>Hover over this card to watch the nested <code>&amp;:hover</code> rule change the background without needing Sass or preprocessors!</p>
+    </div>
+
+    <h2>3. @supports Feature Query Detection</h2>
+    <div class="feature-demo">
+      <p style="margin: 0;">
+        This box displays yellow by default. If your browser supports <code>display: grid</code>, the <code>@supports</code> query turns it <strong>green</strong>.
+      </p>
+    </div>
+  </main>
+</body>
+</html>

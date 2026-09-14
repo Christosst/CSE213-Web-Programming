@@ -1,0 +1,188 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch08 — Tables · demo-tables.html                       ║
+  ║  CONCEPT: Semantic Data Tables, Accessibility, scope attribute,   ║
+  ║           caption, thead, tbody, tfoot                           ║
+  ║  DEVTOOLS: Elements tab, Accessibility Tree inspector            ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  TABLE BEST PRACTICES:
+  ─────────────────────
+  1. NEVER use tables for page layout! (Use CSS Flexbox/Grid instead).
+     Tables are strictly for tabular, two-dimensional relation data.
+  2. ALWAYS use <caption>: It acts like an <h1> for the table, providing
+     context for screen reader users when they jump to the table.
+  3. ALWAYS use <th> with `scope="col"` or `scope="row"`:
+     This explicitly associates data cells with their respective header.
+     When a visually impaired student navigates between table cells, the
+     screen reader announces: "Week: 3, Topic: Images & Media"!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Tables Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 760px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+
+    /*
+      `border-collapse: collapse;` removes double borders between adjacent cells.
+      Without this, every <td> would have its own separate border!
+    */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.5rem 0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      overflow: hidden; /* Clips outer corners to border-radius */
+    }
+
+    /* Cell padding and subtle border styling */
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    /* Header styling: high contrast for readability */
+    th {
+      background-color: #1e40af;
+      color: #ffffff;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+    }
+
+    /*
+      <caption> styling:
+      The caption should always be visually prominent and describe the dataset.
+    */
+    caption {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: left;
+      color: #0f172a;
+    }
+
+    /*
+      ZEBRA STRIPING:
+      Using `:nth-child(even)` pseudo-class makes long tables much easier
+      for human eyes to scan horizontally across columns!
+    */
+    tbody tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f5f9; /* Subtle row highlight on hover */
+    }
+
+    /* Footer styling */
+    tfoot {
+      font-weight: 600;
+      background-color: #e2e8f0;
+    }
+
+    .info-card {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Accessible Tabular Data</h1>
+  </header>
+
+  <main>
+    <!--
+      SEMANTIC TABLE STRUCTURE:
+      - <table> : The container.
+      - <caption> : Accessible title for the table.
+      - <thead> : Table header block containing column headings.
+      - <tbody> : Table body containing rows of actual data.
+      - <tfoot> : Table footer (summary totals, notes).
+    -->
+    <table>
+      <!-- 1. The caption: Accessible summary of the table -->
+      <caption>CSE213 Weekly Course Schedule &amp; Lab Milestones</caption>
+
+      <!-- 2. The header row: defines column names -->
+      <thead>
+        <tr>
+          <!-- scope="col" tells assistive technology this header applies to the COLUMN below it -->
+          <th scope="col">Week</th>
+          <th scope="col">Topic</th>
+          <th scope="col">Practical Lab</th>
+          <th scope="col">Assessment</th>
+        </tr>
+      </thead>
+
+      <!-- 3. The data rows -->
+      <tbody>
+        <tr>
+          <!-- scope="row" tells assistive technology this cell identifies the ROW -->
+          <th scope="row">1</th>
+          <td>Web Architecture &amp; HTML Shell</td>
+          <td>First Web Page Setup</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Semantic HTML &amp; Landmarks</td>
+          <td>Accessibility Audit</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Images, SVG &amp; Media</td>
+          <td>Responsive Picture Gallery</td>
+          <td>Quiz 1 (5%)</td>
+        </tr>
+        <tr>
+          <th scope="row">4</th>
+          <td>Accessible Web Forms</td>
+          <td>Registration Form Repair</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <th scope="row">5</th>
+          <td>CSS Foundations &amp; Cascade</td>
+          <td>CSS Debugging Lab</td>
+          <td>Assignment 1 (15%)</td>
+        </tr>
+      </tbody>
+
+      <!-- 4. The footer: Table summary or totals -->
+      <tfoot>
+        <tr>
+          <td colspan="3">Total Course Weeks Shown</td>
+          <td>5 Weeks</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="info-card">
+      <strong>♿ Accessibility Deep Dive:</strong>
+      <p style="margin: 0.5rem 0 0;">
+        Notice how the first cell in each body row uses <code>&lt;th scope="row"&gt;</code> instead of <code>&lt;td&gt;</code>.
+        This provides a <em>dual-axis header</em>. When a user explores cell "Assignment 1", the screen reader announces:
+        <em>"Row 5, Assessment: Assignment 1 (15%)"</em>. That is the power of semantic HTML!
+      </p>
+    </div>
+  </main>
+</body>
+</html>

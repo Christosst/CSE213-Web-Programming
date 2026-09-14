@@ -1,0 +1,169 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch07 — Images · demo-images.html                       ║
+  ║  CONCEPT: Informative vs Decorative Images, Alt Text,            ║
+  ║           Aspect Ratio & CLS (Cumulative Layout Shift)           ║
+  ║  DEVTOOLS: Elements (Computed tab), Network (Throttling)        ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  THE GOLDEN RULES OF WEB IMAGES:
+  ──────────────────────────────
+  1. EVERY <img> MUST HAVE AN `alt` ATTRIBUTE:
+     - Informative images: Describe the content/purpose for visually impaired users.
+     - Decorative images: Use `alt=""` (empty alt) so screen readers skip them completely!
+     - NEVER omit the `alt` attribute: If missing, screen readers read the ugly file URL aloud!
+
+  2. ALWAYS SET `width` AND `height` ATTRIBUTES:
+     - In modern HTML5, `width="640"` and `height="360"` provide the browser with
+       the intrinsic aspect ratio (16:9).
+     - The browser calculates reserved placeholder space BEFORE the image loads.
+     - This prevents "Cumulative Layout Shift" (CLS) — where text jumps down when
+       the image suddenly pops into place!
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Images Demo — CSE213</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+    }
+
+    /*
+      CSS for responsive images:
+      `max-width: 100%` scales image down on smaller screens.
+      `height: auto` ensures it scales proportionally and does not get squished!
+    */
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+
+    /* Semantic figure styling */
+    figure {
+      margin: 1.5rem 0;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    figcaption {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    /* Highlight box for DevTools exercises */
+    .exercise-box {
+      background: #fef9c3;
+      border-left: 4px solid #eab308;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+    }
+
+    .badge-good {
+      background: #dcfce7;
+      color: #166534;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .badge-bad {
+      background: #fee2e2;
+      color: #991b1b;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Images in HTML: Accessibility &amp; Performance</h1>
+  </header>
+
+  <main>
+    <!-- ============================================================ -->
+    <!-- EXAMPLE 1: INFORMATIVE IMAGE (NEEDS DESCRIPTIVE ALT)         -->
+    <!-- ============================================================ -->
+    <section>
+      <h2>1. Informative Image <span class="badge-good">Correct Practice</span></h2>
+      <p>This image conveys meaningful information that adds to the text.</p>
+
+      <figure>
+        <!--
+          Attributes explained:
+          - src: URL or relative path to the image file.
+          - alt: Short, concise description of what is shown.
+          - width & height: Pixel dimensions (NO 'px' unit in HTML attributes).
+          - loading="lazy": Browser pauses loading until user scrolls near it.
+        -->
+        <img
+          src="https://picsum.photos/seed/campus/640/360"
+          alt="University campus main library with glass facade and students walking along the pathway"
+          width="640"
+          height="360"
+          loading="lazy">
+        <figcaption>
+          <strong>Figure 1:</strong> The University Library.
+          Screen readers will read: <em>"Graphic: University campus main library with glass facade..."</em>
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- EXAMPLE 2: DECORATIVE IMAGE (NEEDS EMPTY ALT)                -->
+    <!-- ============================================================ -->
+    <section>
+      <h2>2. Purely Decorative Image <span class="badge-good">Correct Practice</span></h2>
+      <p>This patterned banner is just visual decoration. It gives no new information.</p>
+
+      <figure>
+        <!--
+          CRITICAL CONCEPT:
+          `alt=""` (an empty string) explicitly instructs screen readers:
+          "This image is purely visual eye-candy; do NOT interrupt the user, skip right over it."
+          `role="presentation"` reinforces this semantic exclusion.
+        -->
+        <img
+          src="https://picsum.photos/seed/pattern/640/80"
+          alt=""
+          role="presentation"
+          width="640"
+          height="80">
+        <figcaption>
+          <strong>Decorative divider:</strong> Uses <code>alt=""</code> and <code>role="presentation"</code>.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- CLASSROOM DEVTOOLS EXPERIMENT                                -->
+    <!-- ============================================================ -->
+    <div class="exercise-box">
+      <h3>🔍 DevTools In-Class Experiment: Observe CLS (Layout Shift)</h3>
+      <ol style="margin-left: 1.25rem;">
+        <li>Open Chrome DevTools &rarr; <strong>Network</strong> tab.</li>
+        <li>Set throttling to <strong>Slow 3G</strong> and check <strong>Disable cache</strong>.</li>
+        <li>Right-click the first image &rarr; <em>Inspect</em> &rarr; delete the <code>width</code> and <code>height</code> attributes.</li>
+        <li>Reload the page. Notice how paragraphs start at the top, and then get violently pushed down when the image loads! That is bad UX (Cumulative Layout Shift).</li>
+        <li>Undo the change (Ctrl+Z in Elements) and reload. Notice how space is reserved instantly!</li>
+      </ol>
+    </div>
+  </main>
+</body>
+</html>

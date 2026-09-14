@@ -1,0 +1,263 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch24 — DOM & Events · demo-dom-events.html             ║
+  ║  CONCEPT: Event Delegation (Bubbling & .closest()), classList,   ║
+  ║           Dark Mode Theme Toggle (CSS vars + data-theme),        ║
+  ║           Accessible Toast Notifications (aria-live="polite")    ║
+  ║  DEVTOOLS: Elements tab (Observe attribute mutation & Events)   ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WHY EVENT DELEGATION IS ESSENTIAL:
+  ──────────────────────────────────
+  Beginner anti-pattern: Adding `addEventListener` inside a loop for 100 buttons:
+    `buttons.forEach(b => b.addEventListener('click', ...))`
+  Problems:
+  1. Memory consumption (100 event listener functions allocated).
+  2. Dynamically added items won''t have listeners attached!
+
+  The Professional Solution: EVENT DELEGATION
+  Because events "bubble" up the DOM tree, we attach ONE listener to the parent container:
+    `container.addEventListener('click', e => { const item = e.target.closest('.item'); })`
+  - Efficient (1 listener for unlimited children).
+  - Automatically works for new elements added to the DOM in the future!
+-->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM Manipulation &amp; Events Demo — CSE213</title>
+  <style>
+    /*
+      THEME DESIGN TOKENS:
+      Light theme variables defined by default on :root
+    */
+    :root {
+      --bg-canvas: #f8fafc;
+      --text-main: #1e293b;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
+      --brand: #1e40af;
+      --accent-star: #f59e0b;
+    }
+
+    /* Dark theme overrides applied when [data-theme="dark"] is on <html> */
+    [data-theme="dark"] {
+      --bg-canvas: #0f172a;
+      --text-main: #f1f5f9;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --brand: #3b82f6;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      /* Smooth color transition when toggling themes */
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h1 { margin-top: 0; }
+
+    .action-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      padding: 0.6rem 1.25rem;
+      background-color: var(--brand);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    /* Grid for interactive cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .interactive-card {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem 1rem;
+      cursor: pointer;
+      user-select: none; /* Prevents text highlight during double clicking */
+      transition: border-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .interactive-card:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Favorited state */
+    .interactive-card.is-favorited {
+      border-color: var(--accent-star);
+      box-shadow: 0 0 0 1px var(--accent-star);
+    }
+
+    .interactive-card h3 {
+      margin: 0 0 0.25rem;
+      font-size: 1.05rem;
+    }
+
+    .interactive-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /*
+      TOAST NOTIFICATION (OFF-SCREEN BY DEFAULT)
+      Uses transform: translateY(150%) so it slides in smoothly from the bottom.
+    */
+    .toast-alert {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1e293b;
+      color: #ffffff;
+      padding: 0.85rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      transform: translateY(200%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+    }
+
+    .toast-alert.is-visible {
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toast-alert {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DOM Manipulation &amp; Event Bubbling</h1>
+    <p>Click any card below to favorite it. Events bubble up to a single parent listener.</p>
+  </header>
+
+  <main>
+    <div class="action-bar">
+      <button type="button" id="toggle-theme-btn">🌓 Toggle Dark/Light Mode</button>
+      <button type="button" id="trigger-toast-btn">🔔 Show Toast Alert</button>
+    </div>
+
+    <!-- Parent container holding cards for Event Delegation -->
+    <div class="card-grid" id="cards-container">
+      <div class="interactive-card" data-service-id="1">
+        <h3>Library</h3>
+        <p>Academic &middot; 24/7</p>
+      </div>
+      <div class="interactive-card" data-service-id="2">
+        <h3>Gymnasium</h3>
+        <p>Fitness &middot; Daily</p>
+      </div>
+      <div class="interactive-card" data-service-id="3">
+        <h3>Cafeteria</h3>
+        <p>Food &middot; 07:30–18:00</p>
+      </div>
+      <div class="interactive-card" data-service-id="4">
+        <h3>Counseling</h3>
+        <p>Health &middot; Weekdays</p>
+      </div>
+    </div>
+
+    <!--
+      ACCESSIBLE TOAST NOTIFICATION:
+      - `role="status"` + `aria-live="polite"` ensures screen readers announce
+        the message without rudely interrupting speech already in progress.
+    -->
+    <div id="toast-notification" class="toast-alert" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. EVENT DELEGATION DEMONSTRATION
+    // =========================================================================
+    const cardsContainer = document.getElementById('cards-container');
+
+    cardsContainer.addEventListener('click', event => {
+      // `.closest('.interactive-card')` walks UP the DOM from whatever element was clicked
+      // (even if the student clicked the <h3> or <p> inside the card!)
+      const clickedCard = event.target.closest('.interactive-card');
+
+      // If the user clicked the empty grid gap between cards, do nothing
+      if (!clickedCard) return;
+
+      // Toggle favorite state
+      clickedCard.classList.toggle('is-favorited');
+
+      // Read text content
+      const serviceName = clickedCard.querySelector('h3').textContent;
+      const isFav = clickedCard.classList.contains('is-favorited');
+
+      // Provide live toast feedback
+      triggerToast(isFav ? `⭐ Added "${serviceName}" to favorites` : `Removed "${serviceName}" from favorites`);
+    });
+
+    // =========================================================================
+    // 2. THEME SWITCHER (data-theme attribute toggle)
+    // =========================================================================
+    const themeBtn = document.getElementById('toggle-theme-btn');
+
+    themeBtn.addEventListener('click', () => {
+      const rootHtml = document.documentElement; // The <html> tag
+      const currentTheme = rootHtml.dataset.theme;
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      rootHtml.dataset.theme = nextTheme;
+      triggerToast(`Theme switched to: ${nextTheme.toUpperCase()}`);
+    });
+
+    // =========================================================================
+    // 3. ACCESSIBLE TOAST NOTIFICATION CONTROLLER
+    // =========================================================================
+    let toastTimer = null;
+
+    function triggerToast(message) {
+      const toast = document.getElementById('toast-notification');
+      toast.textContent = message;
+      toast.classList.add('is-visible');
+
+      // Reset any active auto-dismiss timer so toast doesn't flicker away too early
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('is-visible');
+      }, 2800);
+    }
+
+    document.getElementById('trigger-toast-btn').addEventListener('click', () => {
+      triggerToast('Aria-live announced this alert to assistive technology!');
+    });
+  </script>
+</body>
+</html>

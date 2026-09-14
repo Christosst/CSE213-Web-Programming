@@ -1,0 +1,209 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch19 — Responsive Web Design · demo-responsive.html    ║
+  ║  CONCEPT: Viewport Media Queries (@media) vs Modern Container    ║
+  ║           Queries (@container), Mobile-First Design              ║
+  ║  DEVTOOLS: Device Mode (Ctrl+Shift+M), Container Query Badges    ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  MEDIA QUERIES VS CONTAINER QUERIES:
+  ───────────────────────────────────
+  1. MEDIA QUERIES (@media):
+     - Checks the size of the ENTIRE BROWSER VIEWPORT.
+     - Problem: A card component placed inside a narrow sidebar behaves
+       the same as when placed in a wide main section if viewport is large!
+
+  2. CONTAINER QUERIES (@container):
+     - Checks the size of the COMPONENT'S DIRECT CONTAINER!
+     - The card adapts based on how much width IT actually has, regardless
+       of whether the screen is 400px or 4000px!
+     - Step 1: Tell parent container: `container-type: inline-size;`
+     - Step 2: In child element: `@container (min-width: 380px) { ... }`
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Design: Media vs Container Queries — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    h1 { color: #0f172a; margin-top: 0; }
+    h2 {
+      margin-top: 2.5rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+    .badge-mq { background: #ede9fe; color: #6d28d9; }
+    .badge-cq { background: #d1fae5; color: #065f46; }
+
+    .thumb-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    /*
+      ==============================================================
+      1. VIEWPORT MEDIA QUERY APPROACH
+      ==============================================================
+      Mobile-first baseline: column layout
+    */
+    .mq-card {
+      background: #ffffff;
+      border: 2px solid #6366f1;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .mq-card .card-body {
+      display: flex;
+      flex-direction: column; /* Mobile: vertical stack */
+      gap: 1rem;
+    }
+
+    /* Desktop Viewport Query: switches to row layout when WHOLE BROWSER >= 600px */
+    @media (min-width: 600px) {
+      .mq-card .card-body {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    /*
+      ==============================================================
+      2. CONTAINER QUERY APPROACH (MODERN BEST PRACTICE)
+      ==============================================================
+      Step 1: Declare container context on parent wrapper!
+    */
+    .cq-container {
+      container-type: inline-size; /* Monitors the horizontal width of this specific box */
+    }
+
+    .cq-card {
+      background: #ffffff;
+      border: 2px solid #10b981;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .cq-card .card-body {
+      display: flex;
+      flex-direction: column; /* Default: vertical stack */
+      gap: 1rem;
+    }
+
+    /*
+      Step 2: Query the CONTAINER width, not the viewport!
+      When THIS specific container has >= 380px available, switch to horizontal!
+    */
+    @container (min-width: 380px) {
+      .cq-card .card-body {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    /* Two-column layout to demonstrate Container Query adaptability */
+    .two-column-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr; /* Left is narrow sidebar, Right is wide main */
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 700px) {
+      .two-column-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Responsive Web Design: Media Queries vs Container Queries</h1>
+  </header>
+
+  <main>
+    <h2>1. Viewport Media Query (@media)</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">
+      This card switches between stacked and side-by-side based solely on <code>@media (min-width: 600px)</code> (the whole browser width).
+    </p>
+
+    <div class="mq-card">
+      <span class="badge badge-mq">@media (min-width: 600px)</span>
+      <div class="card-body">
+        <img class="thumb-img" src="https://picsum.photos/seed/lib/80" alt="Books in library">
+        <div>
+          <h3 style="margin: 0 0 0.25rem; color: #1e293b;">University Library</h3>
+          <p style="margin: 0; color: #64748b;">Open Mon–Fri &middot; Study carrels &amp; archives</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>2. Component-Level Container Queries (@container)</h2>
+    <p style="color: #64748b; font-size: 0.9rem;">
+      Notice both sides below use the <strong>exact same component</strong> (<code>.cq-card</code>).
+      In the narrow 280px sidebar, it stays neatly stacked. In the wider main panel, it automatically switches to a horizontal row!
+    </p>
+
+    <div class="two-column-layout">
+      <!-- SIDEBAR (NARROW CONTAINER) -->
+      <div class="cq-container">
+        <p style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin: 0 0 0.5rem;">Narrow Sidebar Container (280px)</p>
+        <div class="cq-card">
+          <span class="badge badge-cq">@container</span>
+          <div class="card-body">
+            <img class="thumb-img" src="https://picsum.photos/seed/gym/80" alt="Gym weights">
+            <div>
+              <h3 style="margin: 0 0 0.25rem; color: #1e293b;">Fitness Center</h3>
+              <p style="margin: 0; color: #64748b;">Open daily &middot; Cardio &amp; weights</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT (WIDE CONTAINER) -->
+      <div class="cq-container">
+        <p style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin: 0 0 0.5rem;">Wide Main Container (Free Width)</p>
+        <div class="cq-card">
+          <span class="badge badge-cq">@container</span>
+          <div class="card-body">
+            <img class="thumb-img" src="https://picsum.photos/seed/gym/80" alt="Gym weights">
+            <div>
+              <h3 style="margin: 0 0 0.25rem; color: #1e293b;">Fitness Center</h3>
+              <p style="margin: 0; color: #64748b;">Open daily &middot; Cardio &amp; weights</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

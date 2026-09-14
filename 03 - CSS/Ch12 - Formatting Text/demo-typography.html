@@ -1,0 +1,139 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch12 — Formatting Text · demo-typography.html          ║
+  ║  CONCEPT: Web Fonts, Font Stacks, CSS Units (rem, em, ch),       ║
+  ║           Fluid Typography with clamp(), Line Length (measure)   ║
+  ║  DEVTOOLS: Elements tab (Computed font-size & Font details)      ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  TYPOGRAPHY RULES FOR WEB DEVELOPERS:
+  ────────────────────────────────────
+  1. USE SYSTEM FONT FALLBACKS:
+     - Always finish your `font-family` with generic fallbacks:
+       `font-family: 'Inter', system-ui, -apple-system, sans-serif;`
+     - If the network is slow or Google Fonts fails, the browser immediately
+       renders readable system fonts instead of blank space (FOIT).
+
+  2. USE `rem` FOR ACCESSIBLE FONT SIZING:
+     - `1rem` = root element (<html>) font size (typically 16px).
+     - If a low-vision user changes their browser's default font size to 24px,
+       pages built with `rem` scale up harmoniously.
+     - Hardcoding `px` ignores user accessibility preferences!
+
+  3. CONTROL "MEASURE" (LINE LENGTH):
+     - Reading lines longer than 75 characters strains user tracking.
+     - The `ch` unit represents the width of the character "0".
+     - Setting `max-width: 65ch` creates an optimal reading experience.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typography Demo — CSE213</title>
+
+  <!--
+    GOOGLE FONTS INTEGRATION:
+    `rel="preconnect"` opens early DNS/TLS handshakes to Google's font servers,
+    shaving 100-300ms off loading time.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Font family with fallback stack */
+      --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+
+      /*
+        FLUID TYPOGRAPHY WITH clamp():
+        Syntax: clamp(MINIMUM, PREFERRED_VAL_SCALING_WITH_VIEWPORT, MAXIMUM)
+        - On mobile (< 600px): clamps to 1.5rem (24px)
+        - On tablet/laptop: scales smoothly at 3% of viewport width (3vw)
+        - On large desktop (> 1200px): capped at 2.25rem (36px)
+        Eliminates the need for tedious media queries for font resizing!
+      */
+      --text-heading-xl: clamp(1.5rem, 3vw, 2.25rem);
+      --text-heading-lg: clamp(1.2rem, 2vw, 1.5rem);
+      --text-base: 1rem;           /* 16px */
+      --line-height-body: 1.7;     /* 170% line height for readable paragraphs */
+    }
+
+    body {
+      font-family: var(--font-primary);
+      font-size: var(--text-base);
+      line-height: var(--line-height-body);
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    h1 {
+      font-size: var(--text-heading-xl);
+      font-weight: 700;
+      line-height: 1.2;
+      color: #0f172a;
+      letter-spacing: -0.025em; /* Subtle tightening for large headings */
+    }
+
+    h2 {
+      font-size: var(--text-heading-lg);
+      font-weight: 600;
+      color: #1e40af;
+      margin-top: 2rem;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.35rem;
+    }
+
+    /*
+      THE "MEASURE" (LINE-LENGTH LIMIT):
+      `65ch` means the paragraph container will never exceed roughly 65 characters wide.
+      Prevents lines from stretching awkwardly on ultra-wide monitors.
+    */
+    .measure {
+      max-width: 65ch;
+    }
+
+    ul {
+      line-height: 1.8;
+    }
+
+    code {
+      background: #e2e8f0;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Modern Web Typography &amp; Scale</h1>
+  </header>
+
+  <main>
+    <p class="measure">
+      This heading and body copy use modern CSS typography patterns.
+      Resize your browser window width and notice how the <code>&lt;h1&gt;</code> title scales smoothly between small mobile screens and widescreen displays without a single media query!
+    </p>
+
+    <h2>Font Stack Fallbacks</h2>
+    <p class="measure">
+      Our CSS declares <code>--font-primary: 'Inter', system-ui, -apple-system, sans-serif;</code>.
+      If the user is offline or the custom web font is still downloading, the browser immediately falls back to high-quality native operating system fonts (San Francisco on macOS/iOS, Segoe UI on Windows, Roboto on Android).
+    </p>
+
+    <h2>Essential CSS Units for Students</h2>
+    <ul class="measure">
+      <li><code>rem</code> (Root EM) &mdash; Relative to the root <code>&lt;html&gt;</code> font size (1rem = 16px by default). Best for general spacing, padding, and font-size.</li>
+      <li><code>em</code> &mdash; Relative to the <em>parent</em> or <em>current element's</em> font-size. Great for margins that scale with the component's font size (like button padding).</li>
+      <li><code>ch</code> &mdash; Equal to the width of the number <code>0</code>. The industry gold standard for controlling reading line lengths.</li>
+      <li><code>clamp(min, preferred, max)</code> &mdash; Creates a responsive value bounded between a lower and upper threshold.</li>
+    </ul>
+  </main>
+</body>
+</html>

@@ -1,0 +1,309 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch09 — Forms · demo-accessible-form.html              ║
+  ║  CONCEPT: Accessible Form Controls, Explicit Labels,            ║
+  ║           Fieldsets/Legends, ARIA live errors, Validation        ║
+  ║  DEVTOOLS: Elements & Console, Accessibility Tree                ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  FORM ACCESSIBILITY PRINCIPLES:
+  ──────────────────────────────
+  1. EXPLICIT LABELS ARE NON-NEGOTIABLE:
+     - Always use `<label for="inputId">` paired with `<input id="inputId">`.
+     - Clicking the label focuses the input (enlarges the click target for mobile & motor-impaired users).
+     - Placeholders are NOT labels! They disappear when typing and fail color contrast tests.
+
+  2. GROUP RELATED RADIOS/CHECKBOXES WITH <fieldset> & <legend>:
+     - When tabbing into a radio group, the screen reader reads the <legend> FIRST,
+       giving context for each individual choice.
+
+  3. VISIBLE AND ANNOUNCED VALIDATION ERRORS:
+     - Use `role="alert"` or `aria-live="polite"` so error banners are read aloud immediately.
+     - Never rely solely on color (red border) to convey an error (WCAG 1.4.1).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Forms Demo — CSE213</title>
+  <style>
+    /* Standard box-sizing makes padding and borders part of width calculations */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 560px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.5;
+      color: #1e293b;
+      background-color: #f8fafc;
+    }
+
+    .form-card {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Labels must be block or inline-block with clear spacing */
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 1.25rem;
+      margin-bottom: 0.35rem;
+      color: #0f172a;
+    }
+
+    /* Text inputs, select dropdowns, and textareas */
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 1rem;
+      color: #1e293b;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    /*
+      FOCUS INDICATOR:
+      NEVER remove `outline: none` without providing an equal or better focus indicator!
+      Keyboard navigators need to clearly see which input has focus.
+    */
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 3px solid #6366f1;
+      outline-offset: 2px;
+      border-color: #6366f1;
+    }
+
+    /* Fieldset for grouped inputs */
+    fieldset {
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    legend {
+      font-weight: 700;
+      padding: 0 0.5rem;
+      color: #0f172a;
+    }
+
+    /* Radio button layout: horizontal alignment with proper click targets */
+    .radio-group label {
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+
+    .radio-group input[type="radio"] {
+      width: 1.15rem;
+      height: 1.15rem;
+      cursor: pointer;
+    }
+
+    button[type="submit"] {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 0.85rem;
+      background-color: #1e40af;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #1e3a8a;
+    }
+
+    /* Error summary banner: accessible to assistive tech via role="alert" */
+    .error-summary {
+      background-color: #fef2f2;
+      border: 2px solid #ef4444;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .error-summary.visible {
+      display: block;
+    }
+
+    .error-summary h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+      color: #991b1b;
+    }
+
+    .error-summary ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      color: #b91c1c;
+    }
+
+    .required-star {
+      color: #dc2626;
+    }
+
+    .input-hint {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin: 0.25rem 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-card">
+    <header>
+      <h1 style="margin-top: 0;">Campus Workshop Registration</h1>
+      <p style="color: #64748b;">Fill out the form below. Required fields are marked with an asterisk (*).</p>
+    </header>
+
+    <main>
+      <!--
+        ACCESSIBLE ERROR CONTAINER:
+        - `role="alert"`: Browsers immediately announce new content to screen readers.
+        - `tabindex="-1"`: Allows JavaScript to programmatically move focus here on error.
+      -->
+      <div id="error-summary" class="error-summary" role="alert" tabindex="-1">
+        <h2>Please correct the following errors:</h2>
+        <ul id="error-list"></ul>
+      </div>
+
+      <!--
+        `novalidate`: Suppresses default browser bubble tooltips so we can demonstrate
+        custom, accessible JavaScript validation and programmatic focus management.
+      -->
+      <form id="reg-form" novalidate>
+        <!-- 1. FULL NAME FIELD -->
+        <!-- aria-hidden="true" hides the asterisk from being read literally as "star" by screen readers -->
+        <label for="full-name">Full Name <span class="required-star" aria-hidden="true">*</span></label>
+        <!--
+          - id="full-name": Matches the label's `for="full-name"` attribute.
+          - name="fullName": Sent as the key in HTTP POST request.
+          - autocomplete="name": Lets browsers auto-fill stored user profiles.
+          - aria-describedby="name-hint": Reads helper text when field is focused.
+        -->
+        <input
+          id="full-name"
+          name="fullName"
+          type="text"
+          required
+          autocomplete="name"
+          aria-required="true"
+          aria-describedby="name-hint">
+        <p id="name-hint" class="input-hint">Enter your name as it appears on your Student ID.</p>
+
+        <!-- 2. EMAIL FIELD -->
+        <label for="email">University Email <span class="required-star" aria-hidden="true">*</span></label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          aria-required="true"
+          aria-describedby="email-hint">
+        <p id="email-hint" class="input-hint">Must end in @university.edu</p>
+
+        <!-- 3. WORKSHOP SESSION SELECTION (RADIO GROUP) -->
+        <fieldset class="radio-group">
+          <!-- The <legend> is the accessible question for the entire group -->
+          <legend>Preferred Session Time <span class="required-star" aria-hidden="true">*</span></legend>
+          <label>
+            <input type="radio" name="session" value="morning" required>
+            Morning Session (09:00 – 12:00)
+          </label>
+          <label>
+            <input type="radio" name="session" value="afternoon">
+            Afternoon Session (13:00 – 16:00)
+          </label>
+          <label>
+            <input type="radio" name="session" value="evening">
+            Evening Session (17:00 – 20:00)
+          </label>
+        </fieldset>
+
+        <button type="submit">Submit Registration</button>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    // FORM VALIDATION SCRIPT (STUDENT-FRIENDLY EXPLANATION)
+    // -----------------------------------------------------
+    const form = document.getElementById('reg-form');
+    const errorSummary = document.getElementById('error-summary');
+    const errorList = document.getElementById('error-list');
+
+    form.addEventListener('submit', function (event) {
+      // Prevent standard browser page reload
+      event.preventDefault();
+
+      // Array to collect error messages
+      const errors = [];
+
+      // Fetch input elements
+      const nameInput = document.getElementById('full-name');
+      const emailInput = document.getElementById('email');
+      const sessionSelected = document.querySelector('input[name="session"]:checked');
+
+      // 1. Validate Name
+      if (nameInput.value.trim() === '') {
+        errors.push('Full Name is required.');
+      }
+
+      // 2. Validate Email using browser built-in validity object
+      if (!emailInput.validity.valid) {
+        errors.push('Please enter a valid email address.');
+      } else if (!emailInput.value.endsWith('@university.edu')) {
+        errors.push('Email must be your official student email (@university.edu).');
+      }
+
+      // 3. Validate Radio Group
+      if (!sessionSelected) {
+        errors.push('Please choose one of the available workshop session times.');
+      }
+
+      // Handle validation outcome
+      if (errors.length > 0) {
+        // Build list of errors
+        errorList.innerHTML = errors.map(function (err) {
+          return '<li>' + err + '</li>';
+        }).join('');
+
+        // Display the error summary banner
+        errorSummary.classList.add('visible');
+
+        // Move keyboard focus to error banner so screen readers announce it!
+        errorSummary.focus();
+      } else {
+        // Success! Hide error banner and confirm
+        errorSummary.classList.remove('visible');
+        alert('🎉 Success! Registration completed for: ' + nameInput.value);
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch17 — Flexbox · demo-flexbox.html                     ║
+  ║  CONCEPT: 1D Layout, Main Axis vs Cross Axis, justify-content,   ║
+  ║           align-items, flex-wrap, flex shorthand (grow/shrink/base)
+  ║  DEVTOOLS: Elements tab (Click "flex" badge & open Flexbox Editor)
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  FLEXBOX MENTAL MODEL:
+  ─────────────────────
+  1. ONE-DIMENSIONAL: Flexbox handles layout in ONE direction at a time:
+     - Row (`flex-direction: row` - default): Main axis is horizontal, Cross axis is vertical.
+     - Column (`flex-direction: column`): Main axis is vertical, Cross axis is horizontal.
+
+  2. ALIGNMENT RULES:
+     - `justify-content`: Controls spacing along the MAIN AXIS (flex-start, center, space-between).
+     - `align-items`: Controls alignment along the CROSS AXIS (stretch, center, flex-start).
+
+  3. THE FLEX ITEM SHORTHAND: `flex: 1 1 200px`
+     - 1st number: `flex-grow` (proportional share of extra remaining space).
+     - 2nd number: `flex-shrink` (rate of shrinking when space is tight).
+     - 3rd value: `flex-basis` (ideal starting size before growing/shrinking).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Flexbox Demo — CSE213</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background-color: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0f172a;
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    /*
+      ==============================================================
+      1. RESPONSIVE NAVBAR (SPACE-BETWEEN PATTERN)
+      ==============================================================
+    */
+    .navbar {
+      display: flex;
+      justify-content: space-between; /* Pushes Logo to far left, Nav links to far right */
+      align-items: center;            /* Centers items vertically on cross-axis */
+      background: #1e40af;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .brand-logo {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Inner flex container for navigation links */
+    .navbar nav {
+      display: flex;
+      gap: 1rem; /* Modern CSS gap property replaces old margin hacks! */
+    }
+
+    .navbar nav a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.15s ease;
+    }
+
+    .navbar nav a:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    /*
+      ==============================================================
+      2. WRAPPING CARD ROW (FLEX: 1 1 220px)
+      ==============================================================
+    */
+    .card-row {
+      display: flex;
+      flex-wrap: wrap; /* Allows cards to wrap into new rows when screen narrows */
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      /*
+        flex: 1 1 200px:
+        - grow: 1 (grow equally to fill vacant space on the row)
+        - shrink: 1 (shrink when container is narrower)
+        - basis: 200px (initial target width before flexing)
+      */
+      flex: 1 1 200px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+      color: #1e40af;
+    }
+
+    .card p {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    /*
+      ==============================================================
+      3. PERFECT TWO-AXIS CENTERING
+      ==============================================================
+      Before flexbox, centering both horizontally and vertically was notorious.
+      With Flexbox, it is just 3 lines of CSS:
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    */
+    .center-demo {
+      display: flex;
+      justify-content: center; /* Centers horizontally on main-axis */
+      align-items: center;     /* Centers vertically on cross-axis */
+      height: 120px;
+      background: #eff6ff;
+      border-radius: 8px;
+      margin-top: 1rem;
+      border: 2px dashed #6366f1;
+    }
+
+    .center-label {
+      margin: 0;
+      font-weight: 700;
+      color: #4f46e5;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Modern CSS Flexbox Essentials</h1>
+  </header>
+
+  <main>
+    <h2>1. Site Header: <code>justify-content: space-between</code></h2>
+    <header class="navbar">
+      <span class="brand-logo">CSE213</span>
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#modules">Modules</a>
+        <a href="#exercises">Exercises</a>
+        <a href="#help">Help</a>
+      </nav>
+    </header>
+
+    <h2>2. Wrapping Fluid Cards: <code>flex-wrap: wrap</code></h2>
+    <p style="color: #64748b; font-size: 0.9rem;">Resize the browser window width: cards expand equally to fill the row, and wrap smoothly when space runs out!</p>
+    <div class="card-row">
+      <div class="card">
+        <h3>Campus Library</h3>
+        <p>Quiet study rooms &amp; 24/7 digital archives.</p>
+      </div>
+      <div class="card">
+        <h3>Sports Complex</h3>
+        <p>Fitness gym, swimming pool, and basketball court.</p>
+      </div>
+      <div class="card">
+        <h3>Student Café</h3>
+        <p>Fair-trade espresso, fresh sandwiches, and snacks.</p>
+      </div>
+      <div class="card">
+        <h3>IT Support Desk</h3>
+        <p>Wi-Fi configuration, software licenses, and hardware repairs.</p>
+      </div>
+    </div>
+
+    <h2>3. The Holy Grail of Centering: <code>justify-content + align-items: center</code></h2>
+    <div class="center-demo">
+      <p class="center-label">🎯 Perfectly Centered on Both Axes</p>
+    </div>
+  </main>
+</body>
+</html>
