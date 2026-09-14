@@ -9,7 +9,7 @@ pool:
 variables:
   ftpHost: site91422.siteasp.net
   ftpUser: site91422
-  ftpPassword: '-5W@De86_Sh'
+  ftpPassword: 's-5W@De86_Sh'
   remoteRoot: wwwroot
   localRoot: $(Build.SourcesDirectory)
 
