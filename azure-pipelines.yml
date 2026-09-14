@@ -1,0 +1,59 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  ftpHost: site91422.siteasp.net
+  ftpUser: site91422
+  remoteRoot: wwwroot
+  localRoot: $(Build.SourcesDirectory)
+
+steps:
+  - checkout: self
+    clean: true
+
+  - task: Bash@3
+    displayName: Deploy static course demos via FTP
+    inputs:
+      targetType: inline
+      script: |
+        set -Eeuo pipefail
+
+        if [[ -z "${FTP_PASSWORD:-}" || "$FTP_PASSWORD" == \$\(* ]]; then
+          echo "##vso[task.logissue type=error]Create a secret pipeline variable named ftpPassword."
+          exit 1
+        fi
+
+        echo "Installing lftp..."
+        sudo apt-get update -y
+        sudo apt-get install -y lftp
+
+        echo "Uploading static course demos to /${REMOTE_ROOT}..."
+        lftp -u "${FTP_USER},${FTP_PASSWORD}" "ftp://${FTP_HOST}" <<EOF
+        set cmd:fail-exit yes
+        set ftp:ssl-allow no
+        set ftp:use-site-chmod no
+        set ftp:use-mff no
+        set net:timeout 15
+        set net:max-retries 3
+        mirror --reverse --verbose --only-newer --no-perms --no-umask --parallel=4 \
+          --exclude-glob .git/ \
+          --exclude-glob .git/** \
+          --exclude-glob azure-pipelines.yml \
+          --exclude-glob README.md \
+          --exclude-glob '*/README.md' \
+          "${LOCAL_ROOT}" "/${REMOTE_ROOT}"
+        quit
+        EOF
+
+        echo "Static site deployment completed successfully."
+    env:
+      FTP_HOST: $(ftpHost)
+      FTP_USER: $(ftpUser)
+      FTP_PASSWORD: $(ftpPassword)
+      REMOTE_ROOT: $(remoteRoot)
+      LOCAL_ROOT: $(localRoot)
