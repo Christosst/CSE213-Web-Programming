@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CSE213 Web Programming course demos covering HTML, CSS, JavaScript, and web graphics.">
+  <title>CSE213 Web Programming — Demo Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Didact+Gothic&amp;family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d191c;
+      --muted: #5f5c5d;
+      --paper: #f7f8f7;
+      --card: #ffffff;
+      --line: #dddddd;
+      --accent: #ee4023;
+      --accent-dark: #b92b15;
+      --shadow: 0 14px 34px rgb(29 25 28 / 12%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      border-top: 0.4rem solid var(--accent);
+      background: var(--paper);
+      font-family: "Open Sans", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 10;
+      padding: 0.7rem 1rem;
+      border-radius: 0.5rem;
+      color: white;
+      background: var(--ink);
+      transform: translateY(-160%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    header,
+    main,
+    footer {
+      width: min(1120px, calc(100% - 2rem));
+      margin-inline: auto;
+    }
+
+    header {
+      padding: clamp(2.25rem, 6vw, 4rem) 0 1.75rem;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: clamp(2rem, 5vw, 3.75rem);
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-row img {
+      display: block;
+      width: min(19rem, 68vw);
+      height: auto;
+    }
+
+    .course-code {
+      flex: none;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--ink);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin: 0 0 1rem;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 2.25rem;
+      height: 0.2rem;
+      border-radius: 999px;
+      background: var(--accent);
+      content: "";
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(2.4rem, 7vw, 4.75rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      font-family: "Didact Gothic", "Open Sans", sans-serif;
+      font-weight: 400;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .intro {
+      max-width: 700px;
+      margin: 1.1rem 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.4rem;
+    }
+
+    .stat {
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--card);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .module {
+      display: grid;
+      grid-template-columns: minmax(12rem, 0.34fr) minmax(0, 1fr);
+      gap: clamp(1.25rem, 4vw, 4rem);
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .module-heading {
+      align-self: start;
+    }
+
+    .module-number {
+      display: block;
+      margin-bottom: 0.6rem;
+      color: var(--accent-dark);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      line-height: 1;
+      letter-spacing: -0.045em;
+      font-family: "Didact Gothic", "Open Sans", sans-serif;
+      font-weight: 400;
+    }
+
+    .module-heading p {
+      margin: 0.8rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .demo-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .demo a {
+      display: grid;
+      grid-template-columns: 2.55rem 1fr auto;
+      align-items: center;
+      gap: 0.85rem;
+      min-height: 5.25rem;
+      height: 100%;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--card);
+      box-shadow: 0 2px 0 rgb(29 25 28 / 4%);
+      text-decoration: none;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .demo a:hover,
+    .demo a:focus-visible {
+      border-color: var(--accent);
+      box-shadow: var(--shadow);
+      transform: translateY(-3px);
+    }
+
+    .chapter {
+      display: grid;
+      width: 2.55rem;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 0.65rem;
+      color: white;
+      background: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .demo-name {
+      font-weight: 750;
+      line-height: 1.25;
+    }
+
+    .demo-type {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .arrow {
+      color: var(--accent-dark);
+      font-size: 1.25rem;
+      transition: transform 160ms ease;
+    }
+
+    .demo a:hover .arrow,
+    .demo a:focus-visible .arrow {
+      transform: translateX(3px);
+    }
+
+    footer {
+      margin-top: 2rem;
+      padding: 2rem 0 3rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    footer a {
+      color: var(--ink);
+      font-weight: 700;
+      text-underline-offset: 0.2em;
+    }
+
+    @media (max-width: 760px) {
+      .module {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+
+      .module-heading p {
+        max-width: 32rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .brand-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .demo-list {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#demo-library">Skip to demos</a>
+
+  <header>
+    <div class="brand-row">
+      <a href="https://euc.ac.cy/en/" aria-label="European University Cyprus homepage">
+        <img src="https://euc.ac.cy/wp-content/uploads/2026/06/euc-logo.svg" width="350" height="67" alt="European University Cyprus">
+      </a>
+      <span class="course-code">CSE213</span>
+    </div>
+    <p class="eyebrow">Web Programming</p>
+    <h1>Course <span>Demo Library</span></h1>
+    <p class="intro">
+      A hands-on library of focused examples for HTML, CSS, JavaScript, responsive design,
+      performance, and SVG. Open any demo to explore the code and experiment in DevTools.
+    </p>
+    <div class="stats" aria-label="Library summary">
+      <span class="stat">32 live demos</span>
+      <span class="stat">28 chapters</span>
+      <span class="stat">5 modules</span>
+    </div>
+  </header>
+
+  <main id="demo-library">
+    <section class="module" aria-labelledby="introduction-heading">
+      <div class="module-heading">
+        <span class="module-number">Module 01 · 3 demos</span>
+        <h2 id="introduction-heading">Introduction</h2>
+        <p>Start with the browser, the network, and the principles behind resilient websites.</p>
+      </div>
+      <ol class="demo-list">
+        <li class="demo"><a href="01%20-%20Introduction/Ch01%20-%20Get%20Started/demo-first-page.html"><span class="chapter">01</span><span class="demo-name">My First Page<span class="demo-type">HTML foundations</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="01%20-%20Introduction/Ch02%20-%20How%20the%20Web%20Works/demo-devtools-network.html"><span class="chapter">02</span><span class="demo-name">How the Web Works<span class="demo-type">DevTools network inspection</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="01%20-%20Introduction/Ch03%20-%20Big%20Concepts/demo-progressive-enhancement.html"><span class="chapter">03</span><span class="demo-name">Progressive Enhancement<span class="demo-type">Resilient web design</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+      </ol>
+    </section>
+
+    <section class="module" aria-labelledby="html-heading">
+      <div class="module-heading">
+        <span class="module-number">Module 02 · 8 demos</span>
+        <h2 id="html-heading">HTML</h2>
+        <p>Give content meaning and structure with accessible, standards-based markup.</p>
+      </div>
+      <ol class="demo-list">
+        <li class="demo"><a href="02%20-%20HTML/Ch04%20-%20HTML%20Overview/demo-semantic-vs-div.html"><span class="chapter">04</span><span class="demo-name">Semantic HTML vs Div Soup<span class="demo-type">Document structure</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/Ch05%20-%20Text/demo-headings-and-text.html"><span class="chapter">05</span><span class="demo-name">Headings &amp; Text<span class="demo-type">Text-level semantics</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/Ch06%20-%20Links/demo-links.html"><span class="chapter">06</span><span class="demo-name">Links<span class="demo-type">Navigation and URLs</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/Ch07%20-%20Images/demo-images.html"><span class="chapter">07</span><span class="demo-name">Images<span class="demo-type">Accessible image markup</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/Ch08%20-%20Tables/demo-tables.html"><span class="chapter">08</span><span class="demo-name">Data Tables<span class="demo-type">Structured tabular data</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/Ch09%20-%20Forms/demo-accessible-form.html"><span class="chapter">09</span><span class="demo-name">Accessible Forms<span class="demo-type">Inputs and validation</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/Ch10%20-%20Media/demo-media.html"><span class="chapter">10</span><span class="demo-name">Audio &amp; Video<span class="demo-type">Embedded media</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="02%20-%20HTML/ARTICLE%20-%20Responsive%20Images/demo-responsive-images.html"><span class="chapter">+</span><span class="demo-name">Responsive Images<span class="demo-type">Picture, srcset, and sizes</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+      </ol>
+    </section>
+
+    <section class="module" aria-labelledby="css-heading">
+      <div class="module-heading">
+        <span class="module-number">Module 03 · 11 demos</span>
+        <h2 id="css-heading">CSS</h2>
+        <p>Move from core styling to modern layouts, responsive interfaces, and animation.</p>
+      </div>
+      <ol class="demo-list">
+        <li class="demo"><a href="03%20-%20CSS/Ch11%20-%20Intro%20to%20CSS/demo-intro-css.html"><span class="chapter">11</span><span class="demo-name">Introduction to CSS<span class="demo-type">Cascade and declarations</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch12%20-%20Formatting%20Text/demo-typography.html"><span class="chapter">12</span><span class="demo-name">Typography<span class="demo-type">Formatting readable text</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch13%20-%20Colors%20and%20Backgrounds/demo-colors.html"><span class="chapter">13</span><span class="demo-name">Colors &amp; Backgrounds<span class="demo-type">Color systems and layers</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch14%20-%20Selectors/demo-selectors.html"><span class="chapter">14</span><span class="demo-name">CSS Selectors<span class="demo-type">Targeting elements</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch15%20-%20Box%20Model/demo-box-model.html"><span class="chapter">15</span><span class="demo-name">The Box Model<span class="demo-type">Sizing and spacing</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch16%20-%20Floating%20and%20Positioning/demo-float-position.html"><span class="chapter">16</span><span class="demo-name">Float &amp; Positioning<span class="demo-type">Classic layout tools</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch17%20-%20Flexbox/demo-flexbox.html"><span class="chapter">17</span><span class="demo-name">Flexbox<span class="demo-type">One-dimensional layout</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch18%20-%20Grid/demo-grid.html"><span class="chapter">18</span><span class="demo-name">CSS Grid<span class="demo-type">Two-dimensional layout</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch19%20-%20Responsive%20Web%20Design/demo-responsive.html"><span class="chapter">19</span><span class="demo-name">Responsive Design<span class="demo-type">Media and container queries</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch20%20-%20Transitions%20and%20Animation/demo-animation.html"><span class="chapter">20</span><span class="demo-name">Transitions &amp; Animation<span class="demo-type">Motion and interaction</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="03%20-%20CSS/Ch21%20-%20CSS%20Techniques/demo-css-techniques.html"><span class="chapter">21</span><span class="demo-name">Modern CSS Techniques<span class="demo-type">Advanced patterns</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+      </ol>
+    </section>
+
+    <section class="module" aria-labelledby="javascript-heading">
+      <div class="module-heading">
+        <span class="module-number">Module 04 · 7 demos</span>
+        <h2 id="javascript-heading">JavaScript</h2>
+        <p>Add behaviour, state, concurrency, and offline capabilities to web pages.</p>
+      </div>
+      <ol class="demo-list">
+        <li class="demo"><a href="04%20-%20JavaScript/Ch22%20-%20Intro%20to%20JavaScript/demo-js-fundamentals.html"><span class="chapter">22</span><span class="demo-name">JavaScript Fundamentals<span class="demo-type">Values, variables, and logic</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="04%20-%20JavaScript/Ch23%20-%20Functions%20and%20Loops/demo-arrays-modules/index.html"><span class="chapter">23</span><span class="demo-name">Arrays &amp; ES Modules<span class="demo-type">Functions, loops, and imports</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="04%20-%20JavaScript/Ch24%20-%20DOM%20and%20Events/demo-dom-events.html"><span class="chapter">24</span><span class="demo-name">DOM &amp; Events<span class="demo-type">Interactive interfaces</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="04%20-%20JavaScript/Ch25%20-%20Next%20Level%20JS/demo-fetch-states.html"><span class="chapter">25</span><span class="demo-name">Fetch API &amp; UI States<span class="demo-type">Async network requests</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="04%20-%20JavaScript/Ch25%20-%20Next%20Level%20JS/demo-local-storage.html"><span class="chapter">25</span><span class="demo-name">LocalStorage Persistence<span class="demo-type">Browser-side storage</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="04%20-%20JavaScript/Ch25%20-%20Next%20Level%20JS/demo-service-worker/index.html"><span class="chapter">25</span><span class="demo-name">Service Worker<span class="demo-type">Offline application shell</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="04%20-%20JavaScript/Ch25%20-%20Next%20Level%20JS/demo-web-worker/index.html"><span class="chapter">25</span><span class="demo-name">Web Worker<span class="demo-type">Concurrent background work</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+      </ol>
+    </section>
+
+    <section class="module" aria-labelledby="graphics-heading">
+      <div class="module-heading">
+        <span class="module-number">Module 05 · 3 demos</span>
+        <h2 id="graphics-heading">Web Graphics &amp; SVG</h2>
+        <p>Choose, optimise, and create visual assets for sharp and performant interfaces.</p>
+      </div>
+      <ol class="demo-list">
+        <li class="demo"><a href="05%20-%20Web%20Graphics%20%26%20SVG/Ch26%20-%20Web%20Image%20Basics/demo-image-formats.html"><span class="chapter">26</span><span class="demo-name">Web Image Formats<span class="demo-type">Raster and vector choices</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="05%20-%20Web%20Graphics%20%26%20SVG/Ch27%20-%20Image%20Production/demo-image-optimisation.html"><span class="chapter">27</span><span class="demo-name">Image Production<span class="demo-type">Optimisation and performance</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+        <li class="demo"><a href="05%20-%20Web%20Graphics%20%26%20SVG/Ch28%20-%20SVG/demo-svg.html"><span class="chapter">28</span><span class="demo-name">Scalable Vector Graphics<span class="demo-type">Inline and interactive SVG</span></span><span class="arrow" aria-hidden="true">→</span></a></li>
+      </ol>
+    </section>
+
+  </main>
+
+  <footer>
+    CSE213 Web Programming · <a href="https://euc.ac.cy/en/">European University Cyprus</a>
+  </footer>
+
+</body>
+</html>
