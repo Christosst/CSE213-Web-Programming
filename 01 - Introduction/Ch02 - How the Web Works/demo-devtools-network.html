@@ -1,0 +1,118 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch02 — How the Web Works · demo-devtools-network.html ║
+  ║  CONCEPT: What actually happens between the browser and server   ║
+  ║           when you visit a web page.                            ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  EXERCISE
+  ─────────
+  1. Open this file in Chrome or Edge.
+  2. Press F12 → click the "Network" tab.
+  3. Press Ctrl+Shift+R to HARD reload (bypasses cache).
+  4. Click the first entry in the list (this HTML file).
+  5. Explore the "Headers" tab:
+       - "Request Headers" = what the browser sent TO the server
+       - "Response Headers" = what the server sent BACK
+       - Look for: Status Code: 200 OK
+       - Look for: Content-Type: text/html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTools — Network Demo</title>
+
+  <style>
+    /*
+      CSS lives inside <style> tags in the <head>.
+      These rules apply to the WHOLE page.
+    */
+
+    /* Make the page readable: limit width and centre it */
+    body {
+      font-family: system-ui, sans-serif; /* system-ui = the OS's default font */
+      max-width: 640px;                   /* never wider than 640px */
+      margin: 2rem auto;                  /* 2rem top/bottom, auto = centred horizontally */
+      padding: 0 1rem;                    /* breathing room on small screens */
+    }
+
+    /* A highlighted card — border-left creates the coloured stripe */
+    .card {
+      background: #f0f4ff;
+      border-left: 4px solid #4f46e5;
+      padding: 1rem;
+      border-radius: 4px;   /* slightly rounded corners */
+    }
+
+    /* Style the <code> element so it looks like monospaced computer text */
+    code {
+      background: #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace; /* fixed-width font, easier to read code */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Semantic landmark: the top banner of the page -->
+  <header>
+    <h1>HTTP Request / Response</h1>
+  </header>
+
+  <main>
+    <!-- .card gives this <div> the highlighted style defined above -->
+    <div class="card">
+      <p>
+        Open <strong>DevTools → Network</strong> and hard-reload
+        (<code>Ctrl+Shift+R</code>).
+      </p>
+      <p>
+        Click the first row (this HTML file) and explore the
+        <em>Headers</em> and <em>Response</em> tabs.
+      </p>
+    </div>
+
+    <h2>What happens step-by-step</h2>
+
+    <!--
+      <ol> = ordered list (numbered).
+      Use <ol> when ORDER matters (steps, rankings).
+      Use <ul> when order does NOT matter (shopping list, features).
+    -->
+    <ol>
+      <!--
+        Each step in the HTTP conversation.
+        Notice how each <li> is self-contained — this is good practice.
+      -->
+      <li>
+        Browser sends:
+        <code>GET /demo-devtools-network.html HTTP/1.1</code>
+        <!-- GET = "please give me this resource" — the most common HTTP method -->
+      </li>
+      <li>
+        Server replies:
+        <code>200 OK</code> + <code>Content-Type: text/html</code>
+        <!-- 200 = success. Content-Type tells the browser HOW to interpret the bytes. -->
+      </li>
+      <li>
+        Browser parses the HTML → builds the DOM tree → renders pixels on screen
+        <!-- DOM = Document Object Model: the browser's in-memory representation of the page -->
+      </li>
+    </ol>
+
+    <h2>Key terms to remember</h2>
+    <ul>
+      <li><strong>HTTP</strong> — the language browsers and servers speak to each other</li>
+      <li><strong>GET</strong> — a request to READ a resource (most page loads)</li>
+      <li><strong>POST</strong> — a request to SEND data (form submissions)</li>
+      <li><strong>200</strong> — success. <strong>404</strong> — not found. <strong>500</strong> — server error</li>
+      <li><strong>Content-Type</strong> — tells the browser what kind of data is arriving</li>
+      <li><strong>DOM</strong> — the live tree structure the browser builds from your HTML</li>
+    </ul>
+  </main>
+
+</body>
+</html>

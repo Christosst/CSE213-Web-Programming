@@ -1,0 +1,115 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch01 — Get Started · demo-first-page.html            ║
+  ║  CONCEPT: The minimal structure every HTML page must have.      ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  HOW TO USE THIS DEMO
+  ─────────────────────
+  1. Double-click this file to open it in your browser.
+  2. Press F12 to open DevTools → click the "Network" tab.
+  3. Press Ctrl+Shift+R (hard reload) — you will see the browser
+     "fetch" this exact file and receive it as a response.
+  4. Click the first row in the Network panel and explore the
+     "Headers" and "Response" tabs — that is the raw HTTP conversation.
+-->
+
+<!--
+  STEP 1 ── DOCTYPE declaration
+  This single line tells the browser: "This is a modern HTML5 document."
+  Without it, some browsers enter "quirks mode" and behave differently.
+  Always put this on line 1, exactly as shown.
+-->
+<!DOCTYPE html>
+
+<!--
+  STEP 2 ── The root <html> element
+  Everything visible on the page lives inside here.
+  lang="en" tells screen readers and search engines that
+  the page content is in English. Always set the correct language!
+-->
+<html lang="en">
+
+<head>
+  <!--
+    The <head> section is NOT visible to the user.
+    It contains instructions FOR THE BROWSER about the document.
+  -->
+
+  <!--
+    charset="UTF-8" means the browser should use the UTF-8 character
+    encoding. This allows letters from almost every language on Earth,
+    plus emoji, to display correctly. Always include this.
+  -->
+  <meta charset="UTF-8">
+
+  <!--
+    This meta tag is essential for RESPONSIVE DESIGN on mobile devices.
+    Without it, mobile browsers zoom out to show a "desktop" view.
+    - width=device-width : use the device's real screen width
+    - initial-scale=1.0  : start at 100% zoom (no zooming in/out)
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--
+    <title> sets the text that appears in the browser tab.
+    It is also what search engines show as the clickable headline.
+    Make it descriptive and unique for every page.
+  -->
+  <title>My First Page — CSE213</title>
+</head>
+
+<body>
+  <!--
+    Everything inside <body> IS visible to the user.
+    We use SEMANTIC elements — tags that describe their PURPOSE,
+    not just their appearance. This helps screen readers and
+    search engines understand the page structure.
+  -->
+
+  <!--
+    <header> = the top banner area of the page.
+    Usually contains the site name and/or navigation.
+  -->
+  <header>
+    <!--
+      <h1> = the main heading of the page.
+      There should be EXACTLY ONE <h1> per page.
+      Its font size can be changed with CSS — do not choose
+      h2/h3 just because you want smaller text!
+    -->
+    <h1>Welcome to Web Programming</h1>
+  </header>
+
+  <!--
+    <main> = the primary content area.
+    Screen readers can jump directly here, skipping navigation.
+    There should be exactly one <main> per page.
+  -->
+  <main>
+    <!--
+      <p> = paragraph. The most common text container.
+      The browser adds a small margin above and below automatically.
+    -->
+    <p>This file lives on your hard drive. The browser fetched it directly —
+       no server required for a local file.</p>
+
+    <!--
+      <a href="..."> = a hyperlink (anchor).
+      href = "HyperText REFerence" — the destination URL.
+      The text between the tags is what the user clicks.
+      TIP: always use descriptive link text, never "click here".
+    -->
+    <a href="https://validator.w3.org/">Validate this page →</a>
+  </main>
+
+  <!--
+    <footer> = the bottom area of the page.
+    Usually contains copyright, contact links, or credits.
+  -->
+  <footer>
+    <p>CSE213 · Session 1</p>
+  </footer>
+</body>
+
+</html>

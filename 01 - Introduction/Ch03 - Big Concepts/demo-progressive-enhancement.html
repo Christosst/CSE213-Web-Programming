@@ -1,0 +1,148 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · Ch03 — Big Concepts · demo-progressive-enhancement    ║
+  ║  CONCEPT: Progressive Enhancement — build in layers so the page ║
+  ║           works for EVERYONE, even without CSS or JavaScript.   ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WHAT IS PROGRESSIVE ENHANCEMENT?
+  ──────────────────────────────────
+  Think of it like a building:
+    Layer 1 (Foundation) = HTML content  — readable even as plain text
+    Layer 2 (Walls)      = CSS styles    — adds colour, layout, fonts
+    Layer 3 (Furniture)  = JavaScript    — adds interactive behaviour
+
+  If Layer 3 breaks, Layers 1 and 2 still work.
+  If Layer 2 also breaks, Layer 1 still works.
+
+  This is the OPPOSITE of building a page that only works
+  with JavaScript ("JavaScript-only" apps). Why does it matter?
+    • Screen readers may disable or not run JS correctly
+    • Corporate networks sometimes block external scripts
+    • A bad connection may cause JS to fail to download
+    • Search engine crawlers prioritise HTML content
+
+  EXERCISE
+  ─────────
+  Try disabling CSS: DevTools → ... → More tools → Rendering →
+    "Emulate CSS media type" → print (or simply delete the <style> block)
+  The content is still readable! That is Layer 1 working alone.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progressive Enhancement Demo</title>
+
+  <!--
+    ═══════════════════════════════════════════
+    LAYER 2: PRESENTATION (CSS)
+    This entire <style> block is Layer 2.
+    If we deleted it, the page would still be readable
+    (plain text with browser defaults). CSS only ENHANCES it.
+    ═══════════════════════════════════════════
+  -->
+  <style>
+    /* Readable body: limited width + centred */
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Brand colour for the main heading */
+    h1 { color: #1e40af; }
+
+    /*
+      Style the button — without this CSS the button would show
+      as a plain grey rectangle, which still works!
+    */
+    button {
+      padding: .5rem 1rem;
+      background: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer; /* shows a hand icon on hover */
+    }
+
+    /*
+      #message = targets the element with id="message"
+      min-height keeps the layout stable so the page
+      does not jump when the message appears.
+    */
+    #message {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #15803d;
+      min-height: 1.5rem; /* reserve space so the layout does not jump */
+    }
+  </style>
+</head>
+<body>
+
+  <!--
+    ═══════════════════════════════════════════
+    LAYER 1: CONTENT (HTML)
+    This is the foundation. It must make sense
+    even with ZERO styling or scripting applied.
+    ═══════════════════════════════════════════
+  -->
+  <header>
+    <h1>Progressive Enhancement</h1>
+  </header>
+
+  <main>
+    <p>This page works at three levels:</p>
+    <ol>
+      <li><strong>Content</strong> — readable HTML with no styles</li>
+      <li><strong>Presentation</strong> — CSS adds colour and layout</li>
+      <li><strong>Behaviour</strong> — JavaScript adds interactivity</li>
+    </ol>
+
+    <!--
+      type="button" is important on buttons INSIDE a form —
+      it prevents the button from accidentally submitting the form.
+      It's a good habit to always write it.
+    -->
+    <button id="greet-btn" type="button">Click me</button>
+
+    <!--
+      aria-live="polite" tells screen readers:
+      "When the text inside this element changes, announce it —
+       but wait until the user has finished what they are doing."
+      This is how we make dynamic content accessible.
+    -->
+    <p id="message" aria-live="polite"></p>
+  </main>
+
+  <!--
+    ═══════════════════════════════════════════
+    LAYER 3: BEHAVIOUR (JavaScript)
+    The <script> tag goes at the END of <body> so the HTML
+    above is already loaded before this code runs.
+    If this script fails or is blocked, the page still shows
+    its content (Layers 1 & 2 still work).
+    ═══════════════════════════════════════════
+  -->
+  <script>
+    /*
+      getElementById('greet-btn') finds the button by its id.
+      addEventListener('click', ...) means: "when the button is clicked,
+      run this function."
+      The function is written as an arrow function: () => { ... }
+    */
+    document.getElementById('greet-btn').addEventListener('click', () => {
+      /*
+        textContent safely sets the TEXT inside an element.
+        (Never use innerHTML with user-supplied data — security risk!)
+      */
+      document.getElementById('message').textContent =
+        'JavaScript is active — behaviour layer working!';
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,226 @@
+﻿<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  CSE213 · ARTICLE — Responsive Images                            ║
+  ║  demo-responsive-images.html                                     ║
+  ║  CONCEPT: srcset, sizes, <picture>, Art Direction, WebP/AVIF     ║
+  ║  DEVTOOLS: Network panel (Img filter + Throttling), Elements     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  WHY RESPONSIVE IMAGES MATTER TO WEB DEVELOPERS:
+  ────────────────────────────────────────────────
+  Images account for over 60% of the data transferred on an average
+  web page. Serving a 3000px wide, 4MB desktop hero image to a mobile
+  phone on a 3G connection wastes data, drains battery, and makes
+  the page feel slow.
+
+  Responsive images solve two distinct problems:
+  1. RESOLUTION SWITCHING: Same image, different resolutions/file sizes.
+     Use <img> with `srcset` and `sizes`. Let the BROWSER decide which file
+     to download based on screen width and device pixel ratio (DPR).
+  2. ART DIRECTION & FORMAT SWITCHING: Different crop/ratio or newer format
+     (AVIF, WebP with JPEG fallback). Use <picture> and <source>.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Images Demo — CSE213</title>
+  <style>
+    /* Global styles for comfortable reading and clean presentation */
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 760px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f8fafc;
+    }
+
+    /*
+      FLUID IMAGE RULE:
+      `max-width: 100%` ensures the image never overflows its container.
+      `height: auto` preserves the image's natural aspect ratio.
+      Without this rule, a 1200px wide image would cause a horizontal scrollbar!
+    */
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    figure {
+      margin: 1.5rem 0;
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    figcaption {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-top: 0.75rem;
+      border-left: 3px solid #3b82f6;
+      padding-left: 0.5rem;
+    }
+
+    h1 { color: #0f172a; }
+    h2 {
+      margin-top: 2rem;
+      color: #1e40af;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #e0e7ff;
+      color: #3730a3;
+      margin-bottom: 0.5rem;
+    }
+
+    .tip-box {
+      background-color: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Responsive Images in Action</h1>
+    <p>Open <strong>DevTools &rarr; Network</strong> (filter by <em>Img</em>), then resize your browser or switch device simulation to see which image file the browser requests.</p>
+  </header>
+
+  <main>
+    <!-- ============================================================ -->
+    <!-- DEMO 1: THE TRADITIONAL FIXED-SIZE IMAGE                     -->
+    <!-- ============================================================ -->
+    <h2>1 — Baseline Fixed Image (No srcset)</h2>
+    <span class="badge">Problem: One Size Fits Nobody</span>
+    <figure>
+      <!--
+        - src: Only one single URL.
+        - width & height: Crucial for preventing Layout Shifts (CLS)!
+          The browser calculates aspect-ratio (800 / 450) and reserves space
+          BEFORE the pixels download.
+        - loading="lazy": Defers loading until image is near viewport.
+      -->
+      <img
+        src="https://picsum.photos/seed/rwd/800/450"
+        alt="Mountain landscape at sunrise with mist in the valley"
+        width="800"
+        height="450"
+        loading="lazy">
+      <figcaption>
+        <strong>Baseline:</strong> The browser has no choice but to download this 800px wide image
+        regardless of whether the user is on a tiny 320px phone or a 4K desktop monitor.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ -->
+    <!-- DEMO 2: RESOLUTION SWITCHING WITH srcset + sizes             -->
+    <!-- ============================================================ -->
+    <h2>2 — Resolution Switching (srcset &amp; sizes)</h2>
+    <span class="badge">Solution: Let Browser Pick the Best Resolution</span>
+    <figure>
+      <!--
+        `srcset` defines a comma-separated candidate list of images:
+          - URL followed by a width descriptor (e.g. `400w` means this file is 400px wide).
+          DO NOT use pixel density (1x, 2x) when image scales fluidly with viewport width!
+
+        `sizes` tells the browser how wide the image WILL display on screen BEFORE CSS downloads:
+          - `(max-width: 640px) 100vw`: On screens under 640px wide, the image is 100% of viewport width.
+          - `800px`: On larger screens, the image is capped at 800px wide.
+
+        `src`: Serves as the fallback for browsers that do not support srcset (universal fallback).
+      -->
+      <img
+        srcset="https://picsum.photos/seed/rwd/400/225 400w,
+                https://picsum.photos/seed/rwd/800/450 800w,
+                https://picsum.photos/seed/rwd/1200/675 1200w"
+        sizes="(max-width: 640px) 100vw, 800px"
+        src="https://picsum.photos/seed/rwd/800/450"
+        alt="Mountain landscape at sunrise with mist in the valley"
+        width="800"
+        height="450"
+        loading="lazy">
+      <figcaption>
+        <strong>How it works:</strong> The browser multiplies layout width &times; Device Pixel Ratio (DPR).
+        For example: on a phone (390px wide, 2x Retina screen), needed pixels = 780px.
+        The browser chooses the `800w` file instead of downloading `1200w` or the small blurry `400w`!
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ -->
+    <!-- DEMO 3: ART DIRECTION & MODERN FORMATS WITH <picture>        -->
+    <!-- ============================================================ -->
+    <h2>3 — Art Direction &amp; Modern Formats (&lt;picture&gt;)</h2>
+    <span class="badge">Solution: Different Crops and Format Fallbacks</span>
+    <figure>
+      <!--
+        <picture> is a wrapper that contains zero or more <source> elements
+        and exactly ONE <img> element at the bottom.
+        The browser evaluates <source> tags from TOP to BOTTOM:
+        The FIRST matching <source> is selected!
+      -->
+      <picture>
+        <!--
+          ART DIRECTION:
+          On small screens (<= 500px), a wide panoramic landscape loses all detail.
+          Here we supply a square, tightly-cropped close-up image!
+        -->
+        <source
+          media="(max-width: 500px)"
+          srcset="https://picsum.photos/seed/close-flower/400/400">
+
+        <!--
+          DESKTOP FORMAT:
+          On wider screens, show the standard wide banner.
+        -->
+        <source
+          media="(min-width: 501px)"
+          srcset="https://picsum.photos/seed/flower-banner/800/350">
+
+        <!--
+          THE MANDATORY FALLBACK <img>:
+          <picture> does NOT render anything by itself!
+          The styling, alt text, and physical rendering are ALWAYS done by this <img> tag.
+        -->
+        <img
+          src="https://picsum.photos/seed/flower-banner/800/350"
+          alt="Macro shot of vibrant blooming flowers in sunlight"
+          width="800"
+          height="350"
+          loading="lazy">
+      </picture>
+      <figcaption>
+        <strong>Art Direction:</strong> Shrink your browser window below 500px.
+        Notice how the composition changes from a wide landscape banner into a square close-up!
+      </figcaption>
+    </figure>
+
+    <div class="tip-box">
+      <strong>🎓 Student Takeaway:</strong>
+      <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+        <li>Use <code>&lt;img srcset="..." sizes="..."&gt;</code> for <em>Resolution Switching</em> (saving bandwidth).</li>
+        <li>Use <code>&lt;picture&gt;</code> for <em>Art Direction</em> (different crops) or <em>Format Switching</em> (AVIF &rarr; WebP &rarr; JPEG).</li>
+        <li>Always supply <code>width</code>, <code>height</code>, and descriptive <code>alt</code> text on the <code>&lt;img&gt;</code> tag!</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>
