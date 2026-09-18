@@ -1,0 +1,23 @@
+{
+  "name": "cse213-web-programming",
+  "version": "1.0.0",
+  "description": "Live-coding demos for all 28 LWD6 chapters, organised to match the slide deck folder structure.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christosst/CSE213-Web-Programming.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Christosst/CSE213-Web-Programming/issues"
+  },
+  "homepage": "https://github.com/Christosst/CSE213-Web-Programming#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.3"
+  }
+}
