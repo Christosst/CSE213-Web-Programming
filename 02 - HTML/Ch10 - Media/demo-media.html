@@ -104,13 +104,13 @@
           (Alternative: `preload="none"` for heavy media; `preload="auto"` to buffer immediately).
         - `poster`: An image displayed while the video downloads or before the user clicks play.
       -->
-      <video controls preload="metadata" poster="https://picsum.photos/seed/vid/640/360">
+      <video controls preload="metadata" poster="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=640&h=360&fit=crop">
         <!--
           SOURCE FALLBACKS:
           Browser checks top-to-bottom and plays the FIRST supported format.
         -->
-        <source src="sample.mp4" type="video/mp4">
-        <source src="sample.webm" type="video/webm">
+        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm">
 
         <!--
           ACCESSIBILITY: <track> FOR CAPTIONS:
@@ -119,12 +119,12 @@
           - srclang="en": Language code.
           - default: Automatically enabled when player starts.
         -->
-        <track kind="captions" src="captions-en.vtt" srclang="en" label="English Captions" default>
+        <track kind="captions" src="https://interactive-examples.mdn.mozilla.net/media/examples/friday.vtt" srclang="en" label="English Captions" default>
 
         <!-- Fallback text for legacy browsers (IE8 or older) -->
         <p>
           Your browser does not support native HTML5 video.
-          <a href="sample.mp4">Download the video file instead</a>.
+          <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">Download the video file instead</a>.
         </p>
       </video>
 
@@ -145,11 +145,11 @@
         <audio> works identically to <video>, but without a visual display area.
       -->
       <audio controls preload="metadata">
-        <source src="sample.mp3" type="audio/mpeg">
-        <source src="sample.ogg" type="audio/ogg">
+        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" type="audio/mpeg">
+        <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
         <p>
           Your browser does not support the audio element.
-          <a href="sample.mp3">Download the audio file</a>.
+          <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3">Download the audio file</a>.
         </p>
       </audio>
 

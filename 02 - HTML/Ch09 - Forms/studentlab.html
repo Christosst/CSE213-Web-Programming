@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student registration</title>
+</head>
+<body>
+  <h1>Student registration</h1>
+
+  <form action="/register" method="post">
+    <fieldset>
+      <legend>Personal details</legend>
+
+      <p>
+        <label for="full-name">Full name</label><br>
+        <input id="full-name" name="full_name" type="text"
+               autocomplete="name" required>
+      </p>
+
+      <p>
+        <label for="email">University email</label><br>
+        <input id="email" name="email" type="email"
+               autocomplete="email" required>
+      </p>
+
+      <p>
+        <label for="phone">Telephone number</label><br>
+        <input id="phone" name="phone" type="tel"
+               autocomplete="tel">
+      </p>
+
+      <p>
+        <label for="student-code">Student code</label><br>
+        <input id="student-code" name="student_code" type="text"
+               pattern="[A-Z][0-9]{6}" required
+               aria-describedby="code-help">
+        <br>
+        <small id="code-help">
+          Enter one uppercase letter followed by six digits,
+          for example A123456.
+        </small>
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Academic details</legend>
+
+      <p>
+        <label for="program">Program</label><br>
+        <select id="program" name="program" required>
+          <option value="">Choose a program</option>
+          <option value="computer-science">Computer Science</option>
+          <option value="information-systems">Information Systems</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="start-date">Start date</label><br>
+        <input id="start-date" name="start_date" type="date"
+               min="2026-10-05" max="2027-01-29" required>
+      </p>
+
+      <fieldset>
+        <legend>Study year</legend>
+        <label>
+          <input type="radio" name="study_year" value="1" required>
+          Year 1
+        </label>
+        <label>
+          <input type="radio" name="study_year" value="2">
+          Year 2
+        </label>
+        <label>
+          <input type="radio" name="study_year" value="3">
+          Year 3
+        </label>
+      </fieldset>
+
+      <p>
+        <label for="weekly-hours">Available study hours per week</label><br>
+        <input id="weekly-hours" name="weekly_hours" type="number"
+               min="1" max="40" required>
+      </p>
+
+      <p>
+        <label for="notes">Additional notes</label><br>
+        <textarea id="notes" name="notes" rows="4"></textarea>
+      </p>
+    </fieldset>
+
+    <button type="submit">Register</button>
+  </form>
+</body>
+</html>
