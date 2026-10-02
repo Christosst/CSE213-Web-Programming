@@ -4,7 +4,7 @@ The Azure pipeline now builds **Demos/CourseApi** and **Demos/UniversityApi**, c
 
 ## Azure pipeline settings
 
-- Define **ftpPassword** as a secret pipeline variable. Do not put the value in YAML.
+- **ftpPassword** is defined in YAML using the existing FTP password. Confirm it is current.
 - Check **ftpHost**, **ftpUser** and **remoteRoot**. Defaults preserve the previous FTP host/account and `wwwroot` directory.
 - Check **siteUrl**, currently `http://cse213.runasp.net`. The verification step must reach the actual binding for that IIS site. Use HTTPS when configured by the host.
 - **publishRuntime** defaults to `win-x64`. Set `win-x86` if the hosting application's pool runs in 32-bit mode.
@@ -52,7 +52,7 @@ Run `python tools/test-university.py` with .NET 10 installed. It checks isolated
 
 ## Before the first main-branch deployment
 
-1. Create the `ftpPassword` secret in Azure Pipelines.
+1. Confirm the `ftpPassword` value in YAML is current.
 2. Create an IIS application with alias **universityAPI**, physical path **wwwroot/universityAPI**, and its own compatible application pool. Create the folder in the control panel if needed; the pipeline uploads the files.
 3. Grant that pool write permission to **wwwroot/universityAPI/App_Data**.
 4. Confirm the root website is also configured for ASP.NET Core and the host supports .NET 10 through the ASP.NET Core IIS module.

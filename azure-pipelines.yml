@@ -14,7 +14,7 @@ variables:
   buildConfiguration: Release
   publishRuntime: win-x64
   swaggerEnabled: 'true'
-  # Define ftpPassword as a SECRET variable in Azure Pipelines.
+  ftpPassword: "$FTP_PASSWORD"
 
 steps:
   - checkout: self
@@ -75,7 +75,7 @@ steps:
       script: |
         set -Eeuo pipefail
         if [[ -z "${FTP_PASSWORD:-}" || "$FTP_PASSWORD" == \$\(* ]]; then
-          echo "##vso[task.logissue type=error]Create a secret pipeline variable named ftpPassword."
+          echo "##vso[task.logissue type=error]Set ftpPassword in the pipeline variables."
           exit 1
         fi
         # Keep the target explicit. Never mirror with --delete against shared hosting.
