@@ -43,9 +43,9 @@ for file in public.rglob('*.html'):
         begin = text.index('    <p><strong>Start here:</strong>')
         end = text.index('</p>', begin) + len('</p>')
         text = text[:begin] + ('    <p><strong>Hosted demos:</strong> the catalogue and REST API run on this website. '
-            '<a href="/api-demo.html">Open the API demos</a> · <a href="/swagger">Swagger UI</a> · '
-            '<a href="/universityAPI/swagger/">University SQLite Swagger</a> · '
-            '<a href="README.md">Local setup guide</a> · '
+            '<a href="/api-demo.html">Open the API demos</a> Â· <a href="/swagger">Swagger UI</a> Â· '
+            '<a href="/universityAPI/swagger/">University SQLite Swagger</a> Â· '
+            '<a href="README.md">Local setup guide</a> Â· '
             '<a href="COURSE-DEMO-REVIEW.md">Slide-to-demo review</a>.</p>') + text[end:]
         text = text.replace('Run CourseApi on port 5080', 'Use the API on this website')
     elif file.parent.parent.name == '05 - ASP.NET Core Web API':
@@ -60,6 +60,8 @@ settings = publish / 'appsettings.Production.json'
 configuration = json.loads(settings.read_text(encoding='utf-8')) if settings.exists() else {}
 configuration.setdefault('Swagger', {})['Enabled'] = args.swagger_enabled == 'true'
 settings.write_text(json.dumps(configuration, indent=2) + '\n', encoding='utf-8')
+if not (university / 'SeedData/university-import.json').is_file():
+    raise SystemExit('The full university seed dataset was not published.')
 universitySettings = university / 'appsettings.Production.json'
-universitySettings.write_text(json.dumps({'Swagger': {'Enabled': args.swagger_enabled == 'true'}}, indent=2) + '\n', encoding='utf-8')
+universitySettings.write_text(json.dumps({'Swagger': {'Enabled': args.swagger_enabled == 'true'}, 'SeedData': {'ImportPath': 'SeedData/university-import.json'}}, indent=2) + '\n', encoding='utf-8')
 print('Prepared CourseApi, separate UniversityApi and public catalogue with hosted API links.')

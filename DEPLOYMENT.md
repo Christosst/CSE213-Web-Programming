@@ -24,7 +24,7 @@ The publish step includes the .NET 10 runtime (self-contained), an executable an
 | `/text.html`, `/tasks.html` | Same-origin JavaScript frontends |
 | `/swagger`, `/openapi/v1.json` | Classroom Swagger and OpenAPI, when enabled |
 | `/universityAPI/` | University SQLite landing page |
-| `/universityAPI/swagger/`, `/universityAPI/openapi/v1.json` | University Swagger and its 22 operations |
+| `/universityAPI/swagger/`, `/universityAPI/openapi/v1.json` | University Swagger and its 30 operations |
 | `/universityAPI/api/students`, `/universityAPI/api/teachers`, `/universityAPI/api/courses`, `/universityAPI/api/enrollments` | Persistent university CRUD |
 | `/form-echo` | Chapter 9 form POST echo without storage |
 
@@ -34,7 +34,7 @@ The packaged chapter guides point to this website's API rather than a visitor's 
 
 Configure **/universityAPI as a separate IIS application** in the hosting control panel, pointing to the published universityAPI folder. Use a **separate application pool** from the root CourseApi: both use ASP.NET Core in-process hosting. Match the published architecture. A virtual directory alone is insufficient.
 
-Give the university application's pool write access to **App_Data**. The app creates App_Data/university.db and seeds one example per entity only on database creation. The database is outside wwwroot and cannot be downloaded. The upload excludes App_Data, database files and journals and does not delete existing remote files, preserving records across deployments. Back up the database before schema changes; this small demo uses EnsureCreated, not migrations.
+Give the university application's pool write access to **App_Data**. The pipeline creates a populated App_Data/university.db from the bundled real dataset. Its separate database upload uses lftp --only-missing: an existing server database is skipped. If no database is present at startup, the app can create and import the initial dataset; an existing database is never reimported. The database is outside wwwroot and cannot be downloaded. The main website upload excludes App_Data, databases and journals. A separate --only-missing upload includes only university.db, never overwrites an existing database, and never uploads journals or backups. Both applications remain offline until those uploads complete. Back up the database before schema changes; the app includes a tested upgrade for the original four-table schema, backing it up before changes. Future unrelated schema changes need a deliberate upgrade.
 
 Open /universityAPI/swagger/ and follow its README walkthrough. For 500/502 errors, check the child IIS application, separate pool, Hosting Bundle and directory permissions. The small SqliteNotesApi starter stays local on port 5081. Root CourseApi has no EF Core dependency; its temporary tasks reset on restart.
 
@@ -59,3 +59,7 @@ Run `python tools/test-university.py` with .NET 10 installed. It checks isolated
 5. Check in the source, then run the main-branch pipeline. Its final step checks both APIs and Swagger.
 
 Changing the URL does not move an existing database from an older university folder. If that older application has classroom data, stop it, back up its App_Data folder, and copy the database and any required journal files to the new application before starting it.
+
+The full normalized roster/catalogue is committed under Demos/UniversityApi/SeedData/university-import.json and included outside wwwroot in the deployment package. Production config permits initial import only when creating a new database. The API and Swagger remain public. App_Data remains excluded from Git and the general upload. The artifact contains a freshly populated university.db, uploaded by a separate missing-only step. Existing databases, classroom edits, deletions, backups and journal files are preserved, even when the bundled dataset changes. Updating existing records requires an explicit instructor import; deploying code alone does not do it.
+
+Database upload behaviour follows the [lftp mirror documentation](https://lftp.yar.ru/lftp-man.html). `--only-missing` skips files already present at the destination.

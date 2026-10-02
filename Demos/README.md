@@ -58,4 +58,6 @@ Official references: [OpenAPI in ASP.NET Core 10](https://learn.microsoft.com/en
 
 ## University SQLite extension
 
-The fuller SQLite classroom demo is [UniversityApi](UniversityApi/README.md): students, teachers, courses and enrollments, with an ER diagram and 22 Swagger operations. Start it on port 5082. It is included in the deployment package at /universityAPI; the simple notes starter on port 5081 remains available locally.
+The fuller SQLite classroom demo is [UniversityApi](UniversityApi/README.md): students, teachers, courses, sections and enrollments, with an ER diagram and 30 Swagger operations. Start it on port 5082. It is included in the deployment package at /universityAPI; the simple notes starter on port 5081 remains available locally.
+
+The local UniversityApi database now contains the supplied 20-student roster and F2026 course/teacher catalogue. All students are assigned to Christos Stylianides' CSE213 ECA section. The real normalized dataset is included in Git and the deployment package under UniversityApi/SeedData, and is used to build the first-deployment SQLite database. The pipeline skips an existing hosted database, preserving all edits. SQLite files remain in ignored App_Data. See UniversityApi/README.md for refresh instructions and source mapping.

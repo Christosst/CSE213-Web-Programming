@@ -27,7 +27,7 @@ steps:
       version: '10.x'
 
   - task: Bash@3
-    displayName: Publish CourseApi and UniversityApi for Windows IIS
+    displayName: Publish CourseApi and full UniversityApi for Windows IIS
     inputs:
       targetType: inline
       script: |
@@ -51,6 +51,9 @@ steps:
           --output "$PUBLISH_DIR/universityAPI"
         test -f "$PUBLISH_DIR/universityAPI/UniversityApi.exe"
         test -f "$PUBLISH_DIR/universityAPI/web.config"
+        test -f "$PUBLISH_DIR/universityAPI/SeedData/university-import.json"
+        python3 tools/create-deployment-database.py \
+          --output "$PUBLISH_DIR/universityAPI/App_Data/university.db"
         python3 tools/prepare-deployment.py \
           --publish-dir "$PUBLISH_DIR" \
           --swagger-enabled "$SWAGGER_ENABLED"
@@ -112,6 +115,11 @@ steps:
           --exclude-glob '*.db' \
           --exclude-glob '*.db-*' \
           "$PUBLISH_DIR" "/${REMOTE_ROOT#/}"
+        # The application is offline. Only missing database files may be uploaded.
+        mkdir -p "/${REMOTE_ROOT#/}/universityAPI/App_Data"
+        mirror --reverse --only-missing --no-recursion --no-perms --no-umask \
+          --exclude-glob '*' --include-glob 'university.db' \
+          "$PUBLISH_DIR/universityAPI/App_Data" "/${REMOTE_ROOT#/}/universityAPI/App_Data"
         rm "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
         rm "/${REMOTE_ROOT#/}/app_offline.htm"
         bye

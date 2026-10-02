@@ -35,6 +35,7 @@ public class EnrollmentsController : UniversityControllerBase
         var item = new Enrollment();
         item.StudentId = request.StudentId;
         item.CourseId = request.CourseId;
+        item.CourseSectionId = request.CourseSectionId;
         item.EnrolledOn = request.EnrolledOn!.Value;
         db.Enrollments.Add(item);
         var conflict = await SaveChanges();
@@ -55,6 +56,7 @@ public class EnrollmentsController : UniversityControllerBase
         if (invalid is not null) return invalid;
         item.StudentId = request.StudentId;
         item.CourseId = request.CourseId;
+        item.CourseSectionId = request.CourseSectionId;
         item.EnrolledOn = request.EnrolledOn!.Value;
         return await SaveChanges() ?? NoContent();
     }
@@ -82,6 +84,9 @@ public class EnrollmentsController : UniversityControllerBase
         if (await db.Enrollments.AnyAsync(enrollment => enrollment.StudentId == request.StudentId &&
             enrollment.CourseId == request.CourseId && enrollment.Id != id))
             return Problem(statusCode: 409, title: "Student is already enrolled in this course");
+        if (request.CourseSectionId is not null && !await db.CourseSections.AnyAsync(section =>
+            section.Id == request.CourseSectionId && section.CourseId == request.CourseId))
+            return Problem(statusCode: 400, title: "CourseSectionId must identify a section of this course");
         return null;
     }
 }

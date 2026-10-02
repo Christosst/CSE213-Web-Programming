@@ -9,9 +9,12 @@ public class TeachersController : UniversityControllerBase
     public TeachersController(UniversityDb db) : base(db) { }
 
     [HttpGet]
-    public async Task<ActionResult<List<Teacher>>> GetAll()
+    public async Task<ActionResult<List<Teacher>>> GetAll([FromQuery] string? search, [FromQuery] string? email)
     {
-        return Ok(await db.Teachers.AsNoTracking().OrderBy(item => item.Id).ToListAsync());
+        var query = db.Teachers.AsNoTracking().AsQueryable();
+        if (!string.IsNullOrWhiteSpace(search)) query = query.Where(t => t.FullName.Contains(search));
+        if (!string.IsNullOrWhiteSpace(email)) { email = email.Trim().ToLowerInvariant(); query = query.Where(t => t.Email == email); }
+        return Ok(await query.OrderBy(t => t.Id).ToListAsync());
     }
 
     [HttpGet("{id:int}")]
@@ -35,6 +38,9 @@ public class TeachersController : UniversityControllerBase
         var item = new Teacher();
         item.FullName = request.FullName;
         item.Email = request.Email;
+        item.WorkdayId = request.WorkdayId;
+        item.EmploymentType = request.EmploymentType;
+
         db.Teachers.Add(item);
         var conflict = await SaveChanges();
         if (conflict is not null) return conflict;
@@ -54,6 +60,9 @@ public class TeachersController : UniversityControllerBase
         if (invalid is not null) return invalid;
         item.FullName = request.FullName;
         item.Email = request.Email;
+        item.WorkdayId = request.WorkdayId;
+        item.EmploymentType = request.EmploymentType;
+
         return await SaveChanges() ?? NoContent();
     }
 
@@ -65,8 +74,9 @@ public class TeachersController : UniversityControllerBase
     {
         var item = await db.Teachers.FindAsync(id);
         if (item is null) return NotFound();
-        if (await db.Courses.AnyAsync(course => course.TeacherId == id))
-            return Problem(statusCode: 409, title: "Delete related courses first");
+        if (await db.Courses.AnyAsync(course => course.TeacherId == id) ||
+            await db.CourseSections.AnyAsync(section => section.TeacherId == id))
+            return Problem(statusCode: 409, title: "Delete related courses and sections first");
         db.Teachers.Remove(item);
         return await SaveChanges() ?? NoContent();
     }
@@ -74,8 +84,8 @@ public class TeachersController : UniversityControllerBase
     private async Task<IActionResult?> Validate(TeacherRequest request, int id)
     {
         request.FullName = request.FullName.Trim();
-        request.Email = request.Email.Trim().ToLowerInvariant();
-        if (await db.Teachers.AnyAsync(item => item.Email == request.Email && item.Id != id))
+        request.Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim().ToLowerInvariant();
+        if (request.Email is not null && await db.Teachers.AnyAsync(item => item.Email == request.Email && item.Id != id))
             return Problem(statusCode: 409, title: "Email already exists");
         return null;
     }

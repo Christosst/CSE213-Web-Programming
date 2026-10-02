@@ -25,12 +25,13 @@ for attempt in range(12):
         assert 'Text processing' in read('/text.html'), 'Text frontend is unavailable'
         assert isinstance(json.loads(read('/universityAPI/api/students')), list), 'University students are unavailable'
         assert isinstance(json.loads(read('/universityAPI/api/courses')), list), 'University courses are unavailable'
+        assert isinstance(json.loads(read('/universityAPI/api/sections')), list), 'University sections are unavailable'
         if args.swagger_enabled == 'true':
             document = json.loads(read('/openapi/v1.json'))
             assert '/api/text/analysis' in document['paths'], 'Text API is absent from OpenAPI'
             assert 'Swagger' in read('/swagger/index.html'), 'Swagger UI is unavailable'
             university = json.loads(read('/universityAPI/openapi/v1.json'))
-            assert '/api/enrollments' in university['paths'], 'University enrollment API is absent'
+            assert '/api/enrollments' in university['paths'] and '/api/sections' in university['paths'], 'University CRUD APIs are absent'
             assert 'Swagger' in read('/universityAPI/swagger/index.html'), 'University Swagger UI is unavailable'
         print('Verified deployed catalogue, both APIs, frontend and configured Swagger.')
         break

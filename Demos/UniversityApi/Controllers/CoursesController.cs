@@ -9,9 +9,12 @@ public class CoursesController : UniversityControllerBase
     public CoursesController(UniversityDb db) : base(db) { }
 
     [HttpGet]
-    public async Task<ActionResult<List<Course>>> GetAll()
+    public async Task<ActionResult<List<Course>>> GetAll([FromQuery] string? code, [FromQuery] string? search)
     {
-        return Ok(await db.Courses.AsNoTracking().OrderBy(item => item.Id).ToListAsync());
+        var query = db.Courses.AsNoTracking().AsQueryable();
+        if (!string.IsNullOrWhiteSpace(code)) { code = code.Trim().ToUpperInvariant(); query = query.Where(c => c.Code == code); }
+        if (!string.IsNullOrWhiteSpace(search)) query = query.Where(c => c.Title.Contains(search) || c.Code.Contains(search));
+        return Ok(await query.OrderBy(c => c.Id).ToListAsync());
     }
 
     [HttpGet("{id:int}")]
@@ -36,6 +39,12 @@ public class CoursesController : UniversityControllerBase
         item.Code = request.Code;
         item.Title = request.Title;
         item.TeacherId = request.TeacherId;
+        item.School = request.School;
+        item.Program = request.Program;
+        item.Department = request.Department;
+        item.Level = request.Level;
+        item.Ects = request.Ects;
+
         db.Courses.Add(item);
         var conflict = await SaveChanges();
         if (conflict is not null) return conflict;
@@ -56,6 +65,12 @@ public class CoursesController : UniversityControllerBase
         item.Code = request.Code;
         item.Title = request.Title;
         item.TeacherId = request.TeacherId;
+        item.School = request.School;
+        item.Program = request.Program;
+        item.Department = request.Department;
+        item.Level = request.Level;
+        item.Ects = request.Ects;
+
         return await SaveChanges() ?? NoContent();
     }
 
@@ -67,8 +82,9 @@ public class CoursesController : UniversityControllerBase
     {
         var item = await db.Courses.FindAsync(id);
         if (item is null) return NotFound();
-        if (await db.Enrollments.AnyAsync(enrollment => enrollment.CourseId == id))
-            return Problem(statusCode: 409, title: "Delete related enrollments first");
+        if (await db.Enrollments.AnyAsync(enrollment => enrollment.CourseId == id) ||
+            await db.CourseSections.AnyAsync(section => section.CourseId == id))
+            return Problem(statusCode: 409, title: "Delete related enrollments and sections first");
         db.Courses.Remove(item);
         return await SaveChanges() ?? NoContent();
     }
@@ -77,7 +93,7 @@ public class CoursesController : UniversityControllerBase
     {
         request.Code = request.Code.Trim().ToUpperInvariant();
         request.Title = request.Title.Trim();
-        if (!await db.Teachers.AnyAsync(teacher => teacher.Id == request.TeacherId))
+        if (request.TeacherId is not null && !await db.Teachers.AnyAsync(teacher => teacher.Id == request.TeacherId))
             return Problem(statusCode: 400, title: "TeacherId does not identify a teacher");
         if (await db.Courses.AnyAsync(course => course.Code == request.Code && course.Id != id))
             return Problem(statusCode: 409, title: "Course code already exists");

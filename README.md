@@ -84,37 +84,64 @@ The Azure pipeline publishes CourseApi as a self-contained .NET 10 Windows/IIS a
 
 ## University SQLite demo
 
-Run `dotnet run --project Demos/UniversityApi --launch-profile classroom`, then open http://localhost:5082/swagger/. There are 20 CRUD operations for students, teachers, courses and enrollments, plus two relationship reads. See [the classroom Swagger walkthrough](Demos/UniversityApi/README.md).
+Run `dotnet run --project Demos/UniversityApi --launch-profile classroom`, then open http://localhost:5082/swagger/. There are 25 CRUD operations for students, teachers, courses, sections and enrollments, plus five relationship reads. See [the classroom Swagger walkthrough](Demos/UniversityApi/README.md).
 
 ### University ER diagram
 
 ```mermaid
 erDiagram
-    TEACHER ||--o{ COURSE : teaches
+    TEACHER o|--o{ COURSE : default_teacher
+    TEACHER o|--o{ COURSE_SECTION : teaches
+    COURSE ||--o{ COURSE_SECTION : offers
     STUDENT ||--o{ ENROLLMENT : has
     COURSE ||--o{ ENROLLMENT : has
+    COURSE_SECTION o|--o{ ENROLLMENT : groups
     STUDENT {
         int Id PK
+        string RegistrationNumber UK
         string FullName
         string Email UK
+        string Program
+        string Department
+        string Curriculum
+        decimal CumulativeGpa
     }
     TEACHER {
         int Id PK
         string FullName
         string Email UK
+        string WorkdayId
+        string EmploymentType
     }
     COURSE {
         int Id PK
         string Code UK
         string Title
         int TeacherId FK
+        decimal Ects
+    }
+    COURSE_SECTION {
+        int Id PK
+        int CourseId FK
+        int TeacherId FK
+        string SectionCode
+        string SectionName
+        string Term
+        string Timing
+        string Room
+        int ReportedEnrolledStudents
+        int ReportedNonRegisteredStudents
+        int Capacity
     }
     ENROLLMENT {
         int Id PK
         int StudentId FK
         int CourseId FK
+        int CourseSectionId FK
         date EnrolledOn
     }
 ```
 
 The pipeline publishes this separate app at `/universityAPI`; its database survives code updates. The existing notes app remains a smaller local starter.
+
+The supplied roster is imported locally: 20 students, 714 teachers, 1,002 courses and 2,324 F2026 sections. All 20 students are enrolled in Christos Stylianides' CSE213 ECA section (46252). The normalized real dataset is included in Git and publishing as Demos/UniversityApi/SeedData/university-import.json. The pipeline publishes a populated SQLite database only if the hosted database is missing. Existing databases remain untouched by deployment and are not automatically reimported. Details and source mapping: [UniversityApi README](Demos/UniversityApi/README.md#bundled-university-data-public-deployment).

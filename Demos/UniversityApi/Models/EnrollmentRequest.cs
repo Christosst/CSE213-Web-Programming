@@ -9,4 +9,5 @@ public class EnrollmentRequest
     public int CourseId { get; set; }
     [Required]
     public DateOnly? EnrolledOn { get; set; }
+    public int? CourseSectionId { get; set; }
 }

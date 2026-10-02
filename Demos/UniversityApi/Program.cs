@@ -33,6 +33,16 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<UniversityDb>();
     // Seed only a newly-created database, not every server restart.
-    if (db.Database.EnsureCreated()) DemoData.Seed(db);
+    var created = db.Database.EnsureCreated();
+    DatabaseSchema.Upgrade(db);
+    if (!string.IsNullOrWhiteSpace(builder.Configuration["import-data"]))
+    {
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(ImportData.Import(db, builder.Configuration["import-data"]!)));
+        return;
+    }
+    var deployedImport = builder.Configuration["SeedData:ImportPath"];
+    if (!string.IsNullOrWhiteSpace(deployedImport))
+        DeploymentData.Load(db, Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, deployedImport)), created);
+    else if (created) DemoData.Seed(db);
 }
 app.Run();

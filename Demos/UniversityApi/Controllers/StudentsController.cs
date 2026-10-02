@@ -9,9 +9,12 @@ public class StudentsController : UniversityControllerBase
     public StudentsController(UniversityDb db) : base(db) { }
 
     [HttpGet]
-    public async Task<ActionResult<List<Student>>> GetAll()
+    public async Task<ActionResult<List<Student>>> GetAll([FromQuery] string? search, [FromQuery] string? program)
     {
-        return Ok(await db.Students.AsNoTracking().OrderBy(item => item.Id).ToListAsync());
+        var query = db.Students.AsNoTracking().AsQueryable();
+        if (!string.IsNullOrWhiteSpace(search)) query = query.Where(s => s.FullName.Contains(search) || (s.RegistrationNumber != null && s.RegistrationNumber.Contains(search)));
+        if (!string.IsNullOrWhiteSpace(program)) query = query.Where(s => s.Program == program);
+        return Ok(await query.OrderBy(s => s.Id).ToListAsync());
     }
 
     [HttpGet("{id:int}")]
@@ -35,6 +38,19 @@ public class StudentsController : UniversityControllerBase
         var item = new Student();
         item.FullName = request.FullName;
         item.Email = request.Email;
+        item.RegistrationNumber = request.RegistrationNumber;
+        item.FirstName = request.FirstName;
+        item.LastName = request.LastName;
+        item.Gender = request.Gender;
+        item.School = request.School;
+        item.Program = request.Program;
+        item.Department = request.Department;
+        item.Specialization = request.Specialization;
+        item.AnnualResultsModel = request.AnnualResultsModel;
+        item.Curriculum = request.Curriculum;
+        item.ApplicationId = request.ApplicationId;
+        item.CumulativeGpa = request.CumulativeGpa;
+
         db.Students.Add(item);
         var conflict = await SaveChanges();
         if (conflict is not null) return conflict;
@@ -54,6 +70,19 @@ public class StudentsController : UniversityControllerBase
         if (invalid is not null) return invalid;
         item.FullName = request.FullName;
         item.Email = request.Email;
+        item.RegistrationNumber = request.RegistrationNumber;
+        item.FirstName = request.FirstName;
+        item.LastName = request.LastName;
+        item.Gender = request.Gender;
+        item.School = request.School;
+        item.Program = request.Program;
+        item.Department = request.Department;
+        item.Specialization = request.Specialization;
+        item.AnnualResultsModel = request.AnnualResultsModel;
+        item.Curriculum = request.Curriculum;
+        item.ApplicationId = request.ApplicationId;
+        item.CumulativeGpa = request.CumulativeGpa;
+
         return await SaveChanges() ?? NoContent();
     }
 
@@ -74,9 +103,12 @@ public class StudentsController : UniversityControllerBase
     private async Task<IActionResult?> Validate(StudentRequest request, int id)
     {
         request.FullName = request.FullName.Trim();
-        request.Email = request.Email.Trim().ToLowerInvariant();
-        if (await db.Students.AnyAsync(item => item.Email == request.Email && item.Id != id))
+        request.Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim().ToLowerInvariant();
+        if (request.Email is not null && await db.Students.AnyAsync(item => item.Email == request.Email && item.Id != id))
             return Problem(statusCode: 409, title: "Email already exists");
+        request.RegistrationNumber = string.IsNullOrWhiteSpace(request.RegistrationNumber) ? null : request.RegistrationNumber.Trim();
+        if (request.RegistrationNumber is not null && await db.Students.AnyAsync(item => item.RegistrationNumber == request.RegistrationNumber && item.Id != id))
+            return Problem(statusCode: 409, title: "Registration number already exists");
         return null;
     }
 }
