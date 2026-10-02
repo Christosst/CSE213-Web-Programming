@@ -7,7 +7,7 @@ The Azure pipeline now builds **Demos/CourseApi** and **Demos/UniversityApi**, c
 - **ftpPassword** is defined in YAML using the existing FTP password. Confirm it is current.
 - Check **ftpHost**, **ftpUser** and **remoteRoot**. Defaults preserve the previous FTP host/account and `wwwroot` directory.
 - Check **siteUrl**, currently `http://cse213.runasp.net`. The verification step must reach the actual binding for that IIS site. Use HTTPS when configured by the host.
-- **publishRuntime** defaults to `win-x64`. Set `win-x86` if the hosting application's pool runs in 32-bit mode.
+- **publishRuntime** defaults to `win-x86` for the shared host's 32-bit IIS pool. Both the root and university applications must use 32-bit pools. If you switch both pools to 64-bit, change this value to `win-x64` before publishing again.
 - **swaggerEnabled** defaults to `true` for these classroom demos. Setting it to `false` disables hosted Swagger/OpenAPI; the course Swagger links then intentionally do not work.
 
 The publish step includes the .NET 10 runtime (self-contained), an executable and the generated IIS `web.config`. The host still needs the ASP.NET Core IIS module/Hosting Bundle and a compatible application-pool architecture. Configure the website directory as an ASP.NET Core/IIS application in the hosting control panel. Keep its environment as Production; Swagger uses the explicit configuration switch instead of requiring Development mode.
@@ -39,6 +39,12 @@ Give the university application's pool write access to **App_Data**. The pipelin
 Open /universityAPI/swagger/ and follow its README walkthrough. For 500/502 errors, check the child IIS application, separate pool, Hosting Bundle and directory permissions. The small SqliteNotesApi starter stays local on port 5081. Root CourseApi has no EF Core dependency; its temporary tasks reset on restart.
 
 ## Upload behaviour and recovery
+
+### HTTP 500.32: Failed to load .NET Core host
+
+This error commonly means the self-contained package and IIS worker process have different architectures. The previous pipeline published `win-x64`; a 32-bit pool cannot load that runtime in-process. The pipeline now publishes both APIs as `win-x86`. Confirm **Websites → Manage → Scripting → ASP.NET Bitness** is **32-bit** in the MonsterASP control panel for the root website and the university application, then rerun the pipeline. Alternatively, keep `win-x64` and configure both pools for 64-bit. Restart the applications after changing the host setting.
+
+If the error persists after matching architectures, inspect the hosting control panel logs for the native host loading error. Retrying HTTP verification cannot repair a host architecture mismatch. See [Microsoft's 500.32 troubleshooting](https://learn.microsoft.com/en-us/aspnet/core/test/troubleshoot-azure-iis?view=aspnetcore-10.0#50032-ancm-failed-to-load-dll).
 
 The pipeline uploads `app_offline.htm` to both applications before replacing assemblies and removes both after all files upload successfully. There is a short maintenance window. If an upload fails, the maintenance page stays in place to avoid running a partial package; rerun deployment to complete it. The FTP mirror does not delete unrelated remote files or databases. The saved artifact contains the full package for inspection or a manual redeployment.
 

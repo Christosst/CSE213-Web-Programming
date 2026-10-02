@@ -12,7 +12,8 @@ variables:
   remoteRoot: "wwwroot"
   siteUrl: http://cse213.runasp.net
   buildConfiguration: Release
-  publishRuntime: win-x64
+  # Match the shared host's 32-bit IIS pool (x64 here causes HTTP 500.32).
+  publishRuntime: win-x86
   swaggerEnabled: 'true'
   ftpPassword: "s-5W@De86_Sh"
 
