@@ -97,8 +97,11 @@ steps:
         set ftp:use-site-chmod no
         set net:timeout 30
         set net:max-retries 3
+        # Some FTP servers return 550 when mkdir targets an existing directory.
+        # Check it first, and verify access after creating a missing directory.
+        cd "/${REMOTE_ROOT#/}/universityAPI" || mkdir -p "/${REMOTE_ROOT#/}/universityAPI"
+        cd "/${REMOTE_ROOT#/}/universityAPI"
         put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/app_offline.htm"
-        mkdir -p "/${REMOTE_ROOT#/}/universityAPI"
         put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
         bye
         EOF
@@ -117,7 +120,8 @@ steps:
           --exclude-glob '*.db-*' \
           "$PUBLISH_DIR" "/${REMOTE_ROOT#/}"
         # The application is offline. Only missing database files may be uploaded.
-        mkdir -p "/${REMOTE_ROOT#/}/universityAPI/App_Data"
+        cd "/${REMOTE_ROOT#/}/universityAPI/App_Data" || mkdir -p "/${REMOTE_ROOT#/}/universityAPI/App_Data"
+        cd "/${REMOTE_ROOT#/}/universityAPI/App_Data"
         mirror --reverse --only-missing --no-recursion --no-perms --no-umask \
           --exclude-glob '*' --include-glob 'university.db' \
           "$PUBLISH_DIR/universityAPI/App_Data" "/${REMOTE_ROOT#/}/universityAPI/App_Data"
