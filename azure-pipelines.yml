@@ -7,14 +7,14 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  ftpHost: site91422.siteasp.net
-  ftpUser: site91422
-  remoteRoot: wwwroot
+  ftpHost: "site91422.siteasp.net"
+  ftpUser: "site91422"
+  remoteRoot: "wwwroot"
   siteUrl: http://cse213.runasp.net
   buildConfiguration: Release
   publishRuntime: win-x64
   swaggerEnabled: 'true'
-  ftpPassword: "$FTP_PASSWORD"
+  ftpPassword: "s-5W@De86_Sh"
 
 steps:
   - checkout: self
