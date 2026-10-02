@@ -1,13 +1,13 @@
-﻿# Ch03 — Big Concepts
-**Session:** 1 | **Slide deck:** LWD6_Ch03_BigConcepts.pdf
+# Chapter 3: A page with or without JavaScript
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-progressive-enhancement.html | Progressive enhancement: content → style → behaviour layers |
+Open `demo-progressive-enhancement.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Open file with CSS disabled (DevTools → … → More tools → Rendering → Emulate CSS media: none, or simply remove the <link>).
-2. Content remains readable without CSS.
-3. Re-enable CSS — layout and colour appear.
-4. Enable JavaScript — interactive behaviour activates.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Disable JavaScript and read the course information.
+2. Restore JavaScript and activate the button with the keyboard.
+3. Inspect the status element and remove the style element.
+
+## Student exercise (about 20–22 minutes)
+
+Add useful HTML content, then enhance it with a button and an announced message.

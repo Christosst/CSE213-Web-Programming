@@ -1,4 +1,3 @@
-
 # Playwright
 node_modules/
 /test-results/
@@ -6,3 +5,12 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# .NET and local classroom data
+**/bin/
+**/obj/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+.test-data/
+**/.vs/

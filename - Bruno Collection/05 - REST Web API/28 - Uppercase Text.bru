@@ -1,0 +1,21 @@
+meta {
+  name: 28 - Uppercase Text
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{apiUrl}}/api/text/uppercase
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "text": "Hello web"
+}
+}

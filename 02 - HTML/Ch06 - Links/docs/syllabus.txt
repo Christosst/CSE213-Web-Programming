@@ -1,0 +1,1 @@
+Practice syllabus: HTML, CSS, JavaScript and REST Web API. This is a link exercise, not the official course syllabus.

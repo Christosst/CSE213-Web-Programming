@@ -1,12 +1,15 @@
-﻿# Ch22 — Intro to JavaScript
-**Slide deck:** LWD6_Ch22_IntroJavaScript.pdf
+# Chapter 22: A practice average
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-js-fundamentals.html | Values, const/let, type coercion bug, console.table, pure function |
+Open `demo-js-fundamentals.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Live-type Bug 1: '70' + '80' in the console — gets '7080'. Fix with Number().
-2. Set a breakpoint in DevTools Sources — step through the grade calculation.
-3. Show console.table() with an array of objects — powerful for debugging data.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Calculate 60 and 80: expected result 70.0.
+2. Break before arithmetic and inspect the text and number values.
+3. Temporarily remove Number() to reproduce concatenation, then restore it.
+
+## Student exercise (about 20–22 minutes)
+
+Fix numeric string addition and explain the values at a breakpoint. Keep native required/min/max validation.
+
+For the slide's debugging lab, start with `studentlab-broken.html`. The incorrect result is intentional. Use a breakpoint before the calculation, fix the input conversion, and confirm 60 and 80 produce 70.0.

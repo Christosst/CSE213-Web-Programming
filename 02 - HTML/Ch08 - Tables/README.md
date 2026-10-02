@@ -1,12 +1,17 @@
-﻿# Ch08 — Tables
-**Slide deck:** LWD6_Ch08_Tables.pdf
+# Chapter 8: A small data table
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-tables.html | Accessible data table: thead/tbody, th scope, caption |
+Open `demo-tables.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Remove scope='col' from th — DevTools Accessibility shows warning.
-2. Remove caption — explain it is the table's accessible name.
-3. Demo: never use a table for page layout — show a layout need, then use Flexbox instead.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Open the source and identify the lesson code.
+2. Inspect the example in DevTools.
+3. Change one value and explain the result.
+
+## Student exercise (about 20–22 minutes)
+
+Build a data table with caption, header associations and a total row. Add colspan only where the data needs it.
+
+## Show briefly
+
+Complex rowspan layouts; demonstrate one small example rather than a large timetable.

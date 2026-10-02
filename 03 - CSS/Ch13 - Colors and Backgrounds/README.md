@@ -1,12 +1,17 @@
-﻿# Ch13 — Colors and Backgrounds
-**Slide deck:** LWD6_Ch13_ColorsBackgrounds.pdf
+# Chapter 13: Colours you can read
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-colors.html | Color formats (hex, rgb, hsl, oklch), contrast checker, gradients, backgrounds |
+Open `demo-colors.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Show hex vs hsl — hsl is human-readable: hue, saturation, lightness.
-2. Open DevTools colour picker on any colour value — show contrast ratio.
-3. Introduce oklch — perceptually uniform, great for design tokens.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Compare hex, RGB and HSL in the colour picker.
+2. Check each foreground/background contrast ratio.
+3. Open the short OKLCH example; inspect the gradient stops.
+
+## Student exercise (about 20–22 minutes)
+
+Build three readable cards and record contrast evidence of at least 4.5:1 for normal text. Try OKLCH after the basic colour formats.
+
+## Show briefly
+
+OKLCH, color-mix and complex background layers. They are extensions after the basic palette.

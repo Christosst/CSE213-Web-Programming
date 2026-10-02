@@ -1,12 +1,17 @@
-﻿# Ch10 — Media (Audio & Video)
-**Slide deck:** LWD6_Ch10_Media.pdf
+# Chapter 10: Media with alternatives
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-media.html | <video> and <audio> with controls, captions track, fallback text |
+Open `demo-media.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Remove controls — show the element is there but unusable without the attribute.
-2. Add a <track kind='captions'> — explain WCAG 1.2 captions requirement.
-3. Discuss format support: MP4/H.264 widely supported; WebM/VP9 for open-source.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Open the source and identify the lesson code.
+2. Inspect the example in DevTools.
+3. Change one value and explain the result.
+
+## Student exercise (about 20–22 minutes)
+
+Use controls and a text alternative for a media clip. Inspect its MIME type and explain why autoplay is usually inappropriate.
+
+## Show briefly
+
+Codec comparisons and multiple format fallbacks. The caption descriptions correspond to this clip; spoken content would need an accurate transcript.

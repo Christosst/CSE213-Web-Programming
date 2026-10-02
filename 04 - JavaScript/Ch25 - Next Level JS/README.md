@@ -1,16 +1,17 @@
-﻿# Ch25 — Next Level JS
-**Slide deck:** LWD6_Ch25_NextlevelJS.pdf
+# Chapter 25: Fetch and visible states
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-fetch-states.html | fetch + async/await: loading / success / empty / error states |
-| demo-web-worker/      | Web Worker: blocking vs non-blocking computation |
-| demo-service-worker/  | Service Worker: offline app shell |
-| demo-local-storage.html | localStorage: persist favourites across reloads |
+Open `demo-fetch-states.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-- fetch: throttle to Slow 3G to see spinner; disable network to see error state + retry.
-- worker: watch the CSS spinner freeze on main thread, stay smooth in worker.
-- service-worker: go offline in DevTools, reload — page still loads.
-- localStorage: toggle favourites, reload — selection persists.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Load users, then show empty and HTTP 404 states.
+2. Use Network throttling to make the loading state visible.
+3. Use offline mode after loading the page and show the network-failure message.
+
+## Student exercise (about 20–22 minutes)
+
+Handle loading, success, empty and error visibly. Check response.ok and render names with textContent.
+
+## Show briefly
+
+Browser storage is a brief follow-up. Web workers and service workers are retained in Optional, outside the core backend preparation.

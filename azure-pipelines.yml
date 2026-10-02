@@ -9,53 +9,130 @@ pool:
 variables:
   ftpHost: site91422.siteasp.net
   ftpUser: site91422
-  ftpPassword: 's-5W@De86_Sh'
   remoteRoot: wwwroot
-  localRoot: $(Build.SourcesDirectory)
+  siteUrl: http://cse213.runasp.net
+  buildConfiguration: Release
+  publishRuntime: win-x64
+  swaggerEnabled: 'true'
+  # Define ftpPassword as a SECRET variable in Azure Pipelines.
 
 steps:
   - checkout: self
     clean: true
 
+  - task: UseDotNet@2
+    displayName: Install .NET 10 SDK
+    inputs:
+      packageType: sdk
+      version: '10.x'
+
   - task: Bash@3
-    displayName: Deploy static course demos via FTP
+    displayName: Publish CourseApi and UniversityApi for Windows IIS
     inputs:
       targetType: inline
       script: |
         set -Eeuo pipefail
+        python3 tools/test-university.py
+        dotnet publish Demos/CourseApi/CourseApi.csproj \
+          --configuration "$BUILD_CONFIGURATION" \
+          --runtime "$PUBLISH_RUNTIME" \
+          --self-contained true \
+          -p:UseAppHost=true \
+          -p:PublishSingleFile=false \
+          --output "$PUBLISH_DIR"
+        test -f "$PUBLISH_DIR/CourseApi.exe"
+        test -f "$PUBLISH_DIR/web.config"
+        dotnet publish Demos/UniversityApi/UniversityApi.csproj \
+          --configuration "$BUILD_CONFIGURATION" \
+          --runtime "$PUBLISH_RUNTIME" \
+          --self-contained true \
+          -p:UseAppHost=true \
+          -p:PublishSingleFile=false \
+          --output "$PUBLISH_DIR/universityAPI"
+        test -f "$PUBLISH_DIR/universityAPI/UniversityApi.exe"
+        test -f "$PUBLISH_DIR/universityAPI/web.config"
+        python3 tools/prepare-deployment.py \
+          --publish-dir "$PUBLISH_DIR" \
+          --swagger-enabled "$SWAGGER_ENABLED"
+    env:
+      BUILD_CONFIGURATION: $(buildConfiguration)
+      PUBLISH_RUNTIME: $(publishRuntime)
+      PUBLISH_DIR: $(Build.ArtifactStagingDirectory)/website
+      SWAGGER_ENABLED: $(swaggerEnabled)
 
+  - task: PublishPipelineArtifact@1
+    displayName: Save deployable website artifact
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)/website
+      artifact: course-website
+
+  - task: Bash@3
+    displayName: Deploy API and demo catalogue via FTP
+    # Pull-request validation may publish artifacts but must never update the website.
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: inline
+      script: |
+        set -Eeuo pipefail
         if [[ -z "${FTP_PASSWORD:-}" || "$FTP_PASSWORD" == \$\(* ]]; then
           echo "##vso[task.logissue type=error]Create a secret pipeline variable named ftpPassword."
           exit 1
         fi
-
-        echo "Installing lftp..."
+        # Keep the target explicit. Never mirror with --delete against shared hosting.
+        if [[ -z "$REMOTE_ROOT" || "$REMOTE_ROOT" == / || "$REMOTE_ROOT" == *..* || "$REMOTE_ROOT" == *\"* ]]; then
+          echo "##vso[task.logissue type=error]Set remoteRoot to the site's explicit IIS directory."
+          exit 1
+        fi
         sudo apt-get update -y
         sudo apt-get install -y lftp
-
-        echo "Uploading static course demos to /${REMOTE_ROOT}..."
-        lftp -u "${FTP_USER},${FTP_PASSWORD}" "ftp://${FTP_HOST}" <<EOF
+        printf '%s\n' '<!doctype html><html lang="en"><title>Updating course demos</title><h1>Course demos are being updated</h1><p>Please try again shortly.</p></html>' > "$OFFLINE_FILE"
+        # app_offline.htm tells IIS to stop the app before replacing locked assemblies.
+        lftp -u "$FTP_USER,$FTP_PASSWORD" "ftp://$FTP_HOST" <<EOF
         set cmd:fail-exit yes
         set ftp:ssl-allow no
         set ftp:use-site-chmod no
-        set net:timeout 15
+        set net:timeout 30
         set net:max-retries 3
-        mirror --reverse --verbose --only-newer --no-perms --no-umask --parallel=4 \
-          --exclude-glob .git/ \
-          --exclude-glob .git/** \
-          --exclude-glob='- Bruno Collection/' \
-          --exclude-glob='- Bruno Collection/**' \
-          --exclude-glob azure-pipelines.yml \
-          --exclude-glob README.md \
-          --exclude-glob '*/README.md' \
-          "${LOCAL_ROOT}" "/${REMOTE_ROOT}"
-        quit
+        put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/app_offline.htm"
+        mkdir -p "/${REMOTE_ROOT#/}/universityAPI"
+        put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
+        bye
         EOF
-
-        echo "Static site deployment completed successfully."
+        sleep 10
+        # Leave the maintenance file in place on upload failure; a retry completes the package.
+        lftp -u "$FTP_USER,$FTP_PASSWORD" "ftp://$FTP_HOST" <<EOF
+        set cmd:fail-exit yes
+        set ftp:ssl-allow no
+        set ftp:use-site-chmod no
+        set net:timeout 30
+        set net:max-retries 3
+        mirror --reverse --no-perms --no-umask --parallel=4 \
+          --exclude-glob 'App_Data/**' \
+          --exclude-glob '**/App_Data/**' \
+          --exclude-glob '*.db' \
+          --exclude-glob '*.db-*' \
+          "$PUBLISH_DIR" "/${REMOTE_ROOT#/}"
+        rm "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
+        rm "/${REMOTE_ROOT#/}/app_offline.htm"
+        bye
+        EOF
+        echo "Published CourseApi, UniversityApi and the course catalogue."
     env:
       FTP_HOST: $(ftpHost)
       FTP_USER: $(ftpUser)
       FTP_PASSWORD: $(ftpPassword)
       REMOTE_ROOT: $(remoteRoot)
-      LOCAL_ROOT: $(localRoot)
+      PUBLISH_DIR: $(Build.ArtifactStagingDirectory)/website
+      OFFLINE_FILE: $(Agent.TempDirectory)/course-app_offline.htm
+
+  - task: Bash@3
+    displayName: Verify deployed API and catalogue
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: inline
+      script: |
+        set -Eeuo pipefail
+        python3 tools/verify-deployment.py --url "$SITE_URL" --swagger-enabled "$SWAGGER_ENABLED"
+    env:
+      SITE_URL: $(siteUrl)
+      SWAGGER_ENABLED: $(swaggerEnabled)

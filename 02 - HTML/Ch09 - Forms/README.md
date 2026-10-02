@@ -1,13 +1,19 @@
-﻿# Ch09 — Forms
-**Slide deck:** LWD6_Ch09_Forms.pdf
+# Chapter 9: A labelled HTML form
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-accessible-form.html | Labels, fieldset/legend, native constraints, ARIA error messages |
+Open `demo-accessible-form.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Remove <label for> — show how the input loses its accessible name.
-2. Submit empty form — browser native validation fires.
-3. Add role='alert' aria-live='polite' to error div — add JS to populate it.
-4. Keyboard test: Tab through every field, verify focus ring is visible.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Activate labels and use Tab through the controls.
+2. Submit a blank name and invalid email to observe native validation.
+3. Submit valid values and inspect the POST body in Network.
+
+## Student exercise (about 20–22 minutes)
+
+Build a form using labels, name attributes, native constraints and a grouped choice. Submit it to /form-echo. The classroom echo endpoint does not save the data.
+
+## Show briefly
+
+Custom JavaScript validation belongs after the JavaScript lessons. The local echo endpoint requires npm start; static hosting alone will not process the form.
+
+After the small demo, open `studentlab.html` for the fuller slide-16 registration exercise: personal/academic fieldsets, email, tel, date, bounded number, select, radio, textarea and a described pattern field. Remove one name attribute and compare the submitted payload.

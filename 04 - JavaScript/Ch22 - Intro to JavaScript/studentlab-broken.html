@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab: find the numeric bug | CSE213</title>
+  <style>
+body { max-width: 65rem; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; line-height: 1.6; }
+input, select, textarea, button { font: inherit; }
+button { cursor: pointer; }
+label { display: block; }
+:focus-visible { outline: 3px solid #a52a1d; outline-offset: 3px; }
+
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lab: find the numeric bug</h1>
+    <p>Input values are strings. Convert them before arithmetic. These scores are practice data, not course assessment weights.</p>
+    <form id="scores"><label for="first">First score (0–100)</label><input id="first" type="number" min="0" max="100" required value="60"><label for="second">Second score (0–100)</label><input id="second" type="number" min="0" max="100" required value="80"><button>Calculate</button></form>
+    <p id="result" role="status"></p>
+  </main>
+  <script src="studentlab-broken.js"></script>
+</body>
+</html>

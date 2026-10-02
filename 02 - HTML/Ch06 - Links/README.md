@@ -1,12 +1,13 @@
-﻿# Ch06 — Links
-**Slide deck:** LWD6_Ch06_Lnks.pdf
+# Chapter 6: Links that work
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-links.html | Relative/absolute paths, meaningful link text, skip link, open-in-new-tab |
+Open `demo-links.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Show a 'Click here' link — demonstrate how it sounds to a screen reader reading link list.
-2. Replace with descriptive text — immediate improvement.
-3. Demo the skip link: Tab on load → skip link appears → Enter → focus jumps to main.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Compare the external URL, relative path and fragment.
+2. Open the nested resource and follow its ../ links back.
+3. Download the text file and inspect the URL.
+
+## Student exercise (about 20–22 minutes)
+
+Build three linked pages in nested folders. Include one fragment and one downloadable local file.

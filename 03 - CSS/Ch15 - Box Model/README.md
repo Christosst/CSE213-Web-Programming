@@ -1,13 +1,13 @@
-﻿# Ch15 — Box Model
-**Slide deck:** LWD6_Ch15_BoxModel.pdf
+# Chapter 15: Where the pixels go
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-box-model.html | content-box vs border-box, margin/padding/border, overflow, DevTools box diagram |
+Open `demo-box-model.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Set two identical-looking boxes — one content-box, one border-box.
-2. Add padding to both — the content-box one grows unexpectedly.
-3. Open DevTools → Box model diagram on the right panel — show each layer.
-4. Demonstrate margin collapse between adjacent paragraphs.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Measure both boxes in the DevTools box diagram.
+2. Explain the 372px calculation and 320px border-box result.
+3. Measure the margin gap, then keyboard-scroll the overflow panel.
+
+## Student exercise (about 20–22 minutes)
+
+Build the 320px card with 24px padding and 2px borders. Prove its width using border-box; compare parent-child collapse fixes.

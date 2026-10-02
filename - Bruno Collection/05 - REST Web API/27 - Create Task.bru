@@ -1,0 +1,22 @@
+meta {
+  name: 27 - Create Task
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{apiUrl}}/api/tasks
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "title": "Read the slides",
+  "isCompleted": false
+}
+}

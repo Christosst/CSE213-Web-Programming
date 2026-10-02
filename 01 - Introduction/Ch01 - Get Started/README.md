@@ -1,13 +1,13 @@
-﻿# Ch01 — Get Started
-**Session:** 1 | **Slide deck:** LWD6_Ch01_GetStarted.pdf
+# Chapter 1: My first web page
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-first-page.html | Minimal valid HTML document; live-code from scratch |
+Open `demo-first-page.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Type the file from zero in VS Code — no template.
-2. Open in browser immediately after <h1>.
-3. Show DevTools → Network → hard-reload → explain the GET / 200 / HTML response.
-4. Open https://validator.w3.org/ → validate → discuss warnings.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Identify doctype, lang, charset, viewport and title.
+2. Inspect the heading and paragraph in Elements.
+3. Compare document.compatMode with the no-doctype example.
+
+## Student exercise (about 20–22 minutes)
+
+Create index.html with header, main and footer. Validate it in the Nu HTML Checker. Keep header and footer outside main so they expose page landmark roles.

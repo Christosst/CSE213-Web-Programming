@@ -1,0 +1,21 @@
+meta {
+  name: 28 - Analyze Text
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{apiUrl}}/api/text/analysis
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "text": "Hello web"
+}
+}

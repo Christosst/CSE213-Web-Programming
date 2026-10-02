@@ -1,162 +1,30 @@
-﻿<!--
-  ╔══════════════════════════════════════════════════════════════════╗
-  ║  CSE213 · Ch10 — Media · demo-media.html                         ║
-  ║  CONCEPT: <video>, <audio>, <source>, <track> WebVTT captions,   ║
-  ║           Media Accessibility & Preload Attributes               ║
-  ║  DEVTOOLS: Elements tab, Network tab (Media filter)             ║
-  ╚══════════════════════════════════════════════════════════════════╝
-
-  WEB MEDIA ESSENTIALS:
-  ─────────────────────
-  1. THE `controls` ATTRIBUTE IS MANDATORY:
-     - Never remove controls unless you build an accessible custom player.
-     - Users MUST have the ability to pause, seek, and adjust volume.
-
-  2. NEVER AUTOPLAY AUDIO OR UNMUTED VIDEO:
-     - Autoplaying sound is jarring and disorienting (especially for screen reader users).
-     - Browsers actively block autoplay with audio unless muted: `autoplay muted playsinline`.
-
-  3. CAPTIONS VIA <track> (WCAG 1.2.2 - Level A):
-     - For video with speech, synchronized text captions are required.
-     - Uses standard `.vtt` (Web Video Text Tracks) format.
-
-  4. MULTIPLE <source> FORMATS FOR CROSS-BROWSER COMPATIBILITY:
-     - MP4 (H.264) has widest universal support.
-     - WebM (VP9/AV1) often offers superior compression.
--->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio &amp; Video Media Demo — CSE213</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media with alternatives | CSE213</title>
   <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      max-width: 720px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      line-height: 1.6;
-      color: #1e293b;
-      background-color: #f8fafc;
-    }
+body { max-width: 65rem; margin: 2rem auto; padding: 0 1rem; font-family: system-ui, sans-serif; line-height: 1.6; }
+input, select, textarea, button { font: inherit; }
+button { cursor: pointer; }
+label { display: block; }
+:focus-visible { outline: 3px solid #a52a1d; outline-offset: 3px; }
 
-    /*
-      Responsive media styling:
-      `width: 100%` scales the player to the container.
-      `height: auto` maintains original video aspect ratio.
-    */
-    video, audio {
-      width: 100%;
-      border-radius: 8px;
-      margin: 0.75rem 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .media-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      background: #e0f2fe;
-      color: #0369a1;
-      margin-bottom: 0.5rem;
-    }
-
-    .tip-callout {
-      background: #eff6ff;
-      border-left: 4px solid #3b82f6;
-      padding: 1rem;
-      border-radius: 4px;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>HTML5 Audio and Video Implementation</h1>
-    <p>Modern HTML5 replaces Flash and external plugins with native browser media engines.</p>
-  </header>
-
   <main>
-    <!-- ============================================================ -->
-    <!-- DEMO 1: HTML5 VIDEO WITH CAPTIONS                            -->
-    <!-- ============================================================ -->
-    <section class="media-card">
-      <span class="badge">Video Player</span>
-      <h2>1. Accessible Video Player</h2>
-
-      <!--
-        <video> ATTRIBUTES EXPLAINED:
-        - `controls`: Provides standard browser playback UI (play/pause, timeline, volume, fullscreen).
-        - `preload="metadata"`: Downloads ONLY video length/dimensions on page load; saves bandwidth!
-          (Alternative: `preload="none"` for heavy media; `preload="auto"` to buffer immediately).
-        - `poster`: An image displayed while the video downloads or before the user clicks play.
-      -->
-      <video controls crossorigin="anonymous" preload="metadata" poster="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=640&h=360&fit=crop">
-        <!--
-          SOURCE FALLBACKS:
-          Browser checks top-to-bottom and plays the FIRST supported format.
-        -->
-        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
-        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm">
-
-        <!--
-          ACCESSIBILITY: <track> FOR CAPTIONS:
-          - kind="captions": Transcription of dialogue plus sound effects.
-          - kind="subtitles": Translation of dialogue only.
-          - srclang="en": Language code.
-          - default: Automatically enabled when player starts.
-        -->
-        <track kind="captions" src="https://interactive-examples.mdn.mozilla.net/media/examples/friday.vtt" srclang="en" label="English Captions" default>
-
-        <!-- Fallback text for legacy browsers (IE8 or older) -->
-        <p>
-          Your browser does not support native HTML5 video.
-          <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">Download the video file instead</a>.
-        </p>
-      </video>
-
-      <div class="tip-callout">
-        <strong>💡 Pro-tip:</strong> Always specify the <code>type</code> attribute on <code>&lt;source&gt;</code>!
-        Without it, the browser must send an HTTP request to inspect headers before knowing if it can play the file.
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!-- DEMO 2: HTML5 AUDIO                                          -->
-    <!-- ============================================================ -->
-    <section class="media-card">
-      <span class="badge">Audio Player</span>
-      <h2>2. Native Audio Player</h2>
-
-      <!--
-        <audio> works identically to <video>, but without a visual display area.
-      -->
-      <audio controls preload="metadata">
-        <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" type="audio/mpeg">
-        <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
-        <p>
-          Your browser does not support the audio element.
-          <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3">Download the audio file</a>.
-        </p>
-      </audio>
-
-      <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.75rem;">
-        <strong>Accessibility requirement:</strong> Audio-only content (like podcasts) must be accompanied by a complete, written text transcript on the page.
-      </p>
-    </section>
+    <h1>Media with alternatives</h1>
+    <p>This short silent flower clip comes from the MDN teaching examples and needs internet access.</p>
+    <video controls width="480" style="max-width:100%;height:auto" preload="metadata">
+      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm">
+      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+      <track kind="captions" src="flower.vtt" srclang="en" label="English descriptions" default>
+      <p>Your browser cannot play the video.</p>
+    </video>
+    <h2>Text description</h2><p>A close-up of a flower moving gently outdoors. The clip has no dialogue.</p>
+    <p><a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">Open the video directly</a></p>
   </main>
 </body>
 </html>

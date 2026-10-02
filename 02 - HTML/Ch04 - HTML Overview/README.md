@@ -1,13 +1,13 @@
-﻿# Ch04 — HTML Overview
-**Slide deck:** LWD6_Ch04_HTMLOverview.pdf
+# Chapter 4: Meaningful HTML
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-semantic-vs-div.html | Semantic elements vs div-soup — side-by-side comparison |
+Open `demo-semantic-vs-div.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Show the LEFT panel (div soup) first — looks fine visually.
-2. Open DevTools → Accessibility → Full page scan — NO landmarks found.
-3. Switch to the RIGHT panel (semantic) — landmarks appear immediately.
-4. Key point: the browser and assistive technology can now understand the page structure.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Inspect div versus article in Elements.
+2. Compare the real h3 with the generic heading div in the accessibility tree.
+3. Open chapter 1 to inspect the full-page banner, main and contentinfo landmarks.
+
+## Student exercise (about 20–22 minutes)
+
+Replace generic divs with an appropriate heading, paragraph and article. Keep one main landmark for the page.

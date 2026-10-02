@@ -2,94 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Student registration</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registration practice | CSE213</title>
+  <style>body { max-width:40rem; margin:2rem auto; padding:0 1rem; font-family:system-ui; line-height:1.6; } label { display:block; } fieldset { margin-bottom:1rem; } input,select,textarea,button { font:inherit; } :focus-visible { outline:3px solid #a52a1d; outline-offset:3px; }</style>
 </head>
 <body>
-  <h1>Student registration</h1>
-
-  <form action="/register" method="post">
-    <fieldset>
-      <legend>Personal details</legend>
-
-      <p>
-        <label for="full-name">Full name</label><br>
-        <input id="full-name" name="full_name" type="text"
-               autocomplete="name" required>
-      </p>
-
-      <p>
-        <label for="email">University email</label><br>
-        <input id="email" name="email" type="email"
-               autocomplete="email" required>
-      </p>
-
-      <p>
-        <label for="phone">Telephone number</label><br>
-        <input id="phone" name="phone" type="tel"
-               autocomplete="tel">
-      </p>
-
-      <p>
-        <label for="student-code">Student code</label><br>
-        <input id="student-code" name="student_code" type="text"
-               pattern="[A-Z][0-9]{6}" required
-               aria-describedby="code-help">
-        <br>
-        <small id="code-help">
-          Enter one uppercase letter followed by six digits,
-          for example A123456.
-        </small>
-      </p>
-    </fieldset>
-
-    <fieldset>
-      <legend>Academic details</legend>
-
-      <p>
-        <label for="program">Program</label><br>
-        <select id="program" name="program" required>
-          <option value="">Choose a program</option>
-          <option value="computer-science">Computer Science</option>
-          <option value="information-systems">Information Systems</option>
-        </select>
-      </p>
-
-      <p>
-        <label for="start-date">Start date</label><br>
-        <input id="start-date" name="start_date" type="date"
-               min="2026-10-05" max="2027-01-29" required>
-      </p>
-
+  <main>
+    <h1>Registration practice</h1>
+    <p>This is an HTML exercise. The local /form-echo endpoint shows the payload without saving it.</p>
+    <form action="/form-echo" method="post">
       <fieldset>
-        <legend>Study year</legend>
-        <label>
-          <input type="radio" name="study_year" value="1" required>
-          Year 1
-        </label>
-        <label>
-          <input type="radio" name="study_year" value="2">
-          Year 2
-        </label>
-        <label>
-          <input type="radio" name="study_year" value="3">
-          Year 3
-        </label>
+        <legend>Personal details</legend>
+        <label for="name">Full name</label><input id="name" name="name" required autocomplete="name">
+        <label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email">
+        <label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel">
+        <label for="code">Practice passport code (optional)</label><input id="code" name="code" pattern="[A-Z0-9]{9}" maxlength="9" aria-describedby="code-help">
+        <p id="code-help">For this practice field, use exactly 9 uppercase letters or digits, for example AB1234CD5. Do not enter real identity details.</p>
       </fieldset>
-
-      <p>
-        <label for="weekly-hours">Available study hours per week</label><br>
-        <input id="weekly-hours" name="weekly_hours" type="number"
-               min="1" max="40" required>
-      </p>
-
-      <p>
-        <label for="notes">Additional notes</label><br>
-        <textarea id="notes" name="notes" rows="4"></textarea>
-      </p>
-    </fieldset>
-
-    <button type="submit">Register</button>
-  </form>
+      <fieldset>
+        <legend>Academic preferences</legend>
+        <label for="topic">Topic</label><select id="topic" name="topic" required><option value="">Choose a topic</option><option value="html">HTML</option><option value="css">CSS</option><option value="javascript">JavaScript</option></select>
+        <label for="year">Study year</label><input id="year" name="year" type="number" min="1" max="4" value="1" required>
+        <label for="date">Preferred session date (optional)</label><input id="date" name="date" type="date">
+        <fieldset><legend>Session</legend><label><input name="session" type="radio" value="morning" checked> Morning</label><label><input name="session" type="radio" value="afternoon"> Afternoon</label></fieldset>
+        <label for="notes">Notes (optional)</label><textarea id="notes" name="notes" rows="3" maxlength="500"></textarea>
+      </fieldset>
+      <button type="submit">Submit practice form</button>
+    </form>
+  </main>
 </body>
 </html>

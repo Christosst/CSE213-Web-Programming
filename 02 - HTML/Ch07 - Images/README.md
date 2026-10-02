@@ -1,12 +1,17 @@
-﻿# Ch07 — Images
-**Slide deck:** LWD6_Ch07_Images.pdf
+# Chapter 7: Images and alternative text
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-images.html | alt text decisions, width/height, lazy loading, CLS prevention |
+Open `demo-images.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Remove alt — DevTools Accessibility shows 'Image has no alt attribute'.
-2. Remove width/height — throttle to Slow 3G, show layout shift (CLS).
-3. Add loading='lazy' — observe images load only when scrolled into view.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Inspect src and alt, and explain the difference between informative and decorative images.
+2. Block the image request and read the remaining content.
+3. Check the intrinsic size in DevTools; add matching width and height to reserve space.
+
+## Student exercise (about 20–22 minutes)
+
+Use a local image with suitable alt text. Set both intrinsic dimensions and use CSS max-width:100%; height:auto to keep it responsive.
+
+## Show briefly
+
+srcset, picture and image formats are optional extensions in Optional/02 - HTML.

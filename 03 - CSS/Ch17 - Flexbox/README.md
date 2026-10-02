@@ -1,13 +1,13 @@
-﻿# Ch17 — Flexbox
-**Slide deck:** LWD6_Ch17_Flexbox.pdf
+# Chapter 17: One-dimensional layout
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-flexbox.html | flex container axes, justify-content, align-items, gap, flex-wrap, navbar |
+Open `demo-flexbox.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Start with display: flex on a container — children line up horizontally immediately.
-2. Add justify-content: space-between — nav items spread out.
-3. Add flex-wrap: wrap — items wrap on narrow viewports.
-4. Resize the browser window to show the difference between wrap and nowrap.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Enable the Flexbox overlay and identify the axes.
+2. Resize to observe wrapping and the 280px basis.
+3. Inspect margin-top:auto and compare bottom-aligned actions.
+
+## Student exercise (about 20–22 minutes)
+
+Create a wrapping three-card deck with a 280px basis. Align its actions at the bottom and explain the axes.

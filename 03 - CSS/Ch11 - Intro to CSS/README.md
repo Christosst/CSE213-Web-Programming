@@ -1,12 +1,13 @@
-﻿# Ch11 — Intro to CSS
-**Slide deck:** LWD6_Ch11_IntroCSS.pdf
+# Chapter 11: A small stylesheet
 
-## Demo files
-| File | Concept |
-|------|---------|
-| demo-intro-css.html | Rule anatomy, external vs inline vs embedded, the cascade order |
+Open `demo-intro-css.html` from the course index after running `npm start` at the repository root. Read the HTML first; then inspect the relevant CSS or JavaScript. The styling around the example is only for readability.
 
-## Live coding notes
-1. Start with inline styles — works but unmanageable.
-2. Move to <style> block — centralised but not shareable.
-3. Move to external stylesheet — show the <link> element and one file for all pages.
+## Instructor demonstration (about 12–15 minutes)
+
+1. Open lesson.css and identify selector, property and value.
+2. Inspect inherited colour and the notice class.
+3. Toggle the inline declaration and observe the winning rule.
+
+## Student exercise (about 20–22 minutes)
+
+Create an external stylesheet, style a paragraph class and explain one inherited property.

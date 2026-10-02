@@ -1,0 +1,21 @@
+meta {
+  name: 28 - Create SQLite Note
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{notesUrl}}/api/notes
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "text": "Keep this note after restart"
+}
+}

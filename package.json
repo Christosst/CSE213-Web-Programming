@@ -1,9 +1,13 @@
 {
   "name": "cse213-web-programming",
   "version": "1.0.0",
-  "description": "Live-coding demos for all 28 LWD6 chapters, organised to match the slide deck folder structure.",
+  "description": "Student-friendly demos matching the CSE213 HTML, CSS, JavaScript and .NET 10 REST Web API decks.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node tools/serve.cjs",
+    "test": "playwright test --project=chromium",
+    "test:all": "playwright test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Christosst/CSE213-Web-Programming.git"
