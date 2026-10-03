@@ -18,13 +18,13 @@ variables:
   uniApiFtpHost: "site95793.siteasp.net"
   uniApiFtpUser: "site95793"
   uniApiFtpPassword: "2b-Dg53_!8jJ"
-  uniApiSiteUrl: "https://cse213universityapi.runasp.net"
+  uniApiSiteUrl: "http://cse213universityapi.runasp.net"
 
   # ── University Web site (cse213universityweb.runasp.net) ─────────────────
   uniWebFtpHost: "site95794.siteasp.net"
   uniWebFtpUser: "site95794"
   uniWebFtpPassword: "5s_J3Gq9o-S"
-  uniWebSiteUrl: "https://cse213universityweb.runasp.net"
+  uniWebSiteUrl: "http://cse213universityweb.runasp.net"
 
   buildConfiguration: Release
   # Match the shared host's 32-bit IIS pool (x64 here causes HTTP 500.32).
