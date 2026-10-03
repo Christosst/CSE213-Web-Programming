@@ -1,0 +1,19 @@
+meta {
+  name: 11 - Courses - Create
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{uniApiUrl}}/api/courses
+  body: json
+  auth: none
+}
+body:json {
+{
+  "code": "CSE999",
+  "title": "Advanced Web Architectures",
+  "teacherId": 1,
+  "ects": 6.0
+}
+}

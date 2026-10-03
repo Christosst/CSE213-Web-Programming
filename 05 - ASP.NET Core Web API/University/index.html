@@ -1,1 +1,60 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>University SQLite CRUD | CSE213</title><link rel="stylesheet" href="../../assets/guide.css"></head><body><main><h1>University SQLite CRUD</h1><p>A university database with course sections: one teacher teaches several courses; students join courses through enrollments.</p><pre>Teacher → Course ← Enrollment → Student</pre><h2>Run locally</h2><pre>dotnet run --project Demos/UniversityApi --launch-profile classroom</pre><p><a href="http://localhost:5082/">University API home</a> · <a href="http://localhost:5082/swagger/">Open Swagger</a> · <a href="http://localhost:5082/README.md">ER diagram and classroom walkthrough</a></p><p>Use the API README for the extended ER diagram, local import instructions and the CSE213 class roster queries. The deployed API includes the full student roster and course catalogue.</p><h2>Demonstrate in Swagger</h2><ol><li>POST a teacher and a student. Keep their returned IDs.</li><li>POST a course using the teacher ID.</li><li>POST an enrollment using the student and course IDs.</li><li>GET lists, GET one record, and GET the two relationship queries.</li><li>PUT each record and show its updated values.</li><li>Try a duplicate enrollment (409) and an unknown course ID (400).</li><li>Try deleting a course with an enrollment (409).</li><li>Restart the API: the SQLite records remain.</li><li>DELETE the enrollment, then the student and course, then the teacher.</li></ol><p>Each of the five entities (students, teachers, courses, sections and enrollments) has five operations: GET list, GET by ID, POST, PUT and DELETE. EF Core only connects the models to SQLite and defines keys and relationships.</p><p><a href="../../README.md#university-sqlite-demo">ER diagram in the course README</a> · <a href="../../index.html">Demo library</a></p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>University SQLite CRUD | CSE213</title>
+  <link rel="stylesheet" href="../../assets/guide.css">
+  <style>
+    figure { margin: 1.75rem 0; text-align: center; }
+    figure img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      transition: transform 150ms ease;
+    }
+    figure img:hover { transform: scale(1.01); }
+    figcaption { font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>University SQLite CRUD</h1>
+    <p>A university database with course sections: one teacher teaches several courses; students join courses through enrollments.</p>
+
+    <figure>
+      <a href="er.html" title="Click to view full interactive ER diagram and table specifications">
+        <img src="er-diagram.svg" alt="University SQLite Entity Relationship Diagram" width="1080" height="700">
+      </a>
+      <figcaption>University Database ERD — Click to open interactive diagram &amp; field guide</figcaption>
+    </figure>
+
+    <h2>Run locally</h2>
+    <pre>dotnet run --project Demos/UniversityApi --launch-profile classroom</pre>
+    <p>
+      <a href="http://localhost:5082/">University API home</a> · 
+      <a href="http://localhost:5082/swagger/">Open Swagger</a> · 
+      <a href="er.html">ER diagram</a> · 
+      <a href="http://localhost:5082/README.md">Classroom walkthrough</a>
+    </p>
+    <p>Use the API README for the extended ER diagram, local import instructions and the CSE213 class roster queries. The deployed API includes the full student roster and course catalogue.</p>
+
+    <h2>Demonstrate in Swagger</h2>
+    <ol>
+      <li>POST a teacher and a student. Keep their returned IDs.</li>
+      <li>POST a course using the teacher ID.</li>
+      <li>POST an enrollment using the student and course IDs.</li>
+      <li>GET lists, GET one record, and GET the two relationship queries.</li>
+      <li>PUT each record and show its updated values.</li>
+      <li>Try a duplicate enrollment (409) and an unknown course ID (400).</li>
+      <li>Try deleting a course with an enrollment (409).</li>
+      <li>Restart the API: the SQLite records remain.</li>
+      <li>DELETE the enrollment, then the student and course, then the teacher.</li>
+    </ol>
+    <p>Each of the five entities (students, teachers, courses, sections and enrollments) has five operations: GET list, GET by ID, POST, PUT and DELETE. EF Core only connects the models to SQLite and defines keys and relationships.</p>
+    <p><a href="../../README.md#university-sqlite-demo">ER diagram in the course README</a> · <a href="../../index.html">Demo library</a></p>
+  </main>
+</body>
+</html>

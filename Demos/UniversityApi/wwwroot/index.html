@@ -1,2 +1,88 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>University SQLite API | CSE213</title><style>body {max-width:65ch;margin:2rem auto;padding:0 1rem;font-family:system-ui;line-height:1.6} table{border-collapse:collapse}th,td{border:1px solid #aaa;padding:.5rem;text-align:left}</style></head><body><main><h1>University SQLite API</h1><p>Five tables, persistent data and a complete Swagger demonstration.</p><p><a href="swagger/">Open Swagger UI</a> · <a href="README.md">ER diagram and classroom walkthrough</a></p><table><caption>Our five resources</caption><tr><th>Resource</th><th>Example</th></tr><tr><td>Students</td><td>Alex Demo</td></tr><tr><td>Teachers</td><td>Christos Stylianides</td></tr><tr><td>Courses</td><td>CSE213 Web Programming</td></tr><tr><td>Enrollments</td><td>Alex joins CSE213</td></tr><tr><td>CourseSections</td><td>Course, teacher, term, room and timetable</td></tr></table><p>Each resource has GET collection, GET by id, POST, PUT and DELETE. Create the teacher/student, then the course, section and enrollment. Delete in reverse order.</p><p>Use the README to follow the CSE213 class roster queries. New demo databases start with fictional student data. Records remain after restart.</p></main></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>University SQLite API | CSE213</title>
+  <style>
+    body {
+      max-width: 820px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    main {
+      background: #ffffff;
+      padding: 2rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    h1 { margin-top: 0; color: #0f172a; }
+    a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+    th, td { border: 1px solid #e2e8f0; padding: .6rem .85rem; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; }
+    figure { margin: 1.75rem 0; text-align: center; }
+    figure img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      transition: transform 150ms ease;
+    }
+    figure img:hover { transform: scale(1.01); }
+    figcaption { font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background: #e0f2fe;
+      color: #0369a1;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>University SQLite API</h1>
+    <p>Five tables, persistent data and a complete Swagger demonstration.</p>
+    <p>
+      <a href="swagger/">Open Swagger UI</a> · 
+      <a href="er.html">Interactive ER Diagram</a> · 
+      <a href="er-diagram.svg" target="_blank">Direct SVG</a> · 
+      <a href="README.md">Classroom walkthrough</a>
+    </p>
+
+    <figure>
+      <a href="er.html" title="Click to view interactive ER diagram and schema guide">
+        <img src="er-diagram.svg" alt="University SQLite Entity Relationship Diagram" width="1080" height="700">
+      </a>
+      <figcaption>Entity Relationship Diagram (ERD) — Click to open interactive view and table specifications</figcaption>
+    </figure>
+
+    <table>
+      <caption>Our five resources</caption>
+      <thead>
+        <tr><th>Resource</th><th>Example</th><th>Relationship</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Students</strong></td><td>Alex Demo</td><td>Enrolls in courses</td></tr>
+        <tr><td><strong>Teachers</strong></td><td>Christos Stylianides</td><td>Teaches courses & sections</td></tr>
+        <tr><td><strong>Courses</strong></td><td>CSE213 Web Programming</td><td>Assigned to teacher, offered in sections</td></tr>
+        <tr><td><strong>CourseSections</strong></td><td>Course, teacher, term, room & timetable</td><td>Specific course offering</td></tr>
+        <tr><td><strong>Enrollments</strong></td><td>Alex joins CSE213</td><td>Connects student to course & section</td></tr>
+      </tbody>
+    </table>
+
+    <p>Each resource has GET collection, GET by id, POST, PUT and DELETE. Create the teacher/student, then the course, section and enrollment. Delete in reverse order.</p>
+    <p>Use the <a href="README.md">README</a> to follow the CSE213 class roster queries. New demo databases start with fictional student data. Records remain after restart.</p>
+  </main>
+</body>
+</html>

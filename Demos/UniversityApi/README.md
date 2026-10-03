@@ -10,6 +10,10 @@ Open http://localhost:5082/swagger/ (or http://localhost:5082/ for the lesson la
 
 ## Entity relationship diagram
 
+> **Visual Diagram**: Open [er.html](er.html) for the interactive viewer, or see the diagram below:
+>
+> ![University SQLite Entity Relationship Diagram](er-diagram.svg)
+
 ```mermaid
 erDiagram
     TEACHER o|--o{ COURSE : default_teacher

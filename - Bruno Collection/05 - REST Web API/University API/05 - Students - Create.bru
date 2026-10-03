@@ -1,0 +1,22 @@
+meta {
+  name: 05 - Students - Create
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{uniApiUrl}}/api/students
+  body: json
+  auth: none
+}
+body:json {
+{
+  "registrationNumber": "F2026-9999",
+  "fullName": "Student Demo",
+  "email": "demo.student@euc.ac.cy",
+  "program": "Computer Science (BSc)",
+  "department": "Computer Science and Engineering",
+  "curriculum": "F2026",
+  "cumulativeGpa": 3.85
+}
+}

@@ -1,0 +1,18 @@
+meta {
+  name: 08 - Teachers - Create
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{uniApiUrl}}/api/teachers
+  body: json
+  auth: none
+}
+body:json {
+{
+  "fullName": "Instructor Demo",
+  "email": "demo.instructor@euc.ac.cy",
+  "employmentType": "Full_time"
+}
+}

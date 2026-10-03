@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" width="1080" height="700">
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .title { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 22px; font-weight: 700; fill: #0f172a; }
+      .subtitle { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; fill: #64748b; }
+      .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 8px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.04)); }
+      .box-hdr { rx: 8px; }
+      .hdr-text { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; font-weight: 700; fill: #ffffff; letter-spacing: 0.05em; }
+      .fld-name { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; fill: #1e293b; }
+      .fld-type { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; fill: #64748b; }
+      .badge-pk { font-family: system-ui, sans-serif; font-size: 9px; font-weight: 800; fill: #b45309; }
+      .badge-fk { font-family: system-ui, sans-serif; font-size: 9px; font-weight: 800; fill: #0369a1; }
+      .badge-uk { font-family: system-ui, sans-serif; font-size: 9px; font-weight: 800; fill: #4338ca; }
+      .badge-bg-pk { fill: #fef3c7; rx: 3px; }
+      .badge-bg-fk { fill: #e0f2fe; rx: 3px; }
+      .badge-bg-uk { fill: #e0e7ff; rx: 3px; }
+      .line { stroke: #64748b; stroke-width: 2; fill: none; }
+      .line-accent { stroke: #3b82f6; stroke-width: 2; fill: none; }
+      .rel-label { font-family: system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #475569; }
+      .rel-bg { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1; rx: 4px; }
+      .cardinality { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 700; fill: #0284c7; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#3b82f6" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="700" class="bg" />
+
+  <!-- Title -->
+  <text x="50" y="38" class="title">University Database — Entity Relationship Diagram (ERD)</text>
+  <text x="50" y="56" class="subtitle">SQLite · 5 Entities · Primary Keys (PK), Foreign Keys (FK), and Unique Keys (UK)</text>
+
+  <!-- ================= RELATIONSHIP CONNECTIONS ================= -->
+
+  <!-- 1. TEACHER -> COURSE (default_teacher) -->
+  <path d="M 280 140 L 440 140" class="line" marker-end="url(#arrow)" />
+  <rect x="315" y="128" width="90" height="20" class="rel-bg" />
+  <text x="323" y="142" class="rel-label">default_teacher</text>
+  <text x="286" y="134" class="cardinality">0..1</text>
+  <text x="415" y="134" class="cardinality">0..*</text>
+
+  <!-- 2. TEACHER -> COURSE_SECTION (teaches) -->
+  <path d="M 160 230 L 160 320" class="line" marker-end="url(#arrow)" />
+  <rect x="165" y="265" width="50" height="20" class="rel-bg" />
+  <text x="173" y="279" class="rel-label">teaches</text>
+  <text x="167" y="248" class="cardinality">0..1</text>
+  <text x="167" y="312" class="cardinality">0..*</text>
+
+  <!-- 3. COURSE -> COURSE_SECTION (offers) -->
+  <path d="M 480 230 L 480 270 L 260 270 L 260 320" class="line" marker-end="url(#arrow)" />
+  <rect x="330" y="260" width="50" height="20" class="rel-bg" />
+  <text x="340" y="274" class="rel-label">offers</text>
+  <text x="486" y="248" class="cardinality">1</text>
+  <text x="266" y="312" class="cardinality">0..*</text>
+
+  <!-- 4. COURSE -> ENROLLMENT (has) -->
+  <path d="M 560 230 L 560 320" class="line-accent" marker-end="url(#arrow-blue)" />
+  <rect x="566" y="265" width="36" height="20" class="rel-bg" />
+  <text x="574" y="279" class="rel-label">has</text>
+  <text x="544" y="248" class="cardinality">1</text>
+  <text x="544" y="312" class="cardinality">0..*</text>
+
+  <!-- 5. STUDENT -> ENROLLMENT (has) -->
+  <path d="M 770 415 L 670 415" class="line-accent" marker-end="url(#arrow-blue)" />
+  <rect x="702" y="405" width="36" height="20" class="rel-bg" />
+  <text x="710" y="419" class="rel-label">has</text>
+  <text x="746" y="408" class="cardinality">1</text>
+  <text x="680" y="408" class="cardinality">0..*</text>
+
+  <!-- 6. COURSE_SECTION -> ENROLLMENT (groups) -->
+  <path d="M 330 415 L 430 415" class="line" marker-end="url(#arrow)" />
+  <rect x="357" y="405" width="46" height="20" class="rel-bg" />
+  <text x="363" y="419" class="rel-label">groups</text>
+  <text x="336" y="408" class="cardinality">0..1</text>
+  <text x="406" y="408" class="cardinality">0..*</text>
+
+
+  <!-- ================= ENTITY CARDS ================= -->
+
+  <!-- ENTITY 1: TEACHER -->
+  <g transform="translate(50, 75)">
+    <rect width="230" height="155" class="box" />
+    <path d="M 0 8 Q 0 0 8 0 L 222 0 Q 230 0 230 8 L 230 34 L 0 34 Z" fill="#0f766e" />
+    <text x="16" y="22" class="hdr-text">TEACHER</text>
+    
+    <!-- Fields -->
+    <text x="16" y="55" class="fld-name">Id</text>
+    <text x="85" y="55" class="fld-type">int</text>
+    <rect x="188" y="44" width="26" height="15" class="badge-bg-pk" /><text x="194" y="55" class="badge-pk">PK</text>
+
+    <text x="16" y="77" class="fld-name">FullName</text>
+    <text x="85" y="77" class="fld-type">string</text>
+
+    <text x="16" y="99" class="fld-name">Email</text>
+    <text x="85" y="99" class="fld-type">string</text>
+    <rect x="188" y="88" width="26" height="15" class="badge-bg-uk" /><text x="194" y="99" class="badge-uk">UK</text>
+
+    <text x="16" y="121" class="fld-name">WorkdayId</text>
+    <text x="85" y="121" class="fld-type">string</text>
+
+    <text x="16" y="143" class="fld-name">EmploymentType</text>
+    <text x="125" y="143" class="fld-type">string</text>
+  </g>
+
+  <!-- ENTITY 2: COURSE -->
+  <g transform="translate(440, 75)">
+    <rect width="230" height="155" class="box" />
+    <path d="M 0 8 Q 0 0 8 0 L 222 0 Q 230 0 230 8 L 230 34 L 0 34 Z" fill="#1e40af" />
+    <text x="16" y="22" class="hdr-text">COURSE</text>
+
+    <!-- Fields -->
+    <text x="16" y="55" class="fld-name">Id</text>
+    <text x="85" y="55" class="fld-type">int</text>
+    <rect x="188" y="44" width="26" height="15" class="badge-bg-pk" /><text x="194" y="55" class="badge-pk">PK</text>
+
+    <text x="16" y="77" class="fld-name">Code</text>
+    <text x="85" y="77" class="fld-type">string</text>
+    <rect x="188" y="66" width="26" height="15" class="badge-bg-uk" /><text x="194" y="77" class="badge-uk">UK</text>
+
+    <text x="16" y="99" class="fld-name">Title</text>
+    <text x="85" y="99" class="fld-type">string</text>
+
+    <text x="16" y="121" class="fld-name">TeacherId</text>
+    <text x="85" y="121" class="fld-type">int?</text>
+    <rect x="188" y="110" width="26" height="15" class="badge-bg-fk" /><text x="194" y="121" class="badge-fk">FK</text>
+
+    <text x="16" y="143" class="fld-name">Ects</text>
+    <text x="85" y="143" class="fld-type">decimal</text>
+  </g>
+
+  <!-- ENTITY 3: COURSE_SECTION -->
+  <g transform="translate(50, 320)">
+    <rect width="280" height="340" class="box" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 34 L 0 34 Z" fill="#334155" />
+    <text x="16" y="22" class="hdr-text">COURSE_SECTION</text>
+
+    <!-- Fields -->
+    <text x="16" y="55" class="fld-name">Id</text>
+    <text x="95" y="55" class="fld-type">int</text>
+    <rect x="238" y="44" width="26" height="15" class="badge-bg-pk" /><text x="244" y="55" class="badge-pk">PK</text>
+
+    <text x="16" y="80" class="fld-name">CourseId</text>
+    <text x="95" y="80" class="fld-type">int</text>
+    <rect x="238" y="69" width="26" height="15" class="badge-bg-fk" /><text x="244" y="80" class="badge-fk">FK</text>
+
+    <text x="16" y="105" class="fld-name">TeacherId</text>
+    <text x="95" y="105" class="fld-type">int?</text>
+    <rect x="238" y="94" width="26" height="15" class="badge-bg-fk" /><text x="244" y="105" class="badge-fk">FK</text>
+
+    <text x="16" y="130" class="fld-name">SectionCode</text>
+    <text x="110" y="130" class="fld-type">string</text>
+    <rect x="238" y="119" width="26" height="15" class="badge-bg-uk" /><text x="244" y="130" class="badge-uk">UK</text>
+
+    <text x="16" y="155" class="fld-name">SectionName</text>
+    <text x="110" y="155" class="fld-type">string</text>
+
+    <text x="16" y="180" class="fld-name">Term</text>
+    <text x="110" y="180" class="fld-type">string</text>
+
+    <text x="16" y="205" class="fld-name">Timing</text>
+    <text x="110" y="205" class="fld-type">string</text>
+
+    <text x="16" y="230" class="fld-name">Room</text>
+    <text x="110" y="230" class="fld-type">string</text>
+
+    <text x="16" y="255" class="fld-name">EnrolledCount</text>
+    <text x="125" y="255" class="fld-type">int</text>
+
+    <text x="16" y="280" class="fld-name">NonRegCount</text>
+    <text x="125" y="280" class="fld-type">int</text>
+
+    <text x="16" y="305" class="fld-name">Capacity</text>
+    <text x="125" y="305" class="fld-type">int</text>
+  </g>
+
+  <!-- ENTITY 4: ENROLLMENT -->
+  <g transform="translate(430, 320)">
+    <rect width="240" height="210" class="box" />
+    <path d="M 0 8 Q 0 0 8 0 L 232 0 Q 240 0 240 8 L 240 34 L 0 34 Z" fill="#b91c1c" />
+    <text x="16" y="22" class="hdr-text">ENROLLMENT</text>
+
+    <!-- Fields -->
+    <text x="16" y="55" class="fld-name">Id</text>
+    <text x="85" y="55" class="fld-type">int</text>
+    <rect x="198" y="44" width="26" height="15" class="badge-bg-pk" /><text x="204" y="55" class="badge-pk">PK</text>
+
+    <text x="16" y="82" class="fld-name">StudentId</text>
+    <text x="85" y="82" class="fld-type">int</text>
+    <rect x="198" y="71" width="26" height="15" class="badge-bg-fk" /><text x="204" y="82" class="badge-fk">FK</text>
+
+    <text x="16" y="109" class="fld-name">CourseId</text>
+    <text x="85" y="109" class="fld-type">int</text>
+    <rect x="198" y="98" width="26" height="15" class="badge-bg-fk" /><text x="204" y="109" class="badge-fk">FK</text>
+
+    <text x="16" y="136" class="fld-name">CourseSectionId</text>
+    <text x="128" y="136" class="fld-type">int?</text>
+    <rect x="198" y="125" width="26" height="15" class="badge-bg-fk" /><text x="204" y="136" class="badge-fk">FK</text>
+
+    <text x="16" y="163" class="fld-name">Grade</text>
+    <text x="85" y="163" class="fld-type">string?</text>
+
+    <text x="16" y="190" class="fld-name">EnrolledOn</text>
+    <text x="100" y="190" class="fld-type">date</text>
+  </g>
+
+  <!-- ENTITY 5: STUDENT -->
+  <g transform="translate(770, 320)">
+    <rect width="260" height="260" class="box" />
+    <path d="M 0 8 Q 0 0 8 0 L 252 0 Q 260 0 260 8 L 260 34 L 0 34 Z" fill="#4338ca" />
+    <text x="16" y="22" class="hdr-text">STUDENT</text>
+
+    <!-- Fields -->
+    <text x="16" y="55" class="fld-name">Id</text>
+    <text x="95" y="55" class="fld-type">int</text>
+    <rect x="218" y="44" width="26" height="15" class="badge-bg-pk" /><text x="224" y="55" class="badge-pk">PK</text>
+
+    <text x="16" y="80" class="fld-name">RegNumber</text>
+    <text x="95" y="80" class="fld-type">string</text>
+    <rect x="218" y="69" width="26" height="15" class="badge-bg-uk" /><text x="224" y="80" class="badge-uk">UK</text>
+
+    <text x="16" y="105" class="fld-name">FullName</text>
+    <text x="95" y="105" class="fld-type">string</text>
+
+    <text x="16" y="130" class="fld-name">Email</text>
+    <text x="95" y="130" class="fld-type">string</text>
+    <rect x="218" y="119" width="26" height="15" class="badge-bg-uk" /><text x="224" y="130" class="badge-uk">UK</text>
+
+    <text x="16" y="155" class="fld-name">Program</text>
+    <text x="95" y="155" class="fld-type">string</text>
+
+    <text x="16" y="180" class="fld-name">Department</text>
+    <text x="105" y="180" class="fld-type">string</text>
+
+    <text x="16" y="205" class="fld-name">Curriculum</text>
+    <text x="105" y="205" class="fld-type">string</text>
+
+    <text x="16" y="230" class="fld-name">CumulativeGpa</text>
+    <text x="125" y="230" class="fld-type">decimal</text>
+  </g>
+
+</svg>
