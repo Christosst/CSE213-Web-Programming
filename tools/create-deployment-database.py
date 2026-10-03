@@ -6,6 +6,7 @@ import json
 import os
 import sqlite3
 import subprocess
+import tempfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--output', required=True)
@@ -17,12 +18,17 @@ output = Path(args.output).resolve()
 if output.exists():
     raise SystemExit('The artifact database already exists; use a fresh output path. No file was overwritten.')
 output.parent.mkdir(parents=True, exist_ok=True)
-subprocess.run(['dotnet', 'build', str(project), '-p:UseAppHost=false'], check=True)
-env = os.environ.copy()
-env.update({'ASPNETCORE_ENVIRONMENT': 'Production', 'Logging__LogLevel__Default': 'Warning',
-            'ConnectionStrings__University': f'Data Source={output};Foreign Keys=True'})
-subprocess.run(['dotnet', str(project/'bin/Debug/net10.0/UniversityApi.dll'),
-                '--contentRoot', str(project), '--import-data', str(source)], env=env, check=True)
+# Build separately so local packaging does not replace assemblies used by a running demo.
+build_parent = root / '.test-data'
+build_parent.mkdir(exist_ok=True)
+with tempfile.TemporaryDirectory(prefix='database-build-', dir=build_parent) as build_folder:
+    subprocess.run(['dotnet', 'build', str(project), '-p:UseAppHost=false',
+                    '--output', build_folder], check=True)
+    env = os.environ.copy()
+    env.update({'ASPNETCORE_ENVIRONMENT': 'Production', 'Logging__LogLevel__Default': 'Warning',
+                'ConnectionStrings__University': f'Data Source={output};Foreign Keys=True'})
+    subprocess.run(['dotnet', str(Path(build_folder)/'UniversityApi.dll'),
+                    '--contentRoot', str(project), '--import-data', str(source)], env=env, check=True)
 expected = json.loads(source.read_text(encoding='utf-8'))
 with closing(sqlite3.connect(output)) as connection:
     connection.execute('PRAGMA wal_checkpoint(TRUNCATE)')

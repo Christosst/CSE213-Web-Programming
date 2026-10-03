@@ -1,4 +1,4 @@
-# .NET 10 REST Web API demos
+# .NET 10 backend demos: REST Web API and Razor Pages
 
 Prerequisite: .NET 10 SDK (`dotnet --version` should start with 10). NuGet restore needs internet the first time. Run these commands from the repository root.
 
@@ -18,6 +18,7 @@ Read in this order:
 2. Chapter 27: Models/TaskWriteRequest.cs and Controllers/TasksController.cs. Use Swagger before the frontend.
 3. Chapter 28: TaskStore.cs and Controllers/TextController.cs. Temporary tasks reset on restart; text processing stores nothing.
 4. Chapter 29: wwwroot/text.js, then api.js and tasks.js. Follow one request through to safe DOM output.
+5. Additional chapter 30: [UniversityWeb](UniversityWeb/README.md), a three-hour Razor Pages introduction using the same SQLite database and entity definitions as UniversityApi. Start the API first. Run `dotnet run --project Demos/UniversityWeb --launch-profile classroom` and open http://localhost:5083/. Use browser pages for these CRUD operations; the REST API continues to use Swagger.
 
 | Request | Expected result |
 | --- | --- |
@@ -59,5 +60,7 @@ Official references: [OpenAPI in ASP.NET Core 10](https://learn.microsoft.com/en
 ## University SQLite extension
 
 The fuller SQLite classroom demo is [UniversityApi](UniversityApi/README.md): students, teachers, courses, sections and enrollments, with an ER diagram and 30 Swagger operations. Start it on port 5082. It is included in the deployment package at /universityAPI; the simple notes starter on port 5081 remains available locally.
+
+[UniversityWeb](UniversityWeb/README.md) is also included at `/universityWeb/`, with browser CRUD pages that use the same deployed SQLite file as UniversityApi. The hosting panel must configure this folder as a separate IIS application and grant its pool access to the API's `App_Data` directory. The pipeline uploads a database only when missing and takes both university apps offline while updating them.
 
 The local UniversityApi database now contains the supplied 20-student roster and F2026 course/teacher catalogue. All students are assigned to Christos Stylianides' CSE213 ECA section. The real normalized dataset is included in Git and the deployment package under UniversityApi/SeedData, and is used to build the first-deployment SQLite database. The pipeline skips an existing hosted database, preserving all edits. SQLite files remain in ignored App_Data. See UniversityApi/README.md for refresh instructions and source mapping.

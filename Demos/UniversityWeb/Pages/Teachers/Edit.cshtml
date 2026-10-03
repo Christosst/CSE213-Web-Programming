@@ -1,0 +1,19 @@
+@page "{id:int}"
+@model UniversityWeb.Pages.Teachers.EditModel
+@{ ViewData["Title"] = "Edit teacher"; }
+<h1>Edit teacher</h1>
+<form method="post">
+    <div asp-validation-summary="All" role="alert"></div>
+    <div class="field">
+        <label asp-for="Input.FullName"></label>
+        <input asp-for="Input.FullName" />
+        <span asp-validation-for="Input.FullName"></span>
+    </div>
+    <div class="field">
+        <label asp-for="Input.Email"></label>
+        <input asp-for="Input.Email" type="email" />
+        <span asp-validation-for="Input.Email"></span>
+    </div>
+
+    <div class="actions"><button type="submit">Save changes</button><a asp-page="Index">Cancel</a></div>
+</form>

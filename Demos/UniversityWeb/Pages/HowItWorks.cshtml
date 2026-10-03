@@ -1,0 +1,14 @@
+@page
+@{ ViewData["Title"] = "How Razor Pages works"; }
+<h1>How Razor Pages works</h1>
+<ol>
+    <li>The browser requests <code>/Students</code>.</li>
+    <li><code>Students/Index.cshtml.cs</code> runs <code>OnGetAsync</code> and loads data.</li>
+    <li><code>Students/Index.cshtml</code> combines that data with HTML.</li>
+    <li>The browser receives HTML. It never receives the C# source.</li>
+</ol>
+<h2>A form submission</h2>
+<p>A create form posts to <code>/Students/Create</code>. The PageModel binds the fields, checks validation, saves the student and redirects to the list. Invalid input displays the same form with errors.</p>
+<h2>Compare with UniversityApi</h2>
+<table><thead><tr><th scope="col">Application</th><th scope="col">Response</th><th scope="col">Browser work</th></tr></thead><tbody><tr><td>UniversityApi</td><td>JSON from REST endpoints</td><td>JavaScript fetch builds the interface</td></tr><tr><td>UniversityWeb</td><td>HTML from Razor Pages</td><td>The browser displays the server's page</td></tr></tbody></table>
+<p>UniversityWeb and UniversityApi use the same SQLite database. A change saved here appears in the API, and a change saved through Swagger appears here after refreshing the page.</p>

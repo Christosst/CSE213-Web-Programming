@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - UniversityWeb</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header>
+        <a class="brand" asp-page="/Index">UniversityWeb</a>
+        <nav aria-label="Main navigation">
+            <a asp-page="/Students/Index">Students</a>
+            <a asp-page="/Teachers/Index">Teachers</a>
+            <a asp-page="/Courses/Index">Courses</a>
+            <a asp-page="/Enrollments/Index">Enrollments</a>
+            <a asp-page="/HowItWorks">How it works</a>
+        </nav>
+    </header>
+    <main id="main">
+        @if (TempData["Message"] is string message)
+        {
+            <p class="message" role="status">@message</p>
+        }
+        @RenderBody()
+    </main>
+    <footer>CSE213 Web Programming - Christos Stylianides</footer>
+</body>
+</html>

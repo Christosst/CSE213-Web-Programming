@@ -1,0 +1,31 @@
+/* CSE213 chapters 11–15: external CSS, selectors, text, colours and the box model. */
+body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; margin: 0; color: #182133; background-color: #ffffff; }
+header, main, footer { max-width: 1000px; margin: 0 auto; padding: 20px; }
+header { border-bottom: 1px solid #cccccc; }
+.brand { font-size: 24px; font-weight: bold; }
+nav { margin-top: 12px; }
+nav a { display: inline-block; margin-right: 16px; }
+a { color: #165a80; }
+h1 { font-size: 28px; }
+h2 { font-size: 22px; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px; text-align: left; border: 1px solid #cccccc; }
+th { background-color: #eeeeee; }
+td a { display: inline-block; margin-right: 10px; }
+form { max-width: 500px; }
+.field { margin-bottom: 16px; }
+label { display: block; margin-bottom: 4px; font-weight: bold; }
+input, select { box-sizing: border-box; width: 100%; padding: 8px; font: inherit; border: 1px solid #777777; }
+button { padding: 8px 16px; font: inherit; cursor: pointer; }
+.actions { margin: 20px 0; }
+.actions a { margin-left: 12px; }
+.field-validation-error, .validation-summary-errors { color: #a00000; }
+.input-validation-error { border-color: #a00000; }
+.message { padding: 10px; border: 1px solid #28743c; background-color: #eef7ee; }
+.details dt { margin-top: 12px; font-weight: bold; }
+.details dd { margin-left: 0; }
+code, pre { font-family: Consolas, monospace; }
+pre { overflow-x: auto; padding: 12px; background-color: #eeeeee; }
+footer { margin-top: 20px; border-top: 1px solid #cccccc; }
+.skip { display: inline-block; margin: 12px; }

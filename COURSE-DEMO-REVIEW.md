@@ -1,6 +1,6 @@
 # Slide-to-demo review
 
-Reviewed the 26 supplied decks (410 slides), including the slide content stored as images, alongside the existing demo source and chapter notes. The main catalogue contains 22 frontend chapter examples, a brief storage example and four backend chapter guides.
+The original review covered 26 decks (410 slides), including the slide content stored as images. Chapter 30 adds an 18-slide Razor Pages introduction, bringing the course set to 27 decks (428 slides). The catalogue contains 22 frontend chapter examples, a brief storage example, four API chapter guides and the new Razor Pages guide.
 
 | Supplied deck | Slides | Current demo or guide |
 | --- | --- | --- |
@@ -30,6 +30,7 @@ Reviewed the 26 supplied decks (410 slides), including the slide content stored 
 | CSE213-27-API-Requests-Swagger.pptx | 16 | [05 - ASP.NET Core Web API/Ch27/index.html](05%20-%20ASP.NET%20Core%20Web%20API/Ch27/index.html) |
 | CSE213-28-API-CRUD-Text-Storage.pptx | 16 | [05 - ASP.NET Core Web API/Ch28/index.html](05%20-%20ASP.NET%20Core%20Web%20API/Ch28/index.html) |
 | CSE213-29-API-Frontend-Integration.pptx | 13 | [05 - ASP.NET Core Web API/Ch29/index.html](05%20-%20ASP.NET%20Core%20Web%20API/Ch29/index.html) |
+| CSE213-30-Razor-Pages-UniversityWeb.pptx | 18 | [06 - ASP.NET Core Razor Pages/Ch30/index.html](06%20-%20ASP.NET%20Core%20Razor%20Pages/Ch30/index.html) |
 
 ## Changes that make the sequence easier to teach
 
@@ -62,4 +63,6 @@ Reviewed the 26 supplied decks (410 slides), including the slide content stored 
 - Optional examples are preserved from the old library, with catalogue/Bruno paths updated. Their advanced behaviour and external media have not been comprehensively retested.
 
 Timing in chapter notes is for the demonstration and student activity only. It does not include lecture explanations, installation or assignment support.
+
+Chapter 30 has a separate complete 180-minute plan, including explanations, a 20-minute CRUD demonstration and a 30-minute guided lab. EF Core remains a brief model/query/save overview. UniversityWeb builds and publishes successfully; its seven browser checks cover the full shared database, all four CRUD workflows, validation, duplicate and relationship rules, output encoding, antiforgery, API/Razor shared writes and metadata preservation. Basic HTML/CSS map to the existing slides. The new static guide is published with the catalogue; the Razor application itself remains local.
 

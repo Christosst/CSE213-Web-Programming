@@ -1,0 +1,9 @@
+@page "{id:int}"
+@model UniversityWeb.Pages.Teachers.DeleteModel
+@{ ViewData["Title"] = "Delete teacher"; }
+<h1>Delete teacher</h1>
+<dl class="details">
+    <dt>Full name</dt><dd>@Model.Item.FullName</dd>
+    <dt>Email</dt><dd>@Model.Item.Email</dd>
+</dl>
+<form method="post"><div asp-validation-summary="All" role="alert"></div><p>Confirm deletion of this record.</p><div class="actions"><button class="danger" type="submit">Confirm delete</button><a asp-page="Index">Cancel</a></div></form>

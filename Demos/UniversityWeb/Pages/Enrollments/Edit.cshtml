@@ -1,0 +1,36 @@
+@page "{id:int}"
+@model UniversityWeb.Pages.Enrollments.EditModel
+@{ ViewData["Title"] = "Edit enrollment"; }
+<h1>Edit enrollment</h1>
+<form method="post">
+    <div asp-validation-summary="All" role="alert"></div>
+    <div class="field">
+        <label asp-for="Input.StudentId"></label>
+        <select asp-for="Input.StudentId">
+            <option value="">Choose a student</option>
+            @foreach (var option in Model.Students)
+            {
+                <option value="@option.Id">@option.FullName</option>
+            }
+        </select>
+        <span asp-validation-for="Input.StudentId"></span>
+    </div>
+    <div class="field">
+        <label asp-for="Input.CourseId"></label>
+        <select asp-for="Input.CourseId">
+            <option value="">Choose a course</option>
+            @foreach (var option in Model.Courses)
+            {
+                <option value="@option.Id">@option.Code</option>
+            }
+        </select>
+        <span asp-validation-for="Input.CourseId"></span>
+    </div>
+    <div class="field">
+        <label asp-for="Input.EnrolledOn"></label>
+        <input asp-for="Input.EnrolledOn" type="date" />
+        <span asp-validation-for="Input.EnrolledOn"></span>
+    </div>
+
+    <div class="actions"><button type="submit">Save changes</button><a asp-page="Index">Cancel</a></div>
+</form>

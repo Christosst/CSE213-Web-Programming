@@ -1,0 +1,18 @@
+@page
+@model UniversityWeb.Pages.Teachers.IndexModel
+@{ ViewData["Title"] = "Teachers"; }
+<h1>Teachers</h1>
+<div class="actions"><a asp-page="Create">Create teacher</a></div>
+@if (Model.Rows.Count == 0)
+{
+    <p>No teachers yet.</p>
+}
+else
+{
+    <div class="table-scroll"><table><thead><tr><th scope="col">Full name</th><th scope="col">Email</th><th scope="col">Actions</th></tr></thead><tbody>
+    @foreach (var item in Model.Rows)
+    {
+        <tr><td>@item.FullName</td><td>@item.Email</td><td><a asp-page="Details" asp-route-id="@item.Id">Details</a><a asp-page="Edit" asp-route-id="@item.Id">Edit</a><a asp-page="Delete" asp-route-id="@item.Id">Delete</a></td></tr>
+    }
+    </tbody></table></div>
+}

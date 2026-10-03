@@ -1,0 +1,9 @@
+@page "{id:int}"
+@model UniversityWeb.Pages.Teachers.DetailsModel
+@{ ViewData["Title"] = "Details teacher"; }
+<h1>Details teacher</h1>
+<dl class="details">
+    <dt>Full name</dt><dd>@Model.Item.FullName</dd>
+    <dt>Email</dt><dd>@Model.Item.Email</dd>
+</dl>
+<div class="actions"><a asp-page="Edit" asp-route-id="@Model.Item.Id">Edit</a><a asp-page="Index">Back to list</a></div>

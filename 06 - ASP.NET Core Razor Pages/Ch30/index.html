@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chapter 30: Razor Pages | CSE213</title><link rel="stylesheet" href="../../assets/guide.css"></head>
+<body><main>
+<h1>Chapter 30: Razor Pages and UniversityWeb</h1>
+<p>Complete the backend picture with a server-rendered .NET 10 website. UniversityApi returns JSON; UniversityWeb returns HTML. Use the browser to demonstrate Razor Pages.</p>
+<h2 id="run-locally">Run the project locally</h2>
+<p><a href="http://localhost:5083/">Open UniversityWeb</a> to use the Razor Pages browser demo. The deployment pipeline publishes it at <code>/universityWeb/</code> with the same database as <code>/universityAPI/</code>. For local practice, start both apps below.</p>
+<pre>dotnet run --project Demos/UniversityApi --launch-profile classroom
+dotnet run --project Demos/UniversityWeb --launch-profile classroom</pre>
+<p>Open <code>http://localhost:5083/</code>. Run the two commands in separate terminals, starting the API first. Both apps use <code>Demos/UniversityApi/App_Data/university.db</code>, including the CSE213 cohort and the full university catalogue. A Swagger change appears here after refreshing, and a Razor save appears in the API.</p>
+<h2>Follow one page request</h2>
+<ol><li>Open Students and read <code>Index.cshtml.cs</code>: <code>OnGetAsync</code> loads data.</li><li>Read <code>Index.cshtml</code>: Razor renders the student rows as HTML.</li><li>Create a temporary student and inspect the POST form values in DevTools.</li><li>Submit missing or duplicate data; observe errors and preserved input.</li><li>Save valid data; follow POST → redirect → GET.</li><li>Find the same student in Swagger, edit it, and refresh the Razor page.</li><li>Enroll the student in CSE213. Remove the enrollment before deleting the student.</li></ol>
+<h2>30-minute practice</h2>
+<p>Require a student name to contain 2–80 characters. Add an enrollment count to the student Details page. Test rejected and accepted input, then explain where C# runs. No database schema change is needed.</p>
+<p><strong>EF Core scope:</strong> model, query, save. Authentication, migrations and advanced application architecture are later topics.</p>
+<p><a href="../../Demos/UniversityWeb/README.md">Run instructions, ER diagram and 180-minute teaching plan</a> · <a href="https://learn.microsoft.com/en-us/training/modules/create-razor-pages-aspnet-core/">Microsoft Learn module</a> · <a href="../../index.html">Demo library</a></p>
+</main></body></html>

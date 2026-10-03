@@ -28,7 +28,7 @@ steps:
       version: '10.x'
 
   - task: Bash@3
-    displayName: Publish CourseApi and full UniversityApi for Windows IIS
+    displayName: Publish both APIs and UniversityWeb for Windows IIS
     inputs:
       targetType: inline
       script: |
@@ -53,6 +53,15 @@ steps:
         test -f "$PUBLISH_DIR/universityAPI/UniversityApi.exe"
         test -f "$PUBLISH_DIR/universityAPI/web.config"
         test -f "$PUBLISH_DIR/universityAPI/SeedData/university-import.json"
+        dotnet publish Demos/UniversityWeb/UniversityWeb.csproj \
+          --configuration "$BUILD_CONFIGURATION" \
+          --runtime "$PUBLISH_RUNTIME" \
+          --self-contained true \
+          -p:UseAppHost=true \
+          -p:PublishSingleFile=false \
+          --output "$PUBLISH_DIR/universityWeb"
+        test -f "$PUBLISH_DIR/universityWeb/UniversityWeb.exe"
+        test -f "$PUBLISH_DIR/universityWeb/web.config"
         python3 tools/create-deployment-database.py \
           --output "$PUBLISH_DIR/universityAPI/App_Data/university.db"
         python3 tools/prepare-deployment.py \
@@ -71,7 +80,7 @@ steps:
       artifact: course-website
 
   - task: Bash@3
-    displayName: Deploy API and demo catalogue via FTP
+    displayName: Deploy APIs, UniversityWeb and demo catalogue via FTP
     # Pull-request validation may publish artifacts but must never update the website.
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
@@ -101,8 +110,11 @@ steps:
         # Check it first, and verify access after creating a missing directory.
         cd "/${REMOTE_ROOT#/}/universityAPI" || mkdir -p "/${REMOTE_ROOT#/}/universityAPI"
         cd "/${REMOTE_ROOT#/}/universityAPI"
+        cd "/${REMOTE_ROOT#/}/universityWeb" || mkdir -p "/${REMOTE_ROOT#/}/universityWeb"
+        cd "/${REMOTE_ROOT#/}/universityWeb"
         put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/app_offline.htm"
         put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
+        put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/universityWeb/app_offline.htm"
         bye
         EOF
         sleep 10
@@ -126,10 +138,11 @@ steps:
           --exclude-glob '*' --include-glob 'university.db' \
           "$PUBLISH_DIR/universityAPI/App_Data" "/${REMOTE_ROOT#/}/universityAPI/App_Data"
         rm "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
+        rm "/${REMOTE_ROOT#/}/universityWeb/app_offline.htm"
         rm "/${REMOTE_ROOT#/}/app_offline.htm"
         bye
         EOF
-        echo "Published CourseApi, UniversityApi and the course catalogue."
+        echo "Published CourseApi, UniversityApi, UniversityWeb and the course catalogue."
     env:
       FTP_HOST: $(ftpHost)
       FTP_USER: $(ftpUser)
@@ -139,7 +152,7 @@ steps:
       OFFLINE_FILE: $(Agent.TempDirectory)/course-app_offline.htm
 
   - task: Bash@3
-    displayName: Verify deployed API and catalogue
+    displayName: Verify deployed APIs, Razor Pages and catalogue
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
       targetType: inline

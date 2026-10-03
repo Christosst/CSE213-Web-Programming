@@ -1,6 +1,6 @@
 # CSE213 Web Programming: student demo library
 
-Small, readable examples aligned to the **26 supplied PowerPoints (410 slides)**: foundations 01–03, HTML 04–10, CSS 11–18, JavaScript 22–25 and REST Web API 26–29. Chapter numbers follow the supplied decks, so 19–21 are optional rather than missing mandatory lessons.
+Small, readable examples aligned to **27 course PowerPoints (428 slides)**: foundations 01–03, HTML 04–10, CSS 11–18, JavaScript 22–25, REST Web API 26–29 and Razor Pages 30. Chapter numbers follow the supplied decks, so 19–21 are optional rather than missing mandatory lessons.
 
 ## Start the frontend demos
 
@@ -29,6 +29,7 @@ The catalogue is [index.html](index.html). Each chapter README explains the sour
 | 27 | Tasks in Swagger | Body/query/route values, validation, 201/Location, 204 and 404 |
 | 28 | Temporary task CRUD and text processing | Storage lifetime and defined processing rules; SQLite optional |
 | 29 | Text and task frontends | Same-origin fetch, JSON, loading/errors and safe output |
+| 30 | UniversityWeb | Razor Pages, server-rendered HTML, forms, validation and SQLite CRUD |
 
 The old graphics lessons numbered 26–28 have been removed from the main sequence and preserved in [Optional](Optional/README.md), along with extra CSS lessons, responsive images, web workers and service workers. No old demo has been permanently deleted. Optional examples retain their original source and can require internet access.
 
@@ -49,6 +50,14 @@ dotnet run --project Demos/SqliteNotesApi --launch-profile classroom
 ```
 
 Open **http://localhost:5081/**. This separate tiny app uses EF Core only for note CRUD and persistence. The slide decks describe notes alongside tasks; the updated demos split notes into this optional app to keep the main text route simpler. No CORS configuration is needed because each API serves its own frontend.
+
+## Additional three-hour Razor Pages introduction
+
+```sh
+dotnet run --project Demos/UniversityWeb --launch-profile classroom
+```
+
+Open **http://localhost:5083/**. Students, teachers, courses and enrollments have browser CRUD pages. UniversityWeb opens the same SQLite file as UniversityApi, including the 20 CSE213 students and the full university catalogue. Start UniversityApi first. Changes made through either interface appear in the other after refreshing. Read [UniversityWeb's README](Demos/UniversityWeb/README.md) for the ER diagram, source-reading sequence, 18-slide teaching plan and guided lab. Run `npm run test:universityweb` for the dedicated browser checks. The pipeline publishes the running Razor app at **/universityWeb/** with the API's shared database, as well as its static chapter guide. Configure its separate IIS application before the first deployment; see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Assignment routes
 
@@ -80,7 +89,7 @@ The Bruno collection uses local baseUrl (port 3000), apiUrl (5080) and notesUrl 
 
 ## Deployment workflow
 
-The Azure pipeline publishes CourseApi as a self-contained .NET 10 Windows/IIS application, includes the demo catalogue, saves the deployment artifact and uploads it via the existing FTP destination. Configure `ftpPassword` as a secret pipeline variable and check the IIS settings and site URL. See [DEPLOYMENT.md](DEPLOYMENT.md) for configuration, hosted routes and recovery steps.
+The Azure pipeline publishes CourseApi, UniversityApi and UniversityWeb as self-contained .NET 10 Windows/IIS applications, includes the demo catalogue, saves the deployment artifact and uploads it via the existing FTP destination. It retains the existing `ftpPassword` value and uploads the university database only when missing. Configure the separate university IIS applications and shared database permissions. See [DEPLOYMENT.md](DEPLOYMENT.md) for configuration, hosted routes and recovery steps.
 
 ## University SQLite demo
 

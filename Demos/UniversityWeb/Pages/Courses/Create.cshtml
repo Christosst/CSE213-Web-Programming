@@ -1,0 +1,30 @@
+@page
+@model UniversityWeb.Pages.Courses.CreateModel
+@{ ViewData["Title"] = "Create course"; }
+<h1>Create course</h1>
+<form method="post">
+    <div asp-validation-summary="All" role="alert"></div>
+    <div class="field">
+        <label asp-for="Input.Code"></label>
+        <input asp-for="Input.Code" />
+        <span asp-validation-for="Input.Code"></span>
+    </div>
+    <div class="field">
+        <label asp-for="Input.Title"></label>
+        <input asp-for="Input.Title" />
+        <span asp-validation-for="Input.Title"></span>
+    </div>
+    <div class="field">
+        <label asp-for="Input.TeacherId"></label>
+        <select asp-for="Input.TeacherId">
+            <option value="">Not assigned</option>
+            @foreach (var option in Model.Teachers)
+            {
+                <option value="@option.Id">@option.FullName</option>
+            }
+        </select>
+        <span asp-validation-for="Input.TeacherId"></span>
+    </div>
+
+    <div class="actions"><button type="submit">Create course</button><a asp-page="Index">Cancel</a></div>
+</form>

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node tools/serve.cjs",
     "test": "playwright test --project=chromium",
-    "test:all": "playwright test"
+    "test:all": "playwright test",
+    "test:universityweb": "playwright test --config=playwright.universityweb.config.js"
   },
   "repository": {
     "type": "git",

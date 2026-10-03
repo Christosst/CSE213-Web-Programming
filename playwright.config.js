@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 fs.mkdirSync('.test-data', { recursive: true });
 module.exports = defineConfig({
-  testDir: './tests', fullyParallel: false, workers: 1,
+  testDir: './tests', testIgnore: '**/universityweb.spec.js', fullyParallel: false, workers: 1,
   forbidOnly: !!process.env.CI, retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: { baseURL: 'http://localhost:3000', trace: 'retain-on-failure' },

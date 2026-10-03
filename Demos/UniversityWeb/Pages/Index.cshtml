@@ -1,0 +1,15 @@
+@page
+@model IndexModel
+@{ ViewData["Title"] = "University classroom"; }
+<p>ASP.NET Core Razor Pages</p>
+<h1>University classroom</h1>
+<p class="intro">Manage students, teachers, courses and enrollments using ordinary web pages. C# runs on the server and sends complete HTML to the browser.</p>
+<ul class="stats">
+    <li>Students: @Model.Students</li>
+    <li>Teachers: @Model.Teachers</li>
+    <li>Courses: @Model.Courses</li>
+    <li>Enrollments: @Model.Enrollments</li>
+</ul>
+<p><a asp-page="/Students/Index">Browse students</a> | <a asp-page="/HowItWorks">Follow a page request</a></p>
+<h2>CSE213 Web Programming</h2>
+<p>The database is shared with UniversityApi and includes the CSE213 class roster and university courses and teachers. SQLite keeps saved edits after restarting either app.</p>
