@@ -7,15 +7,29 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
+  # ── Main course site (cse213.runasp.net) ─────────────────────────────────
   ftpHost: "site91422.siteasp.net"
   ftpUser: "site91422"
+  ftpPassword: "s-5W@De86_Sh"
   remoteRoot: "wwwroot"
   siteUrl: http://cse213.runasp.net
+
+  # ── University API site (cse213universityapi.runasp.net) ─────────────────
+  uniApiFtpHost: "site95793.siteasp.net"
+  uniApiFtpUser: "site95793"
+  uniApiFtpPassword: "2b-Dg53_!8jJ"
+  uniApiSiteUrl: "https://cse213universityapi.runasp.net"
+
+  # ── University Web site (cse213universityweb.runasp.net) ─────────────────
+  uniWebFtpHost: "site95794.siteasp.net"
+  uniWebFtpUser: "site95794"
+  uniWebFtpPassword: "5s_J3Gq9o-S"
+  uniWebSiteUrl: "https://cse213universityweb.runasp.net"
+
   buildConfiguration: Release
   # Match the shared host's 32-bit IIS pool (x64 here causes HTTP 500.32).
   publishRuntime: win-x86
   swaggerEnabled: 'true'
-  ftpPassword: "s-5W@De86_Sh"
 
 steps:
   - checkout: self
@@ -64,14 +78,22 @@ steps:
         test -f "$PUBLISH_DIR/universityWeb/web.config"
         python3 tools/create-deployment-database.py \
           --output "$PUBLISH_DIR/universityAPI/App_Data/university.db"
+        # Give UniversityWeb its own database copy (separate site, no shared filesystem).
+        mkdir -p "$PUBLISH_DIR/universityWeb/App_Data"
+        cp "$PUBLISH_DIR/universityAPI/App_Data/university.db" \
+           "$PUBLISH_DIR/universityWeb/App_Data/university.db"
         python3 tools/prepare-deployment.py \
           --publish-dir "$PUBLISH_DIR" \
-          --swagger-enabled "$SWAGGER_ENABLED"
+          --swagger-enabled "$SWAGGER_ENABLED" \
+          --university-api-url "$UNI_API_URL" \
+          --university-web-url "$UNI_WEB_URL"
     env:
       BUILD_CONFIGURATION: $(buildConfiguration)
       PUBLISH_RUNTIME: $(publishRuntime)
       PUBLISH_DIR: $(Build.ArtifactStagingDirectory)/website
       SWAGGER_ENABLED: $(swaggerEnabled)
+      UNI_API_URL: $(uniApiSiteUrl)
+      UNI_WEB_URL: $(uniWebSiteUrl)
 
   - task: PublishPipelineArtifact@1
     displayName: Save deployable website artifact
@@ -79,8 +101,9 @@ steps:
       targetPath: $(Build.ArtifactStagingDirectory)/website
       artifact: course-website
 
+  # ── Deploy: CourseApi → main site (cse213.runasp.net) ────────────────────
   - task: Bash@3
-    displayName: Deploy APIs, UniversityWeb and demo catalogue via FTP
+    displayName: Deploy CourseApi and catalogue to main site via FTP
     # Pull-request validation may publish artifacts but must never update the website.
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     inputs:
@@ -91,7 +114,6 @@ steps:
           echo "##vso[task.logissue type=error]Set ftpPassword in the pipeline variables."
           exit 1
         fi
-        # Keep the target explicit. Never mirror with --delete against shared hosting.
         if [[ -z "$REMOTE_ROOT" || "$REMOTE_ROOT" == / || "$REMOTE_ROOT" == *..* || "$REMOTE_ROOT" == *\"* ]]; then
           echo "##vso[task.logissue type=error]Set remoteRoot to the site's explicit IIS directory."
           exit 1
@@ -106,20 +128,61 @@ steps:
         set ftp:use-site-chmod no
         set net:timeout 30
         set net:max-retries 3
-        # Some FTP servers return 550 when mkdir targets an existing directory.
-        # Check it first, and verify access after creating a missing directory.
-        cd "/${REMOTE_ROOT#/}/universityAPI" || mkdir -p "/${REMOTE_ROOT#/}/universityAPI"
-        cd "/${REMOTE_ROOT#/}/universityAPI"
-        cd "/${REMOTE_ROOT#/}/universityWeb" || mkdir -p "/${REMOTE_ROOT#/}/universityWeb"
-        cd "/${REMOTE_ROOT#/}/universityWeb"
         put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/app_offline.htm"
-        put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
-        put "$OFFLINE_FILE" -o "/${REMOTE_ROOT#/}/universityWeb/app_offline.htm"
         bye
         EOF
         sleep 10
-        # Leave the maintenance file in place on upload failure; a retry completes the package.
         lftp -u "$FTP_USER,$FTP_PASSWORD" "ftp://$FTP_HOST" <<EOF
+        set cmd:fail-exit yes
+        set ftp:ssl-allow no
+        set ftp:use-site-chmod no
+        set net:timeout 30
+        set net:max-retries 3
+        mirror --reverse --no-perms --no-umask --parallel=4 \
+          --exclude-glob 'universityAPI/' \
+          --exclude-glob 'universityWeb/' \
+          --exclude-glob 'App_Data/' \
+          --exclude-glob '*.db' \
+          --exclude-glob '*.db-*' \
+          "$PUBLISH_DIR" "/${REMOTE_ROOT#/}"
+        rm "/${REMOTE_ROOT#/}/app_offline.htm"
+        bye
+        EOF
+        echo "Deployed CourseApi and catalogue to main site."
+    env:
+      FTP_HOST: $(ftpHost)
+      FTP_USER: $(ftpUser)
+      FTP_PASSWORD: $(ftpPassword)
+      REMOTE_ROOT: $(remoteRoot)
+      PUBLISH_DIR: $(Build.ArtifactStagingDirectory)/website
+      OFFLINE_FILE: $(Agent.TempDirectory)/course-app_offline.htm
+
+  # ── Deploy: UniversityApi → cse213universityapi.runasp.net ───────────────
+  - task: Bash@3
+    displayName: Deploy UniversityApi to its own site via FTP
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: inline
+      script: |
+        set -Eeuo pipefail
+        if [[ -z "${UNI_API_FTP_PASSWORD:-}" || "$UNI_API_FTP_PASSWORD" == \$\(* ]]; then
+          echo "##vso[task.logissue type=error]Set uniApiFtpPassword in the pipeline variables."
+          exit 1
+        fi
+        sudo apt-get update -y
+        sudo apt-get install -y lftp
+        printf '%s\n' '<!doctype html><html lang="en"><title>Updating University API</title><h1>University API is being updated</h1><p>Please try again shortly.</p></html>' > "$OFFLINE_FILE"
+        lftp -u "$UNI_API_FTP_USER,$UNI_API_FTP_PASSWORD" "ftp://$UNI_API_FTP_HOST" <<EOF
+        set cmd:fail-exit yes
+        set ftp:ssl-allow no
+        set ftp:use-site-chmod no
+        set net:timeout 30
+        set net:max-retries 3
+        put "$OFFLINE_FILE" -o "/wwwroot/app_offline.htm"
+        bye
+        EOF
+        sleep 10
+        lftp -u "$UNI_API_FTP_USER,$UNI_API_FTP_PASSWORD" "ftp://$UNI_API_FTP_HOST" <<EOF
         set cmd:fail-exit yes
         set ftp:ssl-allow no
         set ftp:use-site-chmod no
@@ -130,27 +193,77 @@ steps:
           --exclude-glob '**/App_Data/**' \
           --exclude-glob '*.db' \
           --exclude-glob '*.db-*' \
-          "$PUBLISH_DIR" "/${REMOTE_ROOT#/}"
-        # The application is offline. Only missing database files may be uploaded.
-        cd "/${REMOTE_ROOT#/}/universityAPI/App_Data" || mkdir -p "/${REMOTE_ROOT#/}/universityAPI/App_Data"
-        cd "/${REMOTE_ROOT#/}/universityAPI/App_Data"
+          "$PUBLISH_DIR/universityAPI" "/wwwroot"
+        cd "/wwwroot/App_Data" || mkdir -p "/wwwroot/App_Data"
+        cd "/wwwroot/App_Data"
         mirror --reverse --only-missing --no-recursion --no-perms --no-umask \
           --exclude-glob '*' --include-glob 'university.db' \
-          "$PUBLISH_DIR/universityAPI/App_Data" "/${REMOTE_ROOT#/}/universityAPI/App_Data"
-        rm "/${REMOTE_ROOT#/}/universityAPI/app_offline.htm"
-        rm "/${REMOTE_ROOT#/}/universityWeb/app_offline.htm"
-        rm "/${REMOTE_ROOT#/}/app_offline.htm"
+          "$PUBLISH_DIR/universityAPI/App_Data" "/wwwroot/App_Data"
+        rm "/wwwroot/app_offline.htm"
         bye
         EOF
-        echo "Published CourseApi, UniversityApi, UniversityWeb and the course catalogue."
+        echo "Deployed UniversityApi to cse213universityapi.runasp.net."
     env:
-      FTP_HOST: $(ftpHost)
-      FTP_USER: $(ftpUser)
-      FTP_PASSWORD: $(ftpPassword)
-      REMOTE_ROOT: $(remoteRoot)
+      UNI_API_FTP_HOST: $(uniApiFtpHost)
+      UNI_API_FTP_USER: $(uniApiFtpUser)
+      UNI_API_FTP_PASSWORD: $(uniApiFtpPassword)
       PUBLISH_DIR: $(Build.ArtifactStagingDirectory)/website
-      OFFLINE_FILE: $(Agent.TempDirectory)/course-app_offline.htm
+      OFFLINE_FILE: $(Agent.TempDirectory)/uniapi-app_offline.htm
 
+  # ── Deploy: UniversityWeb → cse213universityweb.runasp.net ───────────────
+  - task: Bash@3
+    displayName: Deploy UniversityWeb to its own site via FTP
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      targetType: inline
+      script: |
+        set -Eeuo pipefail
+        if [[ -z "${UNI_WEB_FTP_PASSWORD:-}" || "$UNI_WEB_FTP_PASSWORD" == \$\(* ]]; then
+          echo "##vso[task.logissue type=error]Set uniWebFtpPassword in the pipeline variables."
+          exit 1
+        fi
+        sudo apt-get update -y
+        sudo apt-get install -y lftp
+        printf '%s\n' '<!doctype html><html lang="en"><title>Updating University Web</title><h1>University Web is being updated</h1><p>Please try again shortly.</p></html>' > "$OFFLINE_FILE"
+        lftp -u "$UNI_WEB_FTP_USER,$UNI_WEB_FTP_PASSWORD" "ftp://$UNI_WEB_FTP_HOST" <<EOF
+        set cmd:fail-exit yes
+        set ftp:ssl-allow no
+        set ftp:use-site-chmod no
+        set net:timeout 30
+        set net:max-retries 3
+        put "$OFFLINE_FILE" -o "/wwwroot/app_offline.htm"
+        bye
+        EOF
+        sleep 10
+        lftp -u "$UNI_WEB_FTP_USER,$UNI_WEB_FTP_PASSWORD" "ftp://$UNI_WEB_FTP_HOST" <<EOF
+        set cmd:fail-exit yes
+        set ftp:ssl-allow no
+        set ftp:use-site-chmod no
+        set net:timeout 30
+        set net:max-retries 3
+        mirror --reverse --no-perms --no-umask --parallel=4 \
+          --exclude-glob 'App_Data/**' \
+          --exclude-glob '**/App_Data/**' \
+          --exclude-glob '*.db' \
+          --exclude-glob '*.db-*' \
+          "$PUBLISH_DIR/universityWeb" "/wwwroot"
+        cd "/wwwroot/App_Data" || mkdir -p "/wwwroot/App_Data"
+        cd "/wwwroot/App_Data"
+        mirror --reverse --only-missing --no-recursion --no-perms --no-umask \
+          --exclude-glob '*' --include-glob 'university.db' \
+          "$PUBLISH_DIR/universityWeb/App_Data" "/wwwroot/App_Data"
+        rm "/wwwroot/app_offline.htm"
+        bye
+        EOF
+        echo "Deployed UniversityWeb to cse213universityweb.runasp.net."
+    env:
+      UNI_WEB_FTP_HOST: $(uniWebFtpHost)
+      UNI_WEB_FTP_USER: $(uniWebFtpUser)
+      UNI_WEB_FTP_PASSWORD: $(uniWebFtpPassword)
+      PUBLISH_DIR: $(Build.ArtifactStagingDirectory)/website
+      OFFLINE_FILE: $(Agent.TempDirectory)/uniweb-app_offline.htm
+
+  # ── Verify all three sites ────────────────────────────────────────────────
   - task: Bash@3
     displayName: Verify deployed APIs, Razor Pages and catalogue
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
@@ -158,7 +271,14 @@ steps:
       targetType: inline
       script: |
         set -Eeuo pipefail
-        python3 tools/verify-deployment.py --url "$SITE_URL" --swagger-enabled "$SWAGGER_ENABLED"
+        python3 tools/verify-deployment.py \
+          --url "$SITE_URL" \
+          --university-api-url "$UNI_API_URL" \
+          --university-web-url "$UNI_WEB_URL" \
+          --swagger-enabled "$SWAGGER_ENABLED"
     env:
       SITE_URL: $(siteUrl)
+      UNI_API_URL: $(uniApiSiteUrl)
+      UNI_WEB_URL: $(uniWebSiteUrl)
       SWAGGER_ENABLED: $(swaggerEnabled)
+
