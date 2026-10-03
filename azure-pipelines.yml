@@ -17,13 +17,13 @@ variables:
   # ── University API site (cse213universityapi.runasp.net) ─────────────────
   uniApiFtpHost: "site95793.siteasp.net"
   uniApiFtpUser: "site95793"
-  uniApiFtpPassword: "2b-Dg53_!8jJ"
+  uniApiFtpPassword: "2b-DgS3_!8jJ"
   uniApiSiteUrl: "http://cse213universityapi.runasp.net"
 
   # ── University Web site (cse213universityweb.runasp.net) ─────────────────
   uniWebFtpHost: "site95794.siteasp.net"
   uniWebFtpUser: "site95794"
-  uniWebFtpPassword: "5s_J3Gq9o-S"
+  uniWebFtpPassword: "5s_J?3Gq9o-S"
   uniWebSiteUrl: "http://cse213universityweb.runasp.net"
 
   buildConfiguration: Release
