@@ -211,7 +211,11 @@ with tempfile.TemporaryDirectory(prefix='university-bundle-', dir=testFolder) as
     env['SeedData__ImportPath'] = str(bundle)
     process = start()
     try:
-        for resource, expected in [('students',20),('teachers',714),('courses',1002),('sections',2324),('enrollments',20)]:
+        for resource, expected in [('students', len(source['Students'])),
+                                   ('teachers', len(source['Teachers'])),
+                                   ('courses', len(source['Courses'])),
+                                   ('sections', len(source['Sections'])),
+                                   ('enrollments', len(source['Students']))]:
             rows, _ = request('/api/'+resource)
             assert len(rows) == expected, (resource,len(rows))
         students, _ = request('/api/students')

@@ -15,7 +15,7 @@ dotnet run --project Demos/UniversityWeb --launch-profile classroom
 
 Open **http://localhost:5083/**. No Node server or JavaScript framework is required for this app. Initial package restore needs internet access. Stop with Ctrl+C.
 
-The shared file is **`Demos/UniversityApi/App_Data/university.db`**. UniversityApi initializes a missing database. Its classroom profile imports the bundled dataset only for a new database: **20 students, 714 teachers, 1,002 courses, 2,324 sections and 20 CSE213 enrollments**, with Christos Stylianides teaching CSE213. An existing database remains authoritative and is not reimported. UniversityWeb opens that file and does not create or seed another database.
+The shared file is **`Demos/UniversityApi/App_Data/university.db`**. UniversityApi initializes a missing database. Its classroom profile imports the bundled dataset only for a new database: **20 students, 719 teachers, 1,002 courses, 2,324 sections and 20 CSE213 enrollments**, with Christos Stylianides teaching CSE213. An existing database remains authoritative and is not reimported. UniversityWeb opens that file and does not create or seed another database.
 
 Later starts preserve saved records. To choose a different file, set **`ConnectionStrings__University` to the same absolute SQLite connection string in both apps**. Start the API once before UniversityWeb when that file does not exist. Database files remain excluded from Git and publishing. The former `UniversityWeb/App_Data/universityweb.db`, if present locally, is no longer used and is left untouched.
 

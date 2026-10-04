@@ -29,7 +29,7 @@ test('seeded class, HTML response, accessible navigation and screenshots', async
   expect(response.headers()['content-type']).toContain('text/html');
   await expect(page.getByRole('heading', { name: 'University classroom' })).toBeVisible();
   await expect(page.locator('.stats')).toContainText('20');
-  await expect(page.locator('.stats')).toContainText('Teachers: 714');
+  await expect(page.locator('.stats')).toContainText('Teachers: 719');
   await expect(page.locator('.stats')).toContainText('Courses: 1002');
   await page.screenshot({ path: path.join(pictures, 'home.png') });
   await page.getByRole('link', { name: 'Students', exact: true }).click();
