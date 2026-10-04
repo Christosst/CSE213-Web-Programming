@@ -1,7 +1,7 @@
 meta {
-  name: 05 - Students - Create
+  name: 06 - Students - Create
   type: http
-  seq: 5
+  seq: 6
 }
 
 post {
@@ -9,12 +9,17 @@ post {
   body: json
   auth: none
 }
+
+headers {
+  Content-Type: application/json
+}
+
 body:json {
 {
-  "registrationNumber": "F2026-9999",
+  "registrationNumber": "DEMO-9999",
   "fullName": "Student Demo",
   "email": "demo.student@euc.ac.cy",
-  "program": "Computer Science (BSc)",
+  "program": "Computer Science (4 years, Bachelor)",
   "department": "Computer Science and Engineering",
   "curriculum": "F2026",
   "cumulativeGpa": 3.85

@@ -1,0 +1,24 @@
+meta {
+  name: 26 - Enrollments - Create
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{uniApiUrl}}/api/enrollments
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "studentId": 1,
+  "courseId": 143,
+  "courseSectionId": 234,
+  "enrolledOn": "2026-10-02"
+}
+}

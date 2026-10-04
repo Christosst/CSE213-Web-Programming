@@ -1,0 +1,22 @@
+meta {
+  name: 27 - Update Task
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{apiUrl}}/api/tasks/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "title": "Read the slides",
+  "isCompleted": true
+}
+}

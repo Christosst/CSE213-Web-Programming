@@ -1,7 +1,7 @@
 meta {
-  name: 11 - Courses - Create
+  name: 16 - Courses - Create
   type: http
-  seq: 11
+  seq: 16
 }
 
 post {
@@ -9,11 +9,16 @@ post {
   body: json
   auth: none
 }
+
+headers {
+  Content-Type: application/json
+}
+
 body:json {
 {
   "code": "CSE999",
   "title": "Advanced Web Architectures",
-  "teacherId": 1,
+  "teacherId": 100,
   "ects": 6.0
 }
 }

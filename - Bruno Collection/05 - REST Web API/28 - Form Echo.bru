@@ -1,0 +1,17 @@
+meta {
+  name: 28 - Form Echo
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{apiUrl}}/form-echo
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  firstName: Christos
+  lastName: Stylianides
+  course: CSE213
+}

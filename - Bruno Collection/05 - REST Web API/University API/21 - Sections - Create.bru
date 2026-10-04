@@ -1,0 +1,27 @@
+meta {
+  name: 21 - Sections - Create
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{uniApiUrl}}/api/sections
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "sectionCode": "DEMO-SECTION",
+  "sectionName": "CSE213 - ECD",
+  "courseId": 143,
+  "teacherId": 100,
+  "term": "F2026",
+  "timing": "Friday 18:10-21:00",
+  "room": "LAB005"
+}
+}

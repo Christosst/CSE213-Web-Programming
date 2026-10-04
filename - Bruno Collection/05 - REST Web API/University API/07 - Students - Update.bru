@@ -1,0 +1,26 @@
+meta {
+  name: 07 - Students - Update
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{uniApiUrl}}/api/students/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "registrationNumber": "2024001",
+  "fullName": "Student Demo Updated",
+  "program": "Computer Science (4 years, Bachelor)",
+  "department": "Computer Science and Engineering",
+  "curriculum": "F2026",
+  "cumulativeGpa": 3.9
+}
+}

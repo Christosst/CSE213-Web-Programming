@@ -1,0 +1,27 @@
+meta {
+  name: 22 - Sections - Update
+  type: http
+  seq: 22
+}
+
+put {
+  url: {{uniApiUrl}}/api/sections/234
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "sectionCode": "46252",
+  "sectionName": "CSE213 - ECA",
+  "courseId": 143,
+  "teacherId": 100,
+  "term": "F2026",
+  "timing": "Monday 18:10-21:00",
+  "room": "LAB005 - PC Lab"
+}
+}

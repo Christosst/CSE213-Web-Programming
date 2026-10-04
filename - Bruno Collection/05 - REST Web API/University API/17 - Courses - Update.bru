@@ -1,0 +1,24 @@
+meta {
+  name: 17 - Courses - Update
+  type: http
+  seq: 17
+}
+
+put {
+  url: {{uniApiUrl}}/api/courses/143
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+{
+  "code": "CSE213",
+  "title": "Web programming",
+  "teacherId": 100,
+  "ects": 6.0
+}
+}
