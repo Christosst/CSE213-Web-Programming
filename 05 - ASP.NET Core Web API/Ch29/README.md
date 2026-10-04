@@ -11,7 +11,7 @@ Run instructions: [Demos/README.md](../../Demos/README.md). Start with `CourseAp
 3. Read api.js: response.ok, automatic 400 details and skipping JSON for 204.
 4. Throttle or block /api/** in DevTools; observe loading and recoverable error states.
 5. Enter <img src=x> and show that the result is rendered as text.
-6. Optional SQLite frontend: open localhost:5081 and repeat create/edit/delete.
+6. University SQLite frontend: open localhost:5083 (UniversityWeb) or localhost:5082/swagger and repeat create/edit/delete.
 
 ## Student exercise (22 minutes)
 
@@ -19,4 +19,4 @@ Build a labelled form for your chosen text or SQLite endpoint with loading, safe
 
 ## Scope
 
-REST, controller-based ASP.NET Core on .NET 10, OpenAPI and Swagger UI. No MVC views, Razor, Blazor, authentication setup or repository/service layers. SQLite and its tiny EF Core example are optional. The slide deck's combined /api/notes demonstration is supplied as a separate app on port 5081 so the core text path has no EF dependency.
+REST, controller-based ASP.NET Core on .NET 10, OpenAPI and Swagger UI. No MVC views, Razor, Blazor, authentication setup or repository/service layers. SQLite and its EF Core example are demonstrated in UniversityApi on port 5082 so the core CourseApi text path has no EF dependency.

@@ -34,19 +34,15 @@ Read in this order:
 
 Task titles allow 1–120 characters; text allows 1–5000. [Required] rejects blank/whitespace strings. The analysis character count uses .NET string.Length (UTF-16 code units, so some emoji count as two). Words split on whitespace, including tabs/newlines; punctuation stays within a word. Uppercase uses ToUpperInvariant. Define these rules before testing.
 
-## Optional assignment path: SQLite notes with minimal EF Core
+## SQLite relational database: UniversityApi
 
 In another terminal:
 
-```sh
-dotnet run --project Demos/SqliteNotesApi --launch-profile classroom
-```
+``sh
+dotnet run --project Demos/UniversityApi --launch-profile classroom
+``
 
-Open http://localhost:5081/ and http://localhost:5081/swagger. GET/POST /api/notes and GET/PUT/DELETE /api/notes/{id} follow the same status-code pattern as tasks. Note text allows 1–500 characters. The app creates notes.db in its project directory and keeps records after restart. Test persistence before deleting the note. Delete the classroom database only when you intend to reset its data.
-
-Only this optional project references EF Core. Teach the model, one DbContext, AddDbContext/UseSqlite, queries and SaveChangesAsync. EnsureCreated is a new-database classroom shortcut; migrations, relationships and repository patterns are outside scope. Schema edits after a database has been created are not applied automatically.
-
-**Difference from the slide demo:** notes run on port 5081 in a separate small app rather than /api/notes in CourseApi. Each app serves its own frontend, so neither requires CORS. This keeps the text assignment completely free of EF Core. The chapter guide pages explain this difference.
+Open http://localhost:5082/ and http://localhost:5082/swagger. This project uses EF Core and SQLite for full relational CRUD and queries across students, teachers, courses, sections and enrollments.
 
 ## Assignment choices
 
@@ -59,7 +55,7 @@ Official references: [OpenAPI in ASP.NET Core 10](https://learn.microsoft.com/en
 
 ## University SQLite extension
 
-The fuller SQLite classroom demo is [UniversityApi](UniversityApi/README.md): students, teachers, courses, sections and enrollments, with an ER diagram and 30 Swagger operations. Start it on port 5082. It is included in the deployment package at /universityAPI; the simple notes starter on port 5081 remains available locally.
+The fuller SQLite classroom demo is [UniversityApi](UniversityApi/README.md): students, teachers, courses, sections and enrollments, with an ER diagram and 30 Swagger operations. Start it on port 5082. It is included in the deployment package at /universityAPI.
 
 [UniversityWeb](UniversityWeb/README.md) is also included at `/universityWeb/`, with browser CRUD pages that use the same deployed SQLite file as UniversityApi. The hosting panel must configure this folder as a separate IIS application and grant its pool access to the API's `App_Data` directory. The pipeline uploads a database only when missing and takes both university apps offline while updating them.
 

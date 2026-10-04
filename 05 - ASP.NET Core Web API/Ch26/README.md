@@ -16,4 +16,4 @@ Add GET /api/course returning a course name and code.
 
 ## Scope
 
-REST, controller-based ASP.NET Core on .NET 10, OpenAPI and Swagger UI. No MVC views, Razor, Blazor, authentication setup or repository/service layers. SQLite and its tiny EF Core example are optional. The slide deck's combined /api/notes demonstration is supplied as a separate app on port 5081 so the core text path has no EF dependency.
+REST, controller-based ASP.NET Core on .NET 10, OpenAPI and Swagger UI. No MVC views, Razor, Blazor, authentication setup or repository/service layers. SQLite and its EF Core example are demonstrated in UniversityApi on port 5082 so the core CourseApi text path has no EF dependency.

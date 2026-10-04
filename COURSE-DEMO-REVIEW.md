@@ -53,11 +53,11 @@ The original review covered 26 decks (410 slides), including the slide content s
 | 22 | Working numeric average plus a separate intentionally broken calculator for the debugging lab. |
 | 23 | Three products to trace easily; students add at least two products for the five-product inventory exercise. |
 | 25 | Local fixtures before remote profile search; browser storage briefly, workers/PWA optional. |
-| 28–29 | Core text/tasks use 5080; optional SQLite notes use 5081. Each app serves its own frontend. |
+| 28–29 | Core text/tasks use CourseApi (5080); SQLite database CRUD and relational queries use UniversityApi (5082). |
 
 ## Verification
 
-- Both .NET 10 projects build with zero warnings/errors.
+- All .NET 10 projects (CourseApi, UniversityApi, UniversityWeb) build with zero warnings/errors.
 - 16 Chromium browser/API checks passed, covering all catalogue destinations and core assets, native forms, input conversion, modules, task delegation, fetch states, browser storage, validation, Swagger and frontend CRUD.
 - SQLite persistence was verified after restarting the application. In-memory tasks were verified to reset after restart.
 - Optional examples are preserved from the old library, with catalogue/Bruno paths updated. Their advanced behaviour and external media have not been comprehensively retested.

@@ -43,13 +43,13 @@ dotnet run --project Demos/CourseApi --launch-profile classroom
 
 Open **http://localhost:5080/** and **http://localhost:5080/swagger**. The core app contains no EF Core. Read [Demos/README.md](Demos/README.md) for the chapter steps, endpoint contracts and expected results.
 
-For the optional SQLite assignment, run:
+For the SQLite database Web API demonstration, run:
 
-```sh
-dotnet run --project Demos/SqliteNotesApi --launch-profile classroom
-```
+``sh
+dotnet run --project Demos/UniversityApi --launch-profile classroom
+``
 
-Open **http://localhost:5081/**. This separate tiny app uses EF Core only for note CRUD and persistence. The slide decks describe notes alongside tasks; the updated demos split notes into this optional app to keep the main text route simpler. No CORS configuration is needed because each API serves its own frontend.
+Open **http://localhost:5082/** (or **http://localhost:5082/swagger**). This application uses EF Core and SQLite for relational CRUD operations and queries across students, teachers, courses, sections, and enrollments.
 
 ## Additional three-hour Razor Pages introduction
 
@@ -71,7 +71,7 @@ Choose a text-processing service or a SQLite CRUD application. Both need a clear
 - Chapter 10 uses a remote silent MDN flower clip and matching descriptive captions. It needs internet access. Test tracks through the local server.
 - Chapter 25 fetches local JSON fixtures, not a pretend database. The deliberately missing file demonstrates HTTP 404; offline mode demonstrates a network error.
 - Browser storage is separate from server persistence. Avoid storing credentials or sensitive data in a classroom example.
-- Local catalogue links require the corresponding .NET app to be running. The Azure pipeline now publishes CourseApi together with the hosted catalogue and rewrites its core API links to the same website. The university SQLite API is published separately at /universityAPI; the small notes starter remains local.
+- Local catalogue links require the corresponding .NET app to be running. The Azure pipeline now publishes CourseApi together with the hosted catalogue and rewrites its core API links to the same website. The university SQLite API is published separately at /universityAPI.
 
 ## Verification
 
@@ -80,12 +80,12 @@ npm install
 npx playwright install chromium
 npm test
 dotnet build Demos/CourseApi
-dotnet build Demos/SqliteNotesApi
+dotnet build Demos/UniversityApi
 ```
 
-The browser tests start the local demo server and both APIs. They cover catalogue links, forms, numeric conversion, product filtering, task interactions, safe text rendering, fetch states, API validation/status codes and the optional note frontend. SQLite restart persistence is a separate instructor check described in Demos/README.md. Test databases are isolated under .test-data and excluded from Git.
+The browser tests start the local demo server and both APIs. They cover catalogue links, forms, numeric conversion, product filtering, task interactions, safe text rendering, fetch states, API validation/status codes. SQLite restart persistence is a separate instructor check described in Demos/README.md. Test databases are isolated under .test-data and excluded from Git.
 
-The Bruno collection uses local baseUrl (port 3000), apiUrl (5080) and notesUrl (5081). Archived demo requests point to Optional; new API requests appear in its Web API section.
+The Bruno collection includes preconfigured environments for the live published sites and local development (CourseApi, UniversityApi, UniversityWeb).
 
 ## Deployment workflow
 
@@ -151,6 +151,6 @@ erDiagram
     }
 ```
 
-The pipeline publishes this separate app at `/universityAPI`; its database survives code updates. The existing notes app remains a smaller local starter.
+The pipeline publishes this separate app at `/universityAPI`; its database survives code updates.
 
 The supplied roster is imported locally: 20 students, 719 teachers, 1,002 courses and 2,324 F2026 sections. All 20 students are enrolled in Christos Stylianides' CSE213 ECA section (46252). The normalized real dataset is included in Git and publishing as Demos/UniversityApi/SeedData/university-import.json. The pipeline publishes a populated SQLite database only if the hosted database is missing. Existing databases remain untouched by deployment and are not automatically reimported. Details and source mapping: [UniversityApi README](Demos/UniversityApi/README.md#bundled-university-data-public-deployment).

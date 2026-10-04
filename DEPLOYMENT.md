@@ -39,7 +39,7 @@ Configure **/universityAPI as a separate IIS application** in the hosting contro
 
 Give the university application's pool write access to **App_Data**. The pipeline creates a populated App_Data/university.db from the bundled real dataset. Its separate database upload uses lftp --only-missing: an existing server database is skipped. If no database is present at startup, the app can create and import the initial dataset; an existing database is never reimported. The database is outside wwwroot and cannot be downloaded. The main website upload excludes App_Data, databases and journals. A separate --only-missing upload includes only university.db, never overwrites an existing database, and never uploads journals or backups. All three applications remain offline until those uploads complete. Back up the database before schema changes; the app includes a tested upgrade for the original four-table schema, backing it up before changes. Future unrelated schema changes need a deliberate upgrade.
 
-Open /universityAPI/swagger/ and follow its README walkthrough. For 500/502 errors, check the child IIS application, separate pool, Hosting Bundle and directory permissions. The small SqliteNotesApi starter stays local on port 5081. Root CourseApi has no EF Core dependency; its temporary tasks reset on restart.
+Open /universityAPI/swagger/ and follow its README walkthrough. For 500/502 errors, check the child IIS application, separate pool, Hosting Bundle and directory permissions. Root CourseApi has no EF Core dependency; its temporary tasks reset on restart. The SQLite relational database is provided by UniversityApi.
 
 ## Upload behaviour and recovery
 

@@ -14,7 +14,6 @@ module.exports = defineConfig({
   ],
   webServer: [
     { command: `"${process.execPath}" tools/serve.cjs`, url: 'http://localhost:3000', reuseExistingServer: false },
-    { command: 'dotnet run --project Demos/CourseApi --launch-profile classroom', url: 'http://localhost:5080/api/hello', reuseExistingServer: false, timeout: 60000 },
-    { command: 'dotnet run --project Demos/SqliteNotesApi --launch-profile classroom', url: 'http://localhost:5081/api/notes', env: { ConnectionStrings__Notes: `Data Source=${path.resolve('.test-data/notes.db')}` }, reuseExistingServer: false, timeout: 60000 }
+    { command: 'dotnet run --project Demos/CourseApi --launch-profile classroom', url: 'http://localhost:5080/api/hello', reuseExistingServer: false, timeout: 60000 }
   ]
 });

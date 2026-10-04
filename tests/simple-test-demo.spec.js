@@ -165,8 +165,6 @@ test('text contracts, validation and Swagger documents are correct', async ({ re
   const core = await (await request.get(base + '/openapi/v1.json')).json();
   expect(core.paths['/api/tasks'].post.responses['201']).toBeTruthy();
   expect(core.paths['/api/text/analysis']).toBeTruthy();
-  const notes = await (await request.get('http://localhost:5081/openapi/v1.json')).json();
-  expect(notes.paths['/api/notes']).toBeTruthy();
 });
 
 test('API frontend submits text and safely creates, updates and deletes tasks', async ({ page }) => {
@@ -189,22 +187,6 @@ test('API frontend submits text and safely creates, updates and deletes tasks', 
   await expect(page.getByRole('status')).toHaveText('No tasks yet.');
 });
 
-test('optional SQLite frontend CRUD and validation work', async ({ page, request }) => {
-  await page.goto('http://localhost:5081/');
-  await expect(page.getByRole('status')).toHaveText(/Notes loaded.|No notes yet./);
-  const text = `SQLite browser test ${Date.now()}`;
-  await page.getByLabel('Note text').fill(text);
-  await page.getByRole('button', { name: 'Add note', exact: true }).click();
-  const item = page.locator('#notes li').filter({ hasText: text });
-  await expect(item).toHaveCount(1);
-  await item.getByRole('button', { name: 'Edit', exact: true }).click();
-  await page.getByLabel('Note text').fill(text + ' updated');
-  await page.getByRole('button', { name: 'Save changes' }).click();
-  await expect(item).toContainText('updated');
-  await item.getByRole('button', { name: 'Delete' }).click();
-  await expect(item).toHaveCount(0);
-  for (const data of [{}, { text: '  ' }, { text: 'x'.repeat(501) }]) expect((await request.post('http://localhost:5081/api/notes', { data })).status()).toBe(400);
-});
 
 test('registration lab validates patterns and submits all control types', async ({ page }) => {
   await page.goto('/02 - HTML/Ch09 - Forms/studentlab.html');

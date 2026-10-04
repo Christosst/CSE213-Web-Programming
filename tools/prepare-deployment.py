@@ -54,8 +54,6 @@ for file in public.rglob('*.html'):
     text = file.read_text(encoding='utf-8-sig')
     text = text.replace('href="http://localhost:5080/"', 'href="/api-demo.html"')
     text = text.replace('href="http://localhost:5080/', 'href="/')
-    # The optional database app remains a local exercise; don't link a visitor's localhost.
-    text = text.replace('http://localhost:5081', 'the optional local notes app (port 5081)')
     # University API — now on its own site.
     text = text.replace('href="http://localhost:5082/"', f'href="{uni_api_href}"')
     text = text.replace('href="http://localhost:5082/', f'href="{uni_api_href}')
@@ -90,7 +88,7 @@ for file in public.rglob('*.html'):
         text = text.replace('Local .NET 10 project, port 5083', f'Hosted Razor Pages at {uni_web_href}')
     elif file.parent.parent.name == '05 - ASP.NET Core Web API':
         text = text.replace('Start the .NET 10 project in a separate terminal. These links open its local server; static HTML alone cannot run C#.',
-            'The core API and university SQLite API are hosted on this website. Use the links below. The commands show how to run local copies; the small notes starter remains local.')
+            'The core API and university SQLite API are hosted on this website. Use the links below. The commands show how to run local copies.')
     elif file.name in ['text.html', 'tasks.html']:
         text = text.replace('href="/">API home', 'href="/api-demo.html">API home')
     file.write_text(text, encoding='utf-8')

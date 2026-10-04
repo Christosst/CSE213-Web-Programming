@@ -38,7 +38,6 @@ Tests the live deployed applications on Windows IIS hosting:
 Tests local development servers when running projects locally:
 - `baseUrl`: `http://localhost:3000` (Local static web server)
 - `apiUrl`: `http://localhost:5080` (CourseApi)
-- `notesUrl`: `http://localhost:5081` (Optional SQLite Notes Api)
 - `uniApiUrl`: `http://localhost:5082` (UniversityApi)
 - `uniWebUrl`: `http://localhost:5083` (UniversityWeb)
 - `courseApiSwaggerUrl`: `http://localhost:5080/swagger/index.html`
@@ -70,8 +69,6 @@ Tests local development servers when running projects locally:
 │   ├── 28 - Analyze Text.bru          # Text character & word count
 │   ├── 28 - Uppercase Text.bru        # Text transformer
 │   ├── 28 - Form Echo.bru             # HTML form submission echo
-│   ├── 28 - Optional SQLite Notes.bru # SQLite notes starter
-│   ├── 28 - Create SQLite Note.bru    # Add note to SQLite
 │   ├── 29 - API Landing Page.bru      # HTML frontend for CourseApi
 │   ├── 29 - Tasks Demo Page.bru       # HTML frontend for Tasks
 │   ├── 29 - Text Demo Page.bru        # HTML frontend for Text
