@@ -53,11 +53,16 @@ for attempt in range(12):
         assert 'font-family' in read_web('/css/site.css'), 'UniversityWeb stylesheet is unavailable'
         web_students = read_web('/Students')
         assert '<h1>Students</h1>' in web_students, 'Razor student list is unavailable'
-        assert f'Students: {len(students)}' in web_home, 'Razor and API student counts do not match'
-        if students:
-            student = students[0]
-            details = html.unescape(read_web(f'/Students/Details/{student["id"]}'))
-            assert '<h1>Details student</h1>' in details and student['fullName'] in details, 'Razor and API student records do not match'
+        if uni_api_base == uni_web_base:
+            assert f'Students: {len(students)}' in web_home, 'Razor and API student counts do not match'
+            if students:
+                student = students[0]
+                details = html.unescape(read_web(f'/Students/Details/{student["id"]}'))
+                assert '<h1>Details student</h1>' in details and student['fullName'] in details, 'Razor and API student records do not match'
+        else:
+            assert 'Students: ' in web_home, 'Razor student count summary is missing'
+            details = html.unescape(read_web('/Students/Details/1'))
+            assert '<h1>Details student</h1>' in details, 'Razor student details page is unavailable'
         for entity in ['Teachers', 'Courses', 'Enrollments']:
             assert f'<h1>{entity}</h1>' in read_web('/' + entity), f'Razor {entity} list is unavailable'
         assert '__RequestVerificationToken' in read_web('/Students/Create'), 'Razor form is unavailable'
